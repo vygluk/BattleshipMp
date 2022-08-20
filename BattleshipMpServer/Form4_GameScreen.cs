@@ -174,6 +174,7 @@ namespace BattleshipMp
             {
                 MessageBox.Show("Rakip oyunu terketti. Hazırlık aşamasına yönlendirileceksiniz.");
                 this.Close();
+                return;
             }
 
             //  Hamlenin sonucu için tutulan değişkenler.
@@ -185,6 +186,10 @@ namespace BattleshipMp
             //  Yukarıdaki if koşulları tutmadığı takdirde metod bunu hamle yapıldı olarak algılar.
             //  Karşıdan yapılan hamle buton ismiyle birlikte gelir. Daha sonra "Ship" modelindeki yapıya göre gemiye ait butonlar arasında gezinir.
             //  Yapılan hamlenin hedefi vurup vurmadığına göre üstteki değişkenlere değer atar.
+            if (Form2_PreparatoryScreen.shipList[0].shipPerButton == null)
+            {
+                return;
+            }
             foreach (var item1 in Form2_PreparatoryScreen.shipList)
             {
                 foreach (var item2 in item1.shipPerButton)
@@ -333,7 +338,7 @@ namespace BattleshipMp
         {
             if (!myExit)
             {
-                AttackToEnemy("exit");
+                AttackToEnemy("exitt");
             }
             Form2_PreparatoryScreen frm2 = new Form2_PreparatoryScreen();
             frm2.Show();

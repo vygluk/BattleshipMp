@@ -318,6 +318,7 @@ namespace BattleshipMpClient
 
         private void Form2_FormClosed(object sender, FormClosedEventArgs e)
         {
+            timer1.Stop();
             Form1_ClientScreen frm1 = new Form1_ClientScreen();
             frm1.Visible = true;
         }

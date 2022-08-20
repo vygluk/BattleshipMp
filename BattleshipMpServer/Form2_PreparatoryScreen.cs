@@ -335,6 +335,7 @@ namespace BattleshipMp
 
         private void Form2_PreparatoryScreen_FormClosed(object sender, FormClosedEventArgs e)
         {
+            timer1.Stop();
             Form1_ServerScreen frm1 = new Form1_ServerScreen();
             frm1.Show();
         }

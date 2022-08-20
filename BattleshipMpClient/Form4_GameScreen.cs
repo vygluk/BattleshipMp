@@ -158,6 +158,7 @@ namespace BattleshipMpClient
             {
                 MessageBox.Show("Rakip oyunu terketti. Hazırlık aşamasına yönlendirileceksiniz.");
                 this.Close();
+                return;
             }
 
             bool isShot = false;
@@ -165,6 +166,10 @@ namespace BattleshipMpClient
             string shottedShip = "";
             ShipButtons deletingButton = null;
 
+            if (Form2_PreparatoryScreen.shipList[0].shipPerButton == null)
+            {
+                return;
+            }
             foreach (var item1 in Form2_PreparatoryScreen.shipList)
             {
                 foreach (var item2 in item1.shipPerButton)
@@ -223,6 +228,10 @@ namespace BattleshipMpClient
             }
             else
             {
+                if (myBoardButtons == null)
+                {
+                    return;
+                }
                 myBoardButtons.FirstOrDefault(x => x.Name == shotButtonName).BackgroundImage = Image.FromFile(Application.StartupPath + @"\Images\o.png");
                 AttackToEnemy("karavana:" + shotButtonName);
                 return;
@@ -285,7 +294,7 @@ namespace BattleshipMpClient
         {
             if (!myExit)
             {
-                AttackToEnemy("exit");
+                AttackToEnemy("exitt");
             }
             Form2_PreparatoryScreen frm2 = new Form2_PreparatoryScreen();
             frm2.Show();
