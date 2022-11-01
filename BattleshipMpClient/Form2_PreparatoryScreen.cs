@@ -88,7 +88,7 @@ namespace BattleshipMpClient
 
         public static Dictionary<string, int> shipsCount = new Dictionary<string, int>()
         {
-            {"Amiral", 1 },{"Kruvazor", 2},{"Muhrip", 3},{"Denizalti", 4}
+            {"Battleship", 1 },{"Cruiser", 2},{"Destroyer", 3},{"Submarine", 4}
         };
 
         public static List<Ship> shipList = new List<Ship>();
@@ -159,7 +159,7 @@ namespace BattleshipMpClient
                 {
                     if (totalAsciiList[i] + 1 != totalAsciiList[i + 1])
                     {
-                        MessageBox.Show("Geminin yerleşeceği alan ardışık kutular olmalıdır.");
+                        MessageBox.Show("The area where the ship will be located must be consecutive boxes.");
                         return;
                     }
                 }
@@ -212,7 +212,7 @@ namespace BattleshipMpClient
 
         private void DeleteShip(List<Button> selected)
         {
-            DialogResult dres = MessageBox.Show("Silmek istediğinize emin misiniz?", "Gemi Sil", MessageBoxButtons.YesNo);
+            DialogResult dres = MessageBox.Show("Are you sure you want to delete the ship?", "Delete Ship", MessageBoxButtons.YesNo);
             if (dres == DialogResult.Yes)
             {
                 foreach (var item1 in shipList)
@@ -244,18 +244,25 @@ namespace BattleshipMpClient
 
         private void yardımToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("1- Mouse'a basılı tutarak gemileri yerleştirmek istediğiniz konumu seçin.\n\n" +
-                "2- Seçilen konuma yerleştirilebilecek gemilerin listelendiği sayfadan seçim yapın.\n\n" +
-                "3- Tüm gemilerinizi yerleştirdiğinizde 'Hazır' deyin.\n\n" +
-                "Not: Her 2 oyuncu 'Hazır' dedikten sonra oyun başlayacaktır.");
+            MessageBox.Show("1- Hold down the mouse LC and select the location where you want to place the ships.\n\n" +
+                "2- \r\nSelect from the page listing the ships that can be placed in the selected location.\n\n" +
+                "3- Click 'Ready' when you have placed all your ships.\n\n" +
+                "Notice: The game will start after both players 'Continue'.");
         }
 
         void RemainingShips()
         {
-            labelAmiral.Text = shipList.FirstOrDefault(x => x.shipName == "Amiral").remShips.ToString();
-            labelKruvazor.Text = shipList.FirstOrDefault(x => x.shipName == "Kruvazor").remShips.ToString();
-            labelMuhrip.Text = shipList.FirstOrDefault(x => x.shipName == "Muhrip").remShips.ToString();
-            labelDenizalti.Text = shipList.FirstOrDefault(x => x.shipName == "Denizalti").remShips.ToString();
+            lblBattleship.Text = lblBattleship.Text.Substring(0, lblBattleship.Text.Length - 1);
+            lblBattleship.Text += shipList.FirstOrDefault(x => x.shipName == "Battleship").remShips.ToString();
+
+            lblCruiser.Text = lblCruiser.Text.Substring(0, lblCruiser.Text.Length - 1);
+            lblCruiser.Text += shipList.FirstOrDefault(x => x.shipName == "Cruiser").remShips.ToString();
+
+            lblDestroyer.Text = lblDestroyer.Text.Substring(0, lblDestroyer.Text.Length - 1);
+            lblDestroyer.Text += shipList.FirstOrDefault(x => x.shipName == "Destroyer").remShips.ToString();
+
+            lblSubmarine.Text = lblSubmarine.Text.Substring(0, lblSubmarine.Text.Length - 1);
+            lblSubmarine.Text += shipList.FirstOrDefault(x => x.shipName == "Submarine").remShips.ToString();
 
             foreach (var item in shipList)
             {
@@ -272,12 +279,12 @@ namespace BattleshipMpClient
             if (isPanelActive == true)
             {
                 buttonStart.Enabled = true;
-                buttonStart.Text = "Hazır.\nBaşla";
+                buttonStart.Text = "Ready.\nStart";
             }
             else
             {
                 buttonStart.Enabled = false;
-                buttonStart.Text = "Hazırlık Aşaması";
+                buttonStart.Text = "Preparatory";
             }
         }
 
@@ -308,7 +315,7 @@ namespace BattleshipMpClient
         {
             if (Client.client.Connected == false)
             {
-                MessageBox.Show("Bağlantı koptu.");
+                MessageBox.Show("Connection failed.");
                 Client.client.Dispose();
                 Client.client = null;
                 timer1.Stop();

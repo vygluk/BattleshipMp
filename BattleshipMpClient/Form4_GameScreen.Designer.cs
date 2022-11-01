@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.J1 = new System.Windows.Forms.Button();
             this.I1 = new System.Windows.Forms.Button();
             this.J5 = new System.Windows.Forms.Button();
@@ -275,7 +274,7 @@
             this.D6 = new System.Windows.Forms.Button();
             this.C7 = new System.Windows.Forms.Button();
             this.C3 = new System.Windows.Forms.Button();
-            this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.timer1 = new System.Windows.Forms.Timer();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -1163,7 +1162,7 @@
             this.groupBox2.Size = new System.Drawing.Size(462, 469);
             this.groupBox2.TabIndex = 130;
             this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "Düşman Gemiler";
+            this.groupBox2.Text = "Enemy Ships";
             // 
             // label21
             // 
@@ -1434,6 +1433,8 @@
             this.label31.Size = new System.Drawing.Size(27, 20);
             this.label31.TabIndex = 104;
             this.label31.Text = "10";
+            this.label31.MouseEnter += new System.EventHandler(this.button_mousehover);
+            this.label31.MouseLeave += new System.EventHandler(this.button_mouseleave);
             // 
             // H11
             // 
@@ -2988,9 +2989,9 @@
             this.labelAttackTurn.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
             this.labelAttackTurn.Location = new System.Drawing.Point(523, 461);
             this.labelAttackTurn.Name = "labelAttackTurn";
-            this.labelAttackTurn.Size = new System.Drawing.Size(101, 20);
+            this.labelAttackTurn.Size = new System.Drawing.Size(61, 20);
             this.labelAttackTurn.TabIndex = 128;
-            this.labelAttackTurn.Text = "HAMLE YAP";
+            this.labelAttackTurn.Text = "ATACK";
             // 
             // groupBox1
             // 
@@ -3119,7 +3120,7 @@
             this.groupBox1.Size = new System.Drawing.Size(462, 469);
             this.groupBox1.TabIndex = 129;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Benim Gemilerim";
+            this.groupBox1.Text = "My Ships";
             // 
             // label20
             // 
@@ -3970,7 +3971,7 @@
             this.timer1.Interval = 1000;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
-            // Form4
+            // Form4_GameScreen
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -3979,8 +3980,8 @@
             this.Controls.Add(this.richTextBox1);
             this.Controls.Add(this.labelAttackTurn);
             this.Controls.Add(this.groupBox1);
-            this.Name = "Form4";
-            this.Text = "Oyun - Client";
+            this.Name = "Form4_GameScreen";
+            this.Text = "Game - Client";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form4_FormClosed);
             this.Load += new System.EventHandler(this.Form4_Load);
             this.groupBox2.ResumeLayout(false);

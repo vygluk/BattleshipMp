@@ -27,7 +27,7 @@ namespace BattleshipMp
         }
 
 
-        //  IP alanına bilgisayarın v4 ipsini getir. (cmd'deki ipconfig)
+        //  Fill in the "ip" field with the computer's ipv4 address.
         string FillIpTextBox()
         {
             IPAddress[] localIp = Dns.GetHostAddresses(Dns.GetHostName());
@@ -44,40 +44,40 @@ namespace BattleshipMp
             return ipadr;
         }
 
-        //  IP alanından başka bir alana geçildiğinde içeriği bilgisayar'ın ipsi ya da localhost olup olmadığı kontrolünü yap.
+        //  Not active.
         private void textBoxIpAddress_Leave(object sender, EventArgs e)
         {
-            if (textBoxIpAddress.Text != "127.0.0.1" && textBoxIpAddress.Text != FillIpTextBox())
-            {
-                textBoxIpAddress.Text = FillIpTextBox();
-            }
+            //if (textBoxIpAddress.Text != "127.0.0.1" && textBoxIpAddress.Text != FillIpTextBox())
+            //{
+            //    textBoxIpAddress.Text = FillIpTextBox();
+            //}
         }
 
-        //  Server classındaki ServerStart metodunu çalıştır.
+        //  Call the "ServerStart" method in the Server class.
         private void buttonServerStart_Click(object sender, EventArgs e)
         {
             Server.ServerStart(textBoxIpAddress.Text, textBoxPort.Text);
         }
 
-        //  1 sn'de bir Client'in bağlanıp bağlanmadığını kontrol et. Buna göre "Devam" butonunu aktifleştir.
+        //  Check if the client connects every 1 second. Activate the "Continue" button according to the result.
         private void timer1_Tick(object sender, EventArgs e)
         {
             if (Server.client != null && Server.client.Connected)
             {
-                labelServerState.Text = "Oyuncu başarıyla bağlandı.";
+                labelServerState.Text = "Player successfully connected.";
                 buttonGoToBoard.Enabled = true;
             }
             else if (Server.listener != null)
             {
-                labelServerState.Text = "Server başlatıldı. Oyuncu bekleniyor..";
+                labelServerState.Text = "The server is started. The player is awaited..";
             }
             else
             {
-                labelServerState.Text = "Server'ın başlatılması bekleniyor..";
+                labelServerState.Text = "Waiting for the server to start...";
             }
         }
 
-        //  Hazırlık aşamasını içeren Form2'ye geç.
+        //  Go to preparation stage (Form2)
         private void buttonGoToBoard_Click(object sender, EventArgs e)
         {
 

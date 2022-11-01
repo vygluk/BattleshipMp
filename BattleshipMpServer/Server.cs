@@ -11,16 +11,18 @@ namespace BattleshipMp
 {
     class Server
     {
-        //  Soket açılıp gelecek isteklerin dinlenmeye başlandığı class.
+        //  Create socket and listen for incoming requests.
+        //  The "ip" parameter is not used.
 
         public static TcpListener listener;
-        public static TcpClient client;
+        public static TcpClient client = new TcpClient();
 
         public static void ServerStart(string ip, string port)
         {
             try
             {
-                listener = new TcpListener(IPAddress.Parse(ip), int.Parse(port));
+                //listener = new TcpListener(IPAddress.Parse(ip), int.Parse(port));
+                listener = new TcpListener(IPAddress.Any, int.Parse(port));
                 listener.Start();
                 //client = listener.AcceptTcpClient();
 

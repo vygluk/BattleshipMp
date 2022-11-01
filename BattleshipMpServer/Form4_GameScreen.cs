@@ -26,7 +26,7 @@ namespace BattleshipMp
         List<string> AllSelectedButtonList;
         bool myExit = false;
 
-        //  Oyun ekranı nesnesi oluşturulurken constructor yardımıyla Form2'den seçili butonların listesini al ve rengini değiştir.
+        //  While creating the "game screen" object, get the list of selected buttons from Form2 and change their color with the help of constructor.
         public Form4_GameScreen(List<string> list)
         {
             InitializeComponent();
@@ -34,7 +34,7 @@ namespace BattleshipMp
             Control.CheckForIllegalCrossThreadCalls = false;
         }
 
-        //  Hamle yaparken mouse işaretçisini kırmızı bir hedef görseliyle değiştir. buton üzerinden çıktığında normal işaretçiye dön.
+        //  Replace the mouse pointer with a red target image while making moves. return to normal pointer when the button is over.
         private void button_mousehover(object sender, EventArgs e)
         {
             Bitmap bm = new Bitmap(new Bitmap(Application.StartupPath + @"\Images\target.png"), 20, 20);
@@ -48,18 +48,18 @@ namespace BattleshipMp
 
         private void Form4_GameScreen_Load(object sender, EventArgs e)
         {
-            // 1 // Hamle yapılan alandaki butonları ve benim seçtiğim gemileri gösteren butonların hepsini listede tut.
+            // 1 // Save all the buttons on the game board and the selected ships to the list.
             gameBoardButtons = groupBox2.Controls.OfType<Button>().ToList();
             myBoardButtons = groupBox1.Controls.OfType<Button>().ToList();
 
-            // 2 // Form2'den gelen buton listesine göre gemilerin yerlerini "Benim Gemilerim" bölümünde rengini değiştir.
+            // 2 // Change the color of the ships in the "My Ships" section according to the button list from Form2.
             foreach (var item in AllSelectedButtonList)
             {
                 groupBox1.Controls.Find(item, true)[0].BackColor = Color.DarkGray;
             }
 
-            // 3 // Server - Client arasında veri alışverişini sağlayacak olan Stream'leri oluştur ve bunları global değişkenlere ata.
-            // backgorundWorker1 nesnesi her zaman gelen veriyi dinleyeceği için arka planda sürekli çalışıyor durumda olacak.
+            // 3 // Create Streams that will provide data exchange between Server and Client and assign them to global variables.
+            // Since the "backgorundWorker1" object will always listen for incoming data, it will be running in the background all the time.
             try
             {
                 STR = new StreamReader(Server.client.GetStream());
@@ -73,8 +73,8 @@ namespace BattleshipMp
                 MessageBox.Show(ex.Message.ToString());
             }
 
-            // 4 // Oyuna ilk başlarken sıranın kimde olduğunu belirlemek için 0 veya 1 olacak şekilde random sayı üret. Oyun başlangıcında bunu karşı tarafa gönder.
-            // Hamle sırası belirlendikten sonra hamle tahtasındaki butonları aktif veya pasif hale getir.
+            // 4 // When first starting the game, generate a random number of 0 or 1 to determine whose turn it is. Send this to the other side at the start of the game.
+            // Activate or deactivate the buttons on the game board after the order of moves has been determined.
             Random random = new Random();
             int rnd = random.Next(0, 2);
             if (rnd == 0)
@@ -92,7 +92,7 @@ namespace BattleshipMp
             timer1.Start();
         }
 
-        // 5 // Gelen bilgileri bağlantı sağlandığı takdirde sürekli oku. Gelen bilgi boş değilse "AttackFromEnemy()" metodunu çalıştır.
+        // 5 // Read the incoming information continuously if the connection is provided. If the incoming information is not empty, execute the "AttackFromEnemy()" method.
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
             while (Server.client.Connected)
@@ -114,11 +114,11 @@ namespace BattleshipMp
             }
         }
 
-        // 6 // Asıl işlemlerin yapıldığı metod burası. Gerekli açıklamalar method içerisinde. Hamle yapıldığında bu metoda 1 den fazla sayıda iterasyonla ulaşılır.
-        // Yine açıklama kısmında belirtildi.
+        // 6 // This is the method where the important operations are done. Necessary explanations are in the method. When a move is made, this method is reached with more than 1 iteration.
+        // It's also mentioned in the description.
         private void AttackFromEnemy(string recieve)
         {
-            //  Dördüncü adımda sıranın kimde olduğunu belirleyen veriyi oku. Veri 0'sa oyuna Server; Veri 1'se Client başlayacak.
+            //  Read the data that determines who is next in step four. If the data is 0, Server will start; If the data is 1, Client will start.
             if (recieve == "0")
             {
                 areEnabledButtons = true;
@@ -132,33 +132,33 @@ namespace BattleshipMp
                 return;
             }
 
-            //  Arayüzde bulunan RichTextBox nesnesine hamle yapan tarafın hedefi vurup vurmadığı logu yazılır.
-            //  Eğer karavana ise "O" görseliyle butonun arka planı döşenir. Tam tersiyse "X" görseli kullanılır.
-            //  Bu işlem 2. iterasyonda gerçekleşir.
-            else if (recieve.Contains("karavana:"))
+            //  Information about whether the attacking party hit the target or not is written to the RichTextBox object in the interface.
+            //  If it is a miss, the background of the button is tiled with the "O" image, otherwise the "X" image is used.
+            //  This process takes place in the 2nd iteration.
+            else if (recieve.Contains("miss:"))
             {
-                //  String işlemleri oyuncunun gemileri ve oyunun oynandığı tahta ayrı olduğu için alınan buton isimlerini düzenlemek için.
+                //  String operations edit the received button names because the player's ships and the board on which the game is played are separate.
                 string result = recieve.Substring(recieve.Length - 2, 2);
                 result = result + result.Substring(result.Length - 1);
                 gameBoardButtons.FirstOrDefault(x => x.Name == result).BackgroundImage = Image.FromFile(Application.StartupPath + @"\Images\o.png");
-                richTextBox1.AppendText("Karavana\n");
+                richTextBox1.AppendText("Miss\n");
                 return;
             }
-            else if (recieve.Contains("isabet:"))
+            else if (recieve.Contains("hit:"))
             {
                 string result = recieve.Substring(recieve.Length - 2, 2);
                 result = result + result.Substring(result.Length - 1);
                 gameBoardButtons.FirstOrDefault(x => x.Name == result).BackgroundImage = Image.FromFile(Application.StartupPath + @"\Images\x.png");
-                richTextBox1.AppendText("İsabet\n");
+                richTextBox1.AppendText("Hit\n");
                 return;
             }
 
-            // Tüm kutular vurulduğu takdirde bile oyunun bitmesi için Amiral gemisinin vurulmuş olmasına bakıldığı için; gelen veri "youwin"
-            // ise, bu mesajı alan taraf oyunu kazanmış olur. Yeni oyun için hazırlık aşamasına geçip geçmek istemediği sorulur. Duruma göre işlem yapılır.
-            // Bu okunan veri eğer oyun bitiyorsa 3. iterasyonda alınmış olur.
+            // Even if all boxes are hit, the game will end only when the ship "Battleship" is hit; If the incoming data is "youwin",
+            // the party receiving this message wins the game. He is asked if he wants to go to the preparation stage for the new game. Action is taken according to the situation.
+            // If the game is over, this data is read in the 3rd iteration.
             else if (recieve.Contains("youwin"))
             {
-                DialogResult res = MessageBox.Show("Kazandın. Hazırlık ekranına dönmek ister misin?", "Server - Oyun Sonucu", MessageBoxButtons.YesNo);
+                DialogResult res = MessageBox.Show("Victory. Would you like to return to the preparation screen?", "Server - Game Result", MessageBoxButtons.YesNo);
                 {
                     if (res == DialogResult.Yes)
                     {
@@ -172,20 +172,20 @@ namespace BattleshipMp
             }
             else if (recieve.Contains("exit"))
             {
-                MessageBox.Show("Rakip oyunu terketti. Hazırlık aşamasına yönlendirileceksiniz.");
+                MessageBox.Show("\r\nThe opponent has left the game. You are being directed to the preparation phase.");
                 this.Close();
                 return;
             }
 
-            //  Hamlenin sonucu için tutulan değişkenler.
+            //  Variables held for the outcome of the hit.
             bool isShot = false;
             string shotButtonName = "";
             string shottedShip = "";
             ShipButtons deletingButton = null;
 
-            //  Yukarıdaki if koşulları tutmadığı takdirde metod bunu hamle yapıldı olarak algılar.
-            //  Karşıdan yapılan hamle buton ismiyle birlikte gelir. Daha sonra "Ship" modelindeki yapıya göre gemiye ait butonlar arasında gezinir.
-            //  Yapılan hamlenin hedefi vurup vurmadığına göre üstteki değişkenlere değer atar.
+            //  If the above if conditions are not met, the method considers it as a move.
+            //  The counter move comes with the button name. Then it is searched among the buttons of the ship according to the structure in the "Ship" model.
+            //  Depending on whether the attack hit the target or not, values ​​are assigned to the above variables.
             if (Form2_PreparatoryScreen.shipList[0].shipPerButton == null)
             {
                 return;
@@ -215,28 +215,28 @@ namespace BattleshipMp
             }
 
 
-            //  Eğer hedef vurulmuşsa Kendi hedef tahtasındaki butonu işaretler. Sonrasında karşıya isabet verisi yollar. Yine aynı AttackFromEnemy() metodu
-            //  gelen isabet ya da karavana verisine göre göre işlem yapar. + if(recieve.Contain(karavana)) statement.
-            //  Vurulan gemiye ait butonu listeden siler.
+            //  If the target has been hit, the button on the target board is marked. Then it sends hit data across. Yine aynı AttackFromEnemy() metodu
+            //  Again, the same AttackFromEnemy() method operates according to the incoming hit or miss data. + if(recieve.Contain(miss)) statement.
+            //  The button of the hit ship is deleted from the list.
             if (isShot)
             {
                 myBoardButtons.FirstOrDefault(x => x.Name == shotButtonName).BackgroundImage = Image.FromFile(Application.StartupPath + @"\Images\x.png");
 
-                AttackToEnemy("isabet:" + shotButtonName);
+                AttackToEnemy("hit:" + shotButtonName);
 
                 deletingButton.buttonNames.Remove(shotButtonName);
 
-                //  Vurulan gemi Amiral ise Amiral'e ait tüm butonlar kontrol edilir. Eğer hepsi vurulmuşsa oyun sona erer.
-                if (shottedShip == "Amiral")
+                //  If the hit ship is "Battleship", all buttons of "Battleship" are checked. If they're all hit, it's game over.
+                if (shottedShip == "Battleship")
                 {
-                    foreach (var item in Form2_PreparatoryScreen.shipList.FirstOrDefault(x => x.shipName == "Amiral").shipPerButton)
+                    foreach (var item in Form2_PreparatoryScreen.shipList.FirstOrDefault(x => x.shipName == "Battleship").shipPerButton)
                     {
                         if (item.buttonNames.Count > 0)
                         {
                             return;
                         }
                         AttackToEnemy("youwin");
-                        DialogResult res = MessageBox.Show("Kaybettin. Hazırlık ekranına dönmek ister misin?", "Server - Oyun Sonucu", MessageBoxButtons.YesNo);
+                        DialogResult res = MessageBox.Show("You lost. Do you want to return to the preparation screen?", "Server - Game Result", MessageBoxButtons.YesNo);
                         {
                             if (res == DialogResult.Yes)
                             {
@@ -252,16 +252,16 @@ namespace BattleshipMp
                 return;
             }
 
-            //  Hedef vurulmamışsa sadece ilgili butonun arka planı değiştirilir ve 2. iterasyonda yine bu kısmın okuması için karşıya veri gönderilir.
+            //  If the target is not hit, only the background of the relevant button is changed and in the 2nd iteration, data is sent to read this part again.
             else
             {
                 myBoardButtons.FirstOrDefault(x => x.Name == shotButtonName).BackgroundImage = Image.FromFile(Application.StartupPath + @"\Images\o.png");
-                AttackToEnemy("karavana:" + shotButtonName);
+                AttackToEnemy("miss:" + shotButtonName);
                 return;
             }
         }
 
-        //  Veriyi gönderecek olan nesne. Sadece hamle yapıldığı zaman çalıştırılır. Onun dışında beklemede kalır.
+        //  The object to which the data will be sent. It is executed only when a attack is made. Otherwise it waits.
         private void backgroundWorker2_DoWork(object sender, DoWorkEventArgs e)
         {
             if (Server.client.Connected)
@@ -270,19 +270,19 @@ namespace BattleshipMp
             }
             else
             {
-                MessageBox.Show("Mesaj Gönderilemedi!!");
+                MessageBox.Show("Message could not be sent!!");
             }
 
             backgroundWorker2.CancelAsync();
         }
 
-        //  Hamlelerin yapılacağı tüm butonların Click eventleri bu metodla ilişkilidir. Tıklandığında karşıya buton ismini gönderir.
+        //  Click events of all buttons on which attacks will be made are associated with this method. When clicked, it sends the name of the button to enemy.
         private void button_click(object sender, EventArgs e)
         {
             AttackToEnemy(((Button)sender).Name);
         }
 
-        //  Veri gönderilirken buton isminde düzenleme yapar. A11 şeklinde buton ismini A1 olarak gönderir.
+        //  Makes adjustments to the button name while sending data. A11 shaped button sends its name as A1.
         private void AttackToEnemy(string buttonName)
         {
             if (buttonName == null)
@@ -301,7 +301,7 @@ namespace BattleshipMp
             SwitchGameButtonsEnabled();
         }
 
-        //  Hamle sırasına göre Hamle tahtasındaki butonları aktif veya pasif yapacak metod.
+        //  The method to activate or deactivate the buttons on the attack board according to the attack order.
         private void SwitchGameButtonsEnabled()
         {
             if (areEnabledButtons == true)
@@ -310,7 +310,7 @@ namespace BattleshipMp
                 {
                     item.Enabled = false;
                 }
-                labelAttackTurn.Text = "BEKLE...";
+                labelAttackTurn.Text = "WAIT...";
                 areEnabledButtons = false;
             }
             else
@@ -319,7 +319,7 @@ namespace BattleshipMp
                 {
                     item.Enabled = true;
                 }
-                labelAttackTurn.Text = "HAMLE YAP";
+                labelAttackTurn.Text = "ATTACK";
                 areEnabledButtons = true;
             }
         }
@@ -328,12 +328,12 @@ namespace BattleshipMp
         {
             if (Server.listener != null && (Server.client == null && !Server.client.Connected))
             {
-                MessageBox.Show("Client bağlantısı koptu.");
+                MessageBox.Show("Client connection failed.");
             }
         }
 
-        //  Form kapatılırken. Oyun bittiği için mi? Yoksa oyun devam ederken mi kapanıyor bunu kontrol et. Eğer devam sırasında ise karşıya oyuncunun
-        //  oyunu terk ettiği bilgisini gönder.
+        //  When closing the form. Is it because the game is over? Or is it closing while the game is in progress,
+        //  check this. If it is in progress, send information that the player has left the game.
         private void Form4_GameScreen_FormClosed(object sender, FormClosedEventArgs e)
         {
             if (!myExit)

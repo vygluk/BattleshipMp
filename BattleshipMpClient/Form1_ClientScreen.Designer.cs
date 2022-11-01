@@ -46,7 +46,7 @@
             this.buttonGoToBoard.Name = "buttonGoToBoard";
             this.buttonGoToBoard.Size = new System.Drawing.Size(274, 34);
             this.buttonGoToBoard.TabIndex = 9;
-            this.buttonGoToBoard.Text = "Devam Et >>";
+            this.buttonGoToBoard.Text = "Continue >>";
             this.buttonGoToBoard.UseVisualStyleBackColor = true;
             this.buttonGoToBoard.Click += new System.EventHandler(this.buttonGoToBoard_Click);
             // 
@@ -58,7 +58,7 @@
             this.buttonConnectToServer.Name = "buttonConnectToServer";
             this.buttonConnectToServer.Size = new System.Drawing.Size(274, 34);
             this.buttonConnectToServer.TabIndex = 7;
-            this.buttonConnectToServer.Text = "Server\'a Bağlan";
+            this.buttonConnectToServer.Text = "Connect To Server";
             this.buttonConnectToServer.UseVisualStyleBackColor = true;
             this.buttonConnectToServer.Click += new System.EventHandler(this.buttonConnectToServer_Click);
             // 
@@ -80,9 +80,9 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(26, 41);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(77, 20);
+            this.label1.Size = new System.Drawing.Size(91, 20);
             this.label1.TabIndex = 5;
-            this.label1.Text = "IP Adresi:";
+            this.label1.Text = "IP Address:";
             // 
             // textBoxPort
             // 
@@ -113,9 +113,9 @@
             this.labelServerState.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
             this.labelServerState.Location = new System.Drawing.Point(12, 9);
             this.labelServerState.Name = "labelServerState";
-            this.labelServerState.Size = new System.Drawing.Size(154, 16);
+            this.labelServerState.Size = new System.Drawing.Size(191, 16);
             this.labelServerState.TabIndex = 10;
-            this.labelServerState.Text = "Server\'a bağanmalısınız.";
+            this.labelServerState.Text = "You must connect to the server.";
             // 
             // Form1_ClientScreen
             // 
@@ -132,7 +132,7 @@
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "Form1_ClientScreen";
-            this.Text = "Client Ayarları";
+            this.Text = "Client Settings";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_ClientScreen_FormClosed);
             this.Load += new System.EventHandler(this.Form1_ClientScreen_Load);
             this.ResumeLayout(false);

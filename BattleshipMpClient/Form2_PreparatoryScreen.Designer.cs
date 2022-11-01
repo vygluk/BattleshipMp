@@ -29,17 +29,13 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.label23 = new System.Windows.Forms.Label();
+            this.lblDestroyer = new System.Windows.Forms.Label();
             this.yardımToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.labelAmiral = new System.Windows.Forms.Label();
-            this.labelKruvazor = new System.Windows.Forms.Label();
-            this.labelMuhrip = new System.Windows.Forms.Label();
             this.buttonStart = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.label21 = new System.Windows.Forms.Label();
-            this.label24 = new System.Windows.Forms.Label();
-            this.labelDenizalti = new System.Windows.Forms.Label();
-            this.label22 = new System.Windows.Forms.Label();
+            this.lblBattleship = new System.Windows.Forms.Label();
+            this.lblSubmarine = new System.Windows.Forms.Label();
+            this.lblCruiser = new System.Windows.Forms.Label();
             this.label20 = new System.Windows.Forms.Label();
             this.label19 = new System.Windows.Forms.Label();
             this.label18 = new System.Windows.Forms.Label();
@@ -166,45 +162,21 @@
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
-            // label23
+            // lblDestroyer
             // 
-            this.label23.AutoSize = true;
-            this.label23.Location = new System.Drawing.Point(274, 25);
-            this.label23.Name = "label23";
-            this.label23.Size = new System.Drawing.Size(45, 13);
-            this.label23.TabIndex = 7;
-            this.label23.Text = "Muhrip: ";
+            this.lblDestroyer.AutoSize = true;
+            this.lblDestroyer.Location = new System.Drawing.Point(261, 25);
+            this.lblDestroyer.Name = "lblDestroyer";
+            this.lblDestroyer.Size = new System.Drawing.Size(64, 13);
+            this.lblDestroyer.TabIndex = 7;
+            this.lblDestroyer.Text = "Destroyer: 3";
             // 
             // yardımToolStripMenuItem
             // 
             this.yardımToolStripMenuItem.Name = "yardımToolStripMenuItem";
-            this.yardımToolStripMenuItem.Size = new System.Drawing.Size(56, 20);
-            this.yardımToolStripMenuItem.Text = "Yardım";
+            this.yardımToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+            this.yardımToolStripMenuItem.Text = "Help";
             this.yardımToolStripMenuItem.Click += new System.EventHandler(this.yardımToolStripMenuItem_Click);
-            // 
-            // labelAmiral
-            // 
-            this.labelAmiral.AutoSize = true;
-            this.labelAmiral.Location = new System.Drawing.Point(161, 25);
-            this.labelAmiral.Name = "labelAmiral";
-            this.labelAmiral.Size = new System.Drawing.Size(0, 13);
-            this.labelAmiral.TabIndex = 5;
-            // 
-            // labelKruvazor
-            // 
-            this.labelKruvazor.AutoSize = true;
-            this.labelKruvazor.Location = new System.Drawing.Point(240, 25);
-            this.labelKruvazor.Name = "labelKruvazor";
-            this.labelKruvazor.Size = new System.Drawing.Size(0, 13);
-            this.labelKruvazor.TabIndex = 6;
-            // 
-            // labelMuhrip
-            // 
-            this.labelMuhrip.AutoSize = true;
-            this.labelMuhrip.Location = new System.Drawing.Point(328, 25);
-            this.labelMuhrip.Name = "labelMuhrip";
-            this.labelMuhrip.Size = new System.Drawing.Size(0, 13);
-            this.labelMuhrip.TabIndex = 7;
             // 
             // buttonStart
             // 
@@ -213,61 +185,49 @@
             this.buttonStart.Name = "buttonStart";
             this.buttonStart.Size = new System.Drawing.Size(114, 394);
             this.buttonStart.TabIndex = 133;
-            this.buttonStart.Text = "Hazırlık Aşaması";
+            this.buttonStart.Text = "Preparatory";
             this.buttonStart.UseVisualStyleBackColor = true;
             this.buttonStart.Click += new System.EventHandler(this.buttonStart_Click);
             // 
             // groupBox1
             // 
-            this.groupBox1.Controls.Add(this.label21);
-            this.groupBox1.Controls.Add(this.labelAmiral);
-            this.groupBox1.Controls.Add(this.label24);
-            this.groupBox1.Controls.Add(this.labelDenizalti);
-            this.groupBox1.Controls.Add(this.label22);
-            this.groupBox1.Controls.Add(this.labelKruvazor);
-            this.groupBox1.Controls.Add(this.label23);
-            this.groupBox1.Controls.Add(this.labelMuhrip);
+            this.groupBox1.Controls.Add(this.lblBattleship);
+            this.groupBox1.Controls.Add(this.lblSubmarine);
+            this.groupBox1.Controls.Add(this.lblCruiser);
+            this.groupBox1.Controls.Add(this.lblDestroyer);
             this.groupBox1.Location = new System.Drawing.Point(19, 31);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(541, 53);
             this.groupBox1.TabIndex = 132;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Kalan Gemiler";
+            this.groupBox1.Text = "Remaining Ships";
             // 
-            // label21
+            // lblBattleship
             // 
-            this.label21.AutoSize = true;
-            this.label21.Location = new System.Drawing.Point(120, 25);
-            this.label21.Name = "label21";
-            this.label21.Size = new System.Drawing.Size(41, 13);
-            this.label21.TabIndex = 5;
-            this.label21.Text = "Amiral: ";
+            this.lblBattleship.AutoSize = true;
+            this.lblBattleship.Location = new System.Drawing.Point(53, 25);
+            this.lblBattleship.Name = "lblBattleship";
+            this.lblBattleship.Size = new System.Drawing.Size(65, 13);
+            this.lblBattleship.TabIndex = 5;
+            this.lblBattleship.Text = "Battleship: 1";
             // 
-            // label24
+            // lblSubmarine
             // 
-            this.label24.AutoSize = true;
-            this.label24.Location = new System.Drawing.Point(354, 25);
-            this.label24.Name = "label24";
-            this.label24.Size = new System.Drawing.Size(53, 13);
-            this.label24.TabIndex = 8;
-            this.label24.Text = "Denizaltı: ";
+            this.lblSubmarine.AutoSize = true;
+            this.lblSubmarine.Location = new System.Drawing.Point(356, 25);
+            this.lblSubmarine.Name = "lblSubmarine";
+            this.lblSubmarine.Size = new System.Drawing.Size(69, 13);
+            this.lblSubmarine.TabIndex = 8;
+            this.lblSubmarine.Text = "Submarine: 4";
             // 
-            // labelDenizalti
+            // lblCruiser
             // 
-            this.labelDenizalti.AutoSize = true;
-            this.labelDenizalti.Location = new System.Drawing.Point(408, 25);
-            this.labelDenizalti.Name = "labelDenizalti";
-            this.labelDenizalti.Size = new System.Drawing.Size(0, 13);
-            this.labelDenizalti.TabIndex = 8;
-            // 
-            // label22
-            // 
-            this.label22.AutoSize = true;
-            this.label22.Location = new System.Drawing.Point(186, 25);
-            this.label22.Name = "label22";
-            this.label22.Size = new System.Drawing.Size(55, 13);
-            this.label22.TabIndex = 6;
-            this.label22.Text = "Kruvazör: ";
+            this.lblCruiser.AutoSize = true;
+            this.lblCruiser.Location = new System.Drawing.Point(160, 25);
+            this.lblCruiser.Name = "lblCruiser";
+            this.lblCruiser.Size = new System.Drawing.Size(51, 13);
+            this.lblCruiser.TabIndex = 6;
+            this.lblCruiser.Text = "Cruiser: 2";
             // 
             // label20
             // 
@@ -1784,7 +1744,7 @@
             this.timer1.Interval = 1000;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
-            // Form2
+            // Form2_PreparatoryScreen
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -1912,8 +1872,8 @@
             this.Controls.Add(this.I1);
             this.Controls.Add(this.J1);
             this.Controls.Add(this.menuStrip1);
-            this.Name = "Form2";
-            this.Text = "Oyun Ön Hazırlık";
+            this.Name = "Form2_PreparatoryScreen";
+            this.Text = "Game Preparatory";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form2_FormClosed);
             this.Load += new System.EventHandler(this.Form2_Load);
             this.groupBox1.ResumeLayout(false);
@@ -1927,17 +1887,12 @@
 
         #endregion
 
-        private System.Windows.Forms.Label label23;
+        private System.Windows.Forms.Label lblDestroyer;
         private System.Windows.Forms.ToolStripMenuItem yardımToolStripMenuItem;
-        private System.Windows.Forms.Label labelAmiral;
-        private System.Windows.Forms.Label labelKruvazor;
-        private System.Windows.Forms.Label labelMuhrip;
         private System.Windows.Forms.Button buttonStart;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.Label label21;
-        private System.Windows.Forms.Label label24;
-        private System.Windows.Forms.Label labelDenizalti;
-        private System.Windows.Forms.Label label22;
+        private System.Windows.Forms.Label lblBattleship;
+        private System.Windows.Forms.Label lblCruiser;
         private System.Windows.Forms.Label label20;
         private System.Windows.Forms.Label label19;
         private System.Windows.Forms.Label label18;
@@ -2060,5 +2015,6 @@
         private System.Windows.Forms.Button J1;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.Timer timer1;
+        private System.Windows.Forms.Label lblSubmarine;
     }
 }

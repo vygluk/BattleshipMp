@@ -15,11 +15,11 @@ namespace BattleshipMpClient
 {
     class Client
     {
-        public static TcpClient client;
+        public static TcpClient client = new TcpClient();
 
         public static void ConnectToServer(string ip, string port)
         {
-            client = new TcpClient();
+            //client = new TcpClient();
             //IPEndPoint ipEnd = new IPEndPoint(IPAddress.Parse(ip), int.Parse(port));
             //client.Connect(ipEnd);
 

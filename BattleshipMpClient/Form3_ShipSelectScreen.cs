@@ -18,7 +18,8 @@ namespace BattleshipMpClient
 
         Dictionary<string, int> squarePerShips = new Dictionary<string, int>()
         {
-            {"Amiral", 4}, {"Kruvazor", 3}, {"Muhrip", 2}, {"Denizalti", 1}
+            //{"Battleship", 1 },{"Cruiser", 2},{"Destroyer", 3},{"Submarine", 4}
+            {"Battleship", 4}, {"Cruiser", 3}, {"Destroyer", 2}, {"Submarine", 1}
         };
         public Form3_ShipSelectScreen(List<string> buttonsNames)
         {
@@ -38,7 +39,7 @@ namespace BattleshipMpClient
                         {
                             if (item1.remShips <= 0)
                             {
-                                MessageBox.Show("Seçilen kutulara yerleştirilebilecek gemiler zaten kullanılmış.");
+                                MessageBox.Show("There are no ships to place in the selected area.");
                                 this.Close();
                             }
                             listBox1.Items.Add(item1.shipName);

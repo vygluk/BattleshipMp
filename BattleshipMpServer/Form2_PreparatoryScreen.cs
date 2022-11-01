@@ -22,8 +22,8 @@ namespace BattleshipMp
             DoubleBuffered = true;            
         }
 
-        //  Mouse'a tıklanan yerden başlayarak gemi konumlarını seçmeye yarayan çizim oluştur. Mouse bırakıldığında seçilen butonları getir.
-        //  Bu regiona GetSelectedButtons() metodu da dahil. Ancak diğer işlemler de bu metod içerisinde yapıldığından region içine almadım.
+        //  Create a drawing to select ship positions starting with a mouse click. Get selected buttons when mouse is released.
+        //  This region also includes the GetSelectedButtons() method. However, since other operations are done in this method, I did not include it in the region.
         #region ****************************************************** 2D Drawing ******************************************************
         private Point selectionStart;
         private Point selectionEnd;
@@ -93,7 +93,7 @@ namespace BattleshipMp
 
         public static Dictionary<string, int> shipsCount = new Dictionary<string, int>()
         {
-            {"Amiral", 1 },{"Kruvazor", 2},{"Muhrip", 3},{"Denizalti", 4}
+            {"Battleship", 1 },{"Cruiser", 2},{"Destroyer", 3},{"Submarine", 4}
         };
 
         public static List<Ship> shipList = new List<Ship>();
@@ -111,7 +111,7 @@ namespace BattleshipMp
             RemainingShips();
         }
 
-        // 1 // İlk adımda "Ship" modelinden (classından) türetilen gemiler oluştur ve bu gemileri listeye al.
+        // 1 // In the first step, create ships derived from the "Ship" model (class) and list these ships.
         private void CreateShipList()
         {
             if (shipList == null)
@@ -130,7 +130,7 @@ namespace BattleshipMp
 
         private void GetSelectedButtons()
         {
-            // 2 // Mouse ile seçilen butonları listeye al.
+            // 2 // Put the buttons selected with the mouse into the list.
 
             List<Button> selected = new List<Button>();
 
@@ -154,8 +154,8 @@ namespace BattleshipMp
 
             buttonsNames.Sort();
 
-            // 3 // Seçilen butonlar listeye alıp alfabetik olarak sıralandıktan sonra. Seçilen kutuların ardışık olup olmadığını kontrol et.
-            // Bunu kutu isimlerinin karakterlerini ayırıp tek tek ascii değerlerini topladıktan sonra sonraki kutuyla aralarında 1 fark olmasına dikkat et.
+            // 3 // After the selected buttons are put in the list and sorted alphabetically. Check if the selected boxes are consecutive.
+            // After separating the characters of the box names and adding the ascii values ​​one by one, make sure that there is 1 difference between them and the next box.
 
             List<int> totalAsciiList = new List<int>();
             foreach (var item in buttonsNames)
@@ -171,14 +171,14 @@ namespace BattleshipMp
                 {
                     if (totalAsciiList[i] + 1 != totalAsciiList[i + 1])
                     {
-                        MessageBox.Show("Geminin yerleşeceği alan ardışık kutular olmalıdır.");
+                        MessageBox.Show("The area where the ship will be located must be consecutive boxes.");
                         return;
                     }
                 }
             }
 
-            // 4 //  Eğer seçilen butonlardan herhangi birinin rengi "DarkGray" ise yani önceden tanımlanmış bir geminin parçasını içeriyorsa..
-            // "DeleteShip" metodunu çalıştır.
+            // 4 //  If the color of any of the selected buttons is "DarkGray" i.e. it contains part of a predefined ship.
+            // Call the "DeleteShip" method.
             foreach (var item in selected)
             {
                 if (item.BackColor == Color.DarkGray)
@@ -188,9 +188,9 @@ namespace BattleshipMp
                 }
             }
 
-            // 6 // Eğer butonlar ilk defa seçiliyorsa, seçilen buton sayısına uygun gemiyi listeleyen Form3'ü dialog penceresi olarak getir.
-            // 7 // Kaydet sonucuyla geri dönerse geri dönen gemiyi ve ilgili butonları Ship modeline göre kaydet. + Modeldeki remShip azalt.
-            // Kayıt yapıldıktan sonra RemainingShip() metodunu çalıştır.
+            // 6 // If the buttons are selected for the first time, bring up Form3 as a dialog window listing the ship that matches the number of buttons selected.
+            // 7 // If it returns with a "Save" result, save the returning ship and related buttons according to the Ship model. + Decrease "remShip" in model.
+            //  Call the RemainingShip() method after registration.
             if (selected.Count > 0 && selected.Contains(buttonStart) == false)
             {
                 using (var frm3 = new Form3_ShipSelectScreen(buttonsNames))
@@ -225,11 +225,11 @@ namespace BattleshipMp
             }
         }
 
-        // 5 // Eğer silme işlemi onaylandıysa, ilgili butonun hangi gemiye ait olduğunu bul ve listeden o gemiyi sil. + Modeldeki remShip artır.
-        // Kayıt yapıldıktan sonra RemainingShip() metodunu çalıştır.
+        // 5 // If the deletion is confirmed, find which ship the button belongs to and delete that ship from the list. + Increase "remShip" in the model.
+        // After saving, call the RemainingShip() method.
         private void DeleteShip(List<Button> selected)
         {
-            DialogResult dres = MessageBox.Show("Silmek istediğinize emin misiniz?", "Gemi Sil", MessageBoxButtons.YesNo);
+            DialogResult dres = MessageBox.Show("Are you sure you want to delete the ship?", "Delete Ship", MessageBoxButtons.YesNo);
             if (dres == DialogResult.Yes)
             {
                 foreach (var item1 in shipList)
@@ -258,13 +258,21 @@ namespace BattleshipMp
             }
         }
 
-        // 8 // Gemi listesine göre eklenmesi gereken gemi sayısını ekrana yazdır. Eğer eksik gemi yoksa Hazır/Başla butonunu aktif et.
+        // 8 // Print the number of ships that need to be added according to the ship list. If there are no missing ships, activate the Ready/Start button.
         private void RemainingShips()
         {
-            labelAmiral.Text = shipList.FirstOrDefault(x => x.shipName == "Amiral").remShips.ToString();
-            labelKruvazor.Text = shipList.FirstOrDefault(x => x.shipName == "Kruvazor").remShips.ToString();
-            labelMuhrip.Text = shipList.FirstOrDefault(x => x.shipName == "Muhrip").remShips.ToString();
-            labelDenizalti.Text = shipList.FirstOrDefault(x => x.shipName == "Denizalti").remShips.ToString();
+            //{"Battleship", 1 },{"Cruiser", 2},{"Destroyer", 3},{"Submarine", 4}
+            lblBattleship.Text = lblBattleship.Text.Substring(0, lblBattleship.Text.Length - 1);
+            lblBattleship.Text += shipList.FirstOrDefault(x => x.shipName == "Battleship").remShips.ToString();
+
+            lblCruiser.Text = lblCruiser.Text.Substring(0, lblCruiser.Text.Length - 1);
+            lblCruiser.Text += shipList.FirstOrDefault(x => x.shipName == "Cruiser").remShips.ToString();
+
+            lblDestroyer.Text = lblDestroyer.Text.Substring(0, lblDestroyer.Text.Length - 1);
+            lblDestroyer.Text += shipList.FirstOrDefault(x => x.shipName == "Destroyer").remShips.ToString();
+
+            lblSubmarine.Text = lblSubmarine.Text.Substring(0, lblSubmarine.Text.Length - 1);
+            lblSubmarine.Text += shipList.FirstOrDefault(x => x.shipName == "Submarine").remShips.ToString();
 
             foreach (var item in shipList)
             {
@@ -281,21 +289,21 @@ namespace BattleshipMp
             if (isPanelActive == true)
             {
                 buttonStart.Enabled = true;
-                buttonStart.Text = "Hazır.\nBaşla";
+                buttonStart.Text = "Ready.\nStart";
             }
             else
             {
                 buttonStart.Enabled = false;
-                buttonStart.Text = "Hazırlık Aşaması";
+                buttonStart.Text = "Preparatory";
             }
         }
 
         private void yardımToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("1- Mouse'a basılı tutarak gemileri yerleştirmek istediğiniz konumu seçin.\n\n" +
-                "2- Seçilen konuma yerleştirilebilecek gemilerin listelendiği sayfadan seçim yapın.\n\n" + 
-                "3- Tüm gemilerinizi yerleştirdiğinizde 'Hazır' deyin.\n\n" + 
-                "Not: Her 2 oyuncu 'Hazır' dedikten sonra oyun başlayacaktır.");
+            MessageBox.Show("1- Hold down the mouse LC and select the location where you want to place the ships.\n\n" +
+                "2- \r\nSelect from the page listing the ships that can be placed in the selected location.\n\n" +
+                "3- Click 'Ready' when you have placed all your ships.\n\n" +
+                "Notice: The game will start after both players 'Continue'.");
         }
 
         
@@ -324,12 +332,12 @@ namespace BattleshipMp
             return AllSelectedButtonList;
         }
 
-        //  Clientin bağlantısının kopup kopmadığını 1 sn'de bir kontrol et.
+        //  Check every 1 second if the client is disconnected.
         private void timer1_Tick(object sender, EventArgs e)
         {
             if (Server.listener != null && (Server.client == null && !Server.client.Connected))
             {
-                MessageBox.Show("Client bağlantısı koptu.");
+                MessageBox.Show("Client connection failed.");
             }
         }
 

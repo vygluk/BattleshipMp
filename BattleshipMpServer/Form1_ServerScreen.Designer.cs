@@ -57,9 +57,9 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(25, 47);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(77, 20);
+            this.label1.Size = new System.Drawing.Size(91, 20);
             this.label1.TabIndex = 1;
-            this.label1.Text = "IP Adresi:";
+            this.label1.Text = "IP Address:";
             // 
             // label2
             // 
@@ -91,7 +91,7 @@
             this.buttonServerStart.Name = "buttonServerStart";
             this.buttonServerStart.Size = new System.Drawing.Size(274, 34);
             this.buttonServerStart.TabIndex = 2;
-            this.buttonServerStart.Text = "Server\'ı Başlat";
+            this.buttonServerStart.Text = "Start Server";
             this.buttonServerStart.UseVisualStyleBackColor = true;
             this.buttonServerStart.Click += new System.EventHandler(this.buttonServerStart_Click);
             // 
@@ -103,9 +103,9 @@
             this.labelServerState.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
             this.labelServerState.Location = new System.Drawing.Point(12, 9);
             this.labelServerState.Name = "labelServerState";
-            this.labelServerState.Size = new System.Drawing.Size(207, 16);
+            this.labelServerState.Size = new System.Drawing.Size(177, 16);
             this.labelServerState.TabIndex = 2;
-            this.labelServerState.Text = "Server\'ın başlatılması bekleniyor..";
+            this.labelServerState.Text = "Waiting for the server to start.";
             // 
             // buttonGoToBoard
             // 
@@ -116,7 +116,7 @@
             this.buttonGoToBoard.Name = "buttonGoToBoard";
             this.buttonGoToBoard.Size = new System.Drawing.Size(274, 34);
             this.buttonGoToBoard.TabIndex = 3;
-            this.buttonGoToBoard.Text = "Devam Et >>";
+            this.buttonGoToBoard.Text = "Continue >>";
             this.buttonGoToBoard.UseVisualStyleBackColor = true;
             this.buttonGoToBoard.Click += new System.EventHandler(this.buttonGoToBoard_Click);
             // 
@@ -140,7 +140,7 @@
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(162)));
             this.Margin = new System.Windows.Forms.Padding(4, 5, 4, 5);
             this.Name = "Form1_ServerScreen";
-            this.Text = "Server Ayarları";
+            this.Text = "Server Settings";
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_ServerScreen_FormClosed);
             this.Load += new System.EventHandler(this.Form1_ServerScreen_Load);
             this.ResumeLayout(false);

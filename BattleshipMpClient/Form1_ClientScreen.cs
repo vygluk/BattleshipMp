@@ -25,10 +25,10 @@ namespace BattleshipMpClient
             if (Client.client != null)
             {
                 buttonGoToBoard.Enabled = true;
-                labelServerState.Text = "Bağlantı sağlandı. Devam edebilirsiniz.";
+                labelServerState.Text = "Connection successful. You can continue.";
             }
             else
-                labelServerState.Text = "Server'a bağanmalısınız.";
+                labelServerState.Text = "You must connect to the server.";
         }
 
         private void buttonGoToBoard_Click(object sender, EventArgs e)
@@ -40,11 +40,14 @@ namespace BattleshipMpClient
 
         private void Form1_ClientScreen_Load(object sender, EventArgs e)
         {
-            labelServerState.Text = "Server'a bağanmalısınız.";
+            labelServerState.Text = "You must connect to the server.";
         }
 
         private void Form1_ClientScreen_FormClosed(object sender, FormClosedEventArgs e)
         {
+            Client.client.Close();
+            Client.client.Dispose();
+            Client.client = null;
             Environment.Exit(1);
         }
     }

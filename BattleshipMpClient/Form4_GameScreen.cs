@@ -98,7 +98,7 @@ namespace BattleshipMpClient
             }
             else
             {
-                MessageBox.Show("Mesaj Gönderilemedi!!");
+                MessageBox.Show("Message could not be sent!!");
             }
 
             backgroundWorker2.CancelAsync();
@@ -123,25 +123,25 @@ namespace BattleshipMpClient
                 SwitchGameButtonsEnabled();
                 return;
             }
-            else if (recieve.Contains("karavana:"))
+            else if (recieve.Contains("miss:"))
             {
                 string result = recieve.Substring(recieve.Length - 2, 2);
                 result = result + result.Substring(result.Length - 1);
                 gameBoardButtons.FirstOrDefault(x => x.Name == result).BackgroundImage = Image.FromFile(Application.StartupPath + @"\Images\o.png");
-                richTextBox1.AppendText("Karavana\n");
+                richTextBox1.AppendText("Miss\n");
                 return;
             }
-            else if (recieve.Contains("isabet:"))
+            else if (recieve.Contains("hit:"))
             {
                 string result = recieve.Substring(recieve.Length - 2, 2);
                 result = result + result.Substring(result.Length - 1);
                 gameBoardButtons.FirstOrDefault(x => x.Name == result).BackgroundImage = Image.FromFile(Application.StartupPath + @"\Images\x.png");
-                richTextBox1.AppendText("İsabet\n");
+                richTextBox1.AppendText("Hit\n");
                 return;
             }
             else if (recieve.Contains("youwin"))
             {
-                DialogResult res = MessageBox.Show("Kazandın. Hazırlık ekranına dönmek ister misin?", "Server - Oyun Sonucu", MessageBoxButtons.YesNo);
+                DialogResult res = MessageBox.Show("Victory. Would you like to return to the preparation screen?", "Client - Game Result", MessageBoxButtons.YesNo);
                 {
                     if (res == DialogResult.Yes)
                     {
@@ -156,7 +156,7 @@ namespace BattleshipMpClient
 
             else if (recieve.Contains("exit"))
             {
-                MessageBox.Show("Rakip oyunu terketti. Hazırlık aşamasına yönlendirileceksiniz.");
+                MessageBox.Show("\r\nThe opponent has left the game. You are being directed to the preparation phase.");
                 this.Close();
                 return;
             }
@@ -197,13 +197,13 @@ namespace BattleshipMpClient
             {
                 myBoardButtons.FirstOrDefault(x => x.Name == shotButtonName).BackgroundImage = Image.FromFile(Application.StartupPath + @"\Images\x.png");
 
-                AttackToEnemy("isabet:" + shotButtonName);
+                AttackToEnemy("hit:" + shotButtonName);
 
                 deletingButton.buttonNames.Remove(shotButtonName);
 
-                if (shottedShip == "Amiral")
+                if (shottedShip == "Battleship")
                 {
-                    foreach (var item in Form2_PreparatoryScreen.shipList.FirstOrDefault(x => x.shipName == "Amiral").shipPerButton)
+                    foreach (var item in Form2_PreparatoryScreen.shipList.FirstOrDefault(x => x.shipName == "Battleship").shipPerButton)
                     {
                         if (item.buttonNames.Count > 0)
                         {
@@ -211,7 +211,7 @@ namespace BattleshipMpClient
                         }
 
                         AttackToEnemy("youwin");
-                        DialogResult res = MessageBox.Show("Kaybettin. Hazırlık ekranına dönmek ister misin?", "Server - Oyun Sonucu", MessageBoxButtons.YesNo);
+                        DialogResult res = MessageBox.Show("You lost. Do you want to return to the preparation screen?", "Client - Game Result", MessageBoxButtons.YesNo);
                         {
                             if (res == DialogResult.Yes)
                             {
@@ -233,7 +233,7 @@ namespace BattleshipMpClient
                     return;
                 }
                 myBoardButtons.FirstOrDefault(x => x.Name == shotButtonName).BackgroundImage = Image.FromFile(Application.StartupPath + @"\Images\o.png");
-                AttackToEnemy("karavana:" + shotButtonName);
+                AttackToEnemy("miss:" + shotButtonName);
                 return;
             }
 
@@ -265,7 +265,7 @@ namespace BattleshipMpClient
                 {
                     item.Enabled = false;
                 }
-                labelAttackTurn.Text = "BEKLE...";
+                labelAttackTurn.Text = "WAIT...";
                 areEnabledButtons = false;
             }
             else
@@ -274,7 +274,7 @@ namespace BattleshipMpClient
                 {
                     item.Enabled = true;
                 }
-                labelAttackTurn.Text = "HAMLE YAP";
+                labelAttackTurn.Text = "ATTACK";
                 areEnabledButtons = true;
             }
         }
@@ -283,7 +283,7 @@ namespace BattleshipMpClient
         {
             if (Client.client.Connected == false)
             {
-                MessageBox.Show("Bağlantı koptu.");
+                MessageBox.Show("Connection failed.");
                 Form2_PreparatoryScreen frm2 = new Form2_PreparatoryScreen();
                 frm2.Show();
                 this.Close();
