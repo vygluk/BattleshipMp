@@ -37,8 +37,7 @@ namespace BattleshipMp
         //  Replace the mouse pointer with a red target image while making moves. return to normal pointer when the button is over.
         private void button_mousehover(object sender, EventArgs e)
         {
-            Bitmap bm = new Bitmap(new Bitmap(Application.StartupPath + @"\Images\target.png"), 20, 20);
-            ((Button)sender).Cursor = new Cursor(bm.GetHicon());
+            ((Button)sender).Cursor = Cursors.Default;
         }
         private void button_mouseleave(object sender, EventArgs e)
         {
