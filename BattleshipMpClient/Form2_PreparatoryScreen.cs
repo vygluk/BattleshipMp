@@ -86,12 +86,12 @@ namespace BattleshipMpClient
 
         #endregion
 
-        public static Dictionary<string, int> shipsCount = new Dictionary<string, int>()
+        public static List<string> shipTypes = new List<string>()
         {
-            {"Battleship", 1 },{"Cruiser", 2},{"Destroyer", 3},{"Submarine", 4}
+            "Battleship", "Cruiser", "Destroyer", "Submarine"
         };
 
-        public static List<Ship> shipList = new List<Ship>();
+        public static List<IShip> shipList = new List<IShip>();
 
         List<string> AllSelectedButtonList = new List<string>();
 
@@ -109,13 +109,11 @@ namespace BattleshipMpClient
         {
             if (shipList == null)
             {
-                shipList = new List<Ship>();
+                shipList = new List<IShip>();
             }
-            foreach (var item in shipsCount)
+            foreach (var shipType in shipTypes)
             {
-                Ship _ship = new Ship();
-                _ship.shipName = item.Key;
-                _ship.remShips = item.Value;
+                IShip _ship = ShipFactory.CreateShip(shipType);
 
                 shipList.Add(_ship);
             }
