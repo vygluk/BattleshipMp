@@ -55,8 +55,8 @@ namespace BattleshipMpClient
 
             try
             {
-                STR = new StreamReader(Client.client.GetStream());
-                STW = new StreamWriter(Client.client.GetStream());
+                STR = new StreamReader(Client.GetInstance.TcpClient.GetStream());
+                STW = new StreamWriter(Client.GetInstance.TcpClient.GetStream());
                 STW.AutoFlush = true;
                 backgroundWorker1.RunWorkerAsync();
                 backgroundWorker2.WorkerSupportsCancellation = true;
@@ -71,7 +71,7 @@ namespace BattleshipMpClient
 
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
-            while (Client.client.Connected)
+            while (Client.GetInstance.IsConnected)
             {
                 try
                 {
@@ -92,7 +92,7 @@ namespace BattleshipMpClient
 
         private void backgroundWorker2_DoWork(object sender, DoWorkEventArgs e)
         {
-            if (Client.client.Connected)
+            if (Client.GetInstance.IsConnected)
             {
                 STW.WriteLine(TextToSend);
             }
@@ -281,7 +281,7 @@ namespace BattleshipMpClient
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            if (Client.client.Connected == false)
+            if (!Client.GetInstance.IsConnected)
             {
                 MessageBox.Show("Connection failed.");
                 Form2_PreparatoryScreen frm2 = new Form2_PreparatoryScreen();

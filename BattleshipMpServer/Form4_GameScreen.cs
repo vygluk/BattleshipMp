@@ -61,8 +61,8 @@ namespace BattleshipMp
             // Since the "backgorundWorker1" object will always listen for incoming data, it will be running in the background all the time.
             try
             {
-                STR = new StreamReader(Server.client.GetStream());
-                STW = new StreamWriter(Server.client.GetStream());
+                STR = new StreamReader(Server.GetInstance.Client.GetStream());
+                STW = new StreamWriter(Server.GetInstance.Client.GetStream());
                 STW.AutoFlush = true;
                 backgroundWorker1.RunWorkerAsync();
                 backgroundWorker2.WorkerSupportsCancellation = true;
@@ -94,7 +94,7 @@ namespace BattleshipMp
         // 5 // Read the incoming information continuously if the connection is provided. If the incoming information is not empty, execute the "AttackFromEnemy()" method.
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
-            while (Server.client.Connected)
+            while (Server.GetInstance.IsClientConnected)
             {
                 try
                 {
@@ -263,7 +263,7 @@ namespace BattleshipMp
         //  The object to which the data will be sent. It is executed only when a attack is made. Otherwise it waits.
         private void backgroundWorker2_DoWork(object sender, DoWorkEventArgs e)
         {
-            if (Server.client.Connected)
+            if (Server.GetInstance.IsClientConnected)
             {
                 STW.WriteLine(TextToSend);
             }
@@ -325,7 +325,7 @@ namespace BattleshipMp
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            if (Server.listener != null && (Server.client == null && !Server.client.Connected))
+            if (Server.GetInstance.IsListenerActive && !Server.GetInstance.IsClientConnected)
             {
                 MessageBox.Show("Client connection failed.");
             }
