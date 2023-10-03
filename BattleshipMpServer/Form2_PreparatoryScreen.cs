@@ -16,9 +16,11 @@ namespace BattleshipMp
 {
     public partial class Form2_PreparatoryScreen : Form
     {
-        
-        public Form2_PreparatoryScreen()
+        private readonly IShipFactory _shipFactory;
+
+        public Form2_PreparatoryScreen(IShipFactory shipFactory)
         {
+            _shipFactory = shipFactory;
             InitializeComponent();
             DoubleBuffered = true;            
         }
@@ -92,12 +94,6 @@ namespace BattleshipMp
 
         #endregion
 
-        private static readonly ShipType[] shipTypes =
-        {
-            ShipType.Battleship, ShipType.Cruiser, ShipType.Destroyer, ShipType.Submarine
-        };
-
-        IShipFactory shipFactory = new ShipFactory();
         public static List<IShip> shipList = new List<IShip>();
 
         List<string> AllSelectedButtonList = new List<string>();
@@ -120,12 +116,15 @@ namespace BattleshipMp
             {
                 shipList = new List<IShip>();
             }
-            foreach (var shipType in shipTypes)
-            {
-                IShip _ship = shipFactory.CreateShip(shipType);
 
-                shipList.Add(_ship);
-            }
+            IShip submarine = _shipFactory.CreateSubmarine();
+            IShip destroyer = _shipFactory.CreateDestroyer();
+            IShip cruiser = _shipFactory.CreateCruiser();
+            IShip battleship = _shipFactory.CreateBattleship();
+            shipList.Add(submarine);
+            shipList.Add(destroyer);
+            shipList.Add(cruiser);
+            shipList.Add(battleship);
         }
 
         private void GetSelectedButtons()

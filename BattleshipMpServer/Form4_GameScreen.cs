@@ -340,7 +340,7 @@ namespace BattleshipMp
             {
                 AttackToEnemy("exitt");
             }
-            Form2_PreparatoryScreen frm2 = new Form2_PreparatoryScreen();
+            Form2_PreparatoryScreen frm2 = new Form2_PreparatoryScreen(new ShipFactory());
             frm2.Show();
         }
     }

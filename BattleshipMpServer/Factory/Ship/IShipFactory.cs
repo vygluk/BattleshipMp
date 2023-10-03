@@ -8,6 +8,9 @@ namespace BattleshipMpServer.Factory.Ship
 {
     public interface IShipFactory
     {
-        IShip CreateShip(ShipType type);
+        IShip CreateSubmarine();
+        IShip CreateDestroyer();
+        IShip CreateCruiser();
+        IShip CreateBattleship();
     }
 }

@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Threading;
 using System.IO;
+using BattleshipMpServer.Factory.Ship;
 
 namespace BattleshipMp
 {
@@ -83,7 +84,7 @@ namespace BattleshipMp
 
             timer1.Stop();
 
-            Form2_PreparatoryScreen frm2 = new Form2_PreparatoryScreen();
+            Form2_PreparatoryScreen frm2 = new Form2_PreparatoryScreen(new ShipFactory());
             frm2.Show();
             this.Visible = false;
         }

@@ -8,21 +8,24 @@ namespace BattleshipMpServer.Factory.Ship
 {
     public class ShipFactory : IShipFactory
     {
-        public IShip CreateShip(ShipType type)
+        public IShip CreateSubmarine()
         {
-            switch (type)
-            {
-                case ShipType.Battleship:
-                    return new Battleship();
-                case ShipType.Cruiser:
-                    return new Cruiser();
-                case ShipType.Destroyer:
-                    return new Destroyer();
-                case ShipType.Submarine:
-                    return new Submarine();
-                default:
-                    throw new InvalidOperationException("Invalid ship type");
-            }
+            return new Submarine();
+        }
+
+        public IShip CreateDestroyer()
+        {
+            return new Destroyer();
+        }
+
+        public IShip CreateCruiser()
+        {
+            return new Cruiser();
+        }
+
+        public IShip CreateBattleship()
+        {
+            return new Battleship();
         }
     }
 }
