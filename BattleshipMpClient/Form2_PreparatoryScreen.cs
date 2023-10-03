@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using BattleshipMpClient.Factory.Ship;
 
 namespace BattleshipMpClient
 {
@@ -86,11 +87,12 @@ namespace BattleshipMpClient
 
         #endregion
 
-        public static List<string> shipTypes = new List<string>()
+        private static readonly ShipType[] shipTypes =
         {
-            "Battleship", "Cruiser", "Destroyer", "Submarine"
+            ShipType.Battleship, ShipType.Cruiser, ShipType.Destroyer, ShipType.Submarine
         };
 
+        IShipFactory shipFactory = new ShipFactory();
         public static List<IShip> shipList = new List<IShip>();
 
         List<string> AllSelectedButtonList = new List<string>();
@@ -113,7 +115,7 @@ namespace BattleshipMpClient
             }
             foreach (var shipType in shipTypes)
             {
-                IShip _ship = ShipFactory.CreateShip(shipType);
+                IShip _ship = shipFactory.CreateShip(shipType);
 
                 shipList.Add(_ship);
             }
