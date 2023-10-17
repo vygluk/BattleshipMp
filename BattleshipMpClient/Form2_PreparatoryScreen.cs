@@ -167,10 +167,13 @@ namespace BattleshipMpClient
 
             foreach (var item in selected)
             {
-                if (item.BackColor == Color.DarkGray)
+                foreach (var ship in shipList)
                 {
-                    DeleteShip(selected);
-                    return;
+                    if (item.BackColor == ship.color)
+                    {
+                        DeleteShip(selected);
+                        return;
+                    }
                 }
             }
 
