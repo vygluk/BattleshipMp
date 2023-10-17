@@ -96,7 +96,7 @@ namespace BattleshipMp
 
         public static List<IShip> shipList = new List<IShip>();
 
-        List<string> AllSelectedButtonList = new List<string>();
+        List<(string, Color)> AllSelectedButtonList = new List<(string, Color)>();
 
         bool isPanelActive = true;
 
@@ -180,11 +180,12 @@ namespace BattleshipMp
             // Call the "DeleteShip" method.
             foreach (var item in selected)
             {
-                if (item.BackColor == Color.DarkGray)
-                {
-                    DeleteShip(selected);
-                    return;
-                }
+                foreach (var ship in shipList)
+                    if (item.BackColor == ship.color)
+                    {
+                        DeleteShip(selected);
+                        return;
+                    }
             }
 
             // 6 // If the buttons are selected for the first time, bring up Form3 as a dialog window listing the ship that matches the number of buttons selected.
@@ -210,7 +211,7 @@ namespace BattleshipMp
                                 ShipButtons sb = new ShipButtons() { buttonNames = new List<string>() };
                                 foreach (var item2 in selected)
                                 {
-                                    item2.BackColor = Color.DarkGray;
+                                    item2.BackColor = item.color;
                                     sb.buttonNames.Add(item2.Name);
                                 }
                                 item.shipPerButton.Add(sb);
@@ -316,7 +317,7 @@ namespace BattleshipMp
             frm4.Show();
         }
 
-        private List<string> FillAllButtonList()
+        private List<(string, Color)> FillAllButtonList()
         {
             foreach (var item1 in shipList)
             {
@@ -324,7 +325,7 @@ namespace BattleshipMp
                 {
                     foreach (var item3 in item2.buttonNames)
                     {
-                        AllSelectedButtonList.Add(item3);
+                        AllSelectedButtonList.Add((item3, item1.color));
                     }
                 }
             }

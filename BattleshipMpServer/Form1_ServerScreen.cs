@@ -84,7 +84,7 @@ namespace BattleshipMp
 
             timer1.Stop();
 
-            Form2_PreparatoryScreen frm2 = new Form2_PreparatoryScreen(new ShipFactory());
+            Form2_PreparatoryScreen frm2 = new Form2_PreparatoryScreen(new LightShipFactory());
             frm2.Show();
             this.Visible = false;
         }

@@ -51,8 +51,9 @@
     <Compile Include="Factory\Ship\Destroyer.cs" />
     <Compile Include="Factory\Ship\IShip.cs" />
     <Compile Include="Factory\Ship\IShipFactory.cs" />
+    <Compile Include="Factory\Ship\DarkShipFactory .cs" />
     <Compile Include="Factory\Ship\ShipButtons.cs" />
-    <Compile Include="Factory\Ship\ShipFactory.cs" />
+    <Compile Include="Factory\Ship\LightShipFactory.cs" />
     <Compile Include="Factory\Ship\Submarine.cs" />
     <Compile Include="Form1_ServerScreen.cs">
       <SubType>Form</SubType>

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using BattleshipMpClient.Factory.Ship;
 
 namespace BattleshipMpClient
 {
@@ -33,7 +34,7 @@ namespace BattleshipMpClient
 
         private void buttonGoToBoard_Click(object sender, EventArgs e)
         {
-            Form2_PreparatoryScreen frm2 = new Form2_PreparatoryScreen();
+            Form2_PreparatoryScreen frm2 = new Form2_PreparatoryScreen(new DarkShipFactory());
             frm2.Show();
             this.Visible = false;
         }

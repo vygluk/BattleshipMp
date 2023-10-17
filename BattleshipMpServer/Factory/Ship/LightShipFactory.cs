@@ -1,31 +1,32 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace BattleshipMpServer.Factory.Ship
 {
-    public class ShipFactory : IShipFactory
+    public class LightShipFactory : IShipFactory
     {
         public IShip CreateSubmarine()
         {
-            return new Submarine();
+            return new Submarine() { color = Color.LightCoral };
         }
 
         public IShip CreateDestroyer()
         {
-            return new Destroyer();
+            return new Destroyer() { color = Color.LightSkyBlue };
         }
 
         public IShip CreateCruiser()
         {
-            return new Cruiser();
+            return new Cruiser() { color = Color.LightGreen };
         }
 
         public IShip CreateBattleship()
         {
-            return new Battleship();
+            return new Battleship() { color = Color.LightGoldenrodYellow };
         }
     }
 }

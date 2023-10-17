@@ -14,8 +14,10 @@ namespace BattleshipMpClient
 {
     public partial class Form2_PreparatoryScreen : Form
     {
-        public Form2_PreparatoryScreen()
+        private readonly IShipFactory _shipFactory;
+        public Form2_PreparatoryScreen(IShipFactory shipFactory)
         {
+            _shipFactory = shipFactory;
             InitializeComponent();
             DoubleBuffered = true;
         }
@@ -87,15 +89,10 @@ namespace BattleshipMpClient
 
         #endregion
 
-        private static readonly ShipType[] shipTypes =
-        {
-            ShipType.Battleship, ShipType.Cruiser, ShipType.Destroyer, ShipType.Submarine
-        };
 
-        IShipFactory shipFactory = new ShipFactory();
         public static List<IShip> shipList = new List<IShip>();
 
-        List<string> AllSelectedButtonList = new List<string>();
+        List<(string, Color)> AllSelectedButtonList = new List<(string, Color)>();
 
         bool isPanelActive = true;
 
@@ -113,12 +110,15 @@ namespace BattleshipMpClient
             {
                 shipList = new List<IShip>();
             }
-            foreach (var shipType in shipTypes)
-            {
-                IShip _ship = shipFactory.CreateShip(shipType);
 
-                shipList.Add(_ship);
-            }
+            IShip submarine = _shipFactory.CreateSubmarine();
+            IShip destroyer = _shipFactory.CreateDestroyer();
+            IShip cruiser = _shipFactory.CreateCruiser();
+            IShip battleship = _shipFactory.CreateBattleship();
+            shipList.Add(submarine);
+            shipList.Add(destroyer);
+            shipList.Add(cruiser);
+            shipList.Add(battleship);
         }
 
         private void GetSelectedButtons()
@@ -194,7 +194,7 @@ namespace BattleshipMpClient
                                 ShipButtons sb = new ShipButtons() { buttonNames = new List<string>() };
                                 foreach (var item2 in selected)
                                 {
-                                    item2.BackColor = Color.DarkGray;
+                                    item2.BackColor = item.color;
                                     //AllSelectedButtonList.Add(item2.Name);
                                     sb.buttonNames.Add(item2.Name);
                                 }
@@ -296,7 +296,7 @@ namespace BattleshipMpClient
             frm4.Show();
         }
 
-        private List<string> FillAllButtonList()
+        private List<(string, Color)> FillAllButtonList()
         {
             foreach (var item1 in shipList)
             {
@@ -304,7 +304,7 @@ namespace BattleshipMpClient
                 {
                     foreach (var item3 in item2.buttonNames)
                     {
-                        AllSelectedButtonList.Add(item3);
+                        AllSelectedButtonList.Add((item3, item1.color));
                     }
                 }
             }

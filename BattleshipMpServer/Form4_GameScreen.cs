@@ -24,11 +24,11 @@ namespace BattleshipMp
         List<Button> gameBoardButtons;
         List<Button> myBoardButtons;
         bool areEnabledButtons = true;
-        List<string> AllSelectedButtonList;
+        List<(string, Color)> AllSelectedButtonList;
         bool myExit = false;
 
         //  While creating the "game screen" object, get the list of selected buttons from Form2 and change their color with the help of constructor.
-        public Form4_GameScreen(List<string> list)
+        public Form4_GameScreen(List<(string, Color)> list)
         {
             InitializeComponent();
             this.AllSelectedButtonList = list;
@@ -55,7 +55,7 @@ namespace BattleshipMp
             // 2 // Change the color of the ships in the "My Ships" section according to the button list from Form2.
             foreach (var item in AllSelectedButtonList)
             {
-                groupBox1.Controls.Find(item, true)[0].BackColor = Color.DarkGray;
+                groupBox1.Controls.Find(item.Item1, true)[0].BackColor = item.Item2;
             }
 
             // 3 // Create Streams that will provide data exchange between Server and Client and assign them to global variables.
@@ -340,7 +340,7 @@ namespace BattleshipMp
             {
                 AttackToEnemy("exitt");
             }
-            Form2_PreparatoryScreen frm2 = new Form2_PreparatoryScreen(new ShipFactory());
+            Form2_PreparatoryScreen frm2 = new Form2_PreparatoryScreen(new LightShipFactory());
             frm2.Show();
         }
     }
