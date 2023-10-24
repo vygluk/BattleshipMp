@@ -53,8 +53,10 @@
     <Compile Include="Factory\Ship\Destroyer.cs" />
     <Compile Include="Factory\Ship\IShip.cs" />
     <Compile Include="Factory\Ship\IShipFactory.cs" />
+    <Compile Include="Factory\Ship\ISpecialShip.cs" />
     <Compile Include="Factory\Ship\LightShipFactory.cs" />
     <Compile Include="Factory\Ship\ShipButtons.cs" />
+    <Compile Include="Factory\Ship\SpecialSubmarine.cs" />
     <Compile Include="Factory\Ship\Submarine.cs" />
     <Compile Include="Form12_ShipThemeSelection.cs">
       <SubType>Form</SubType>
