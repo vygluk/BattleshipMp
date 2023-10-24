@@ -20,9 +20,9 @@ namespace BattleshipMpClient
 
         private void buttonConnectToServer_Click(object sender, EventArgs e)
         {
-            Client.ConnectToServer(textBoxIpAddress.Text, textBoxPort.Text);
+            Client.GetInstance.ConnectToServer(textBoxIpAddress.Text, textBoxPort.Text);
 
-            if (Client.client != null)
+            if (Client.GetInstance.TcpClient != null)
             {
                 buttonGoToBoard.Enabled = true;
                 labelServerState.Text = "Connection successful. You can continue.";
@@ -45,9 +45,7 @@ namespace BattleshipMpClient
 
         private void Form1_ClientScreen_FormClosed(object sender, FormClosedEventArgs e)
         {
-            Client.client.Close();
-            Client.client.Dispose();
-            Client.client = null;
+            Client.GetInstance.CloseAndDispose();
             Environment.Exit(1);
         }
     }

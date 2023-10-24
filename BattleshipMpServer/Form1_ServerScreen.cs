@@ -56,18 +56,18 @@ namespace BattleshipMp
         //  Call the "ServerStart" method in the Server class.
         private void buttonServerStart_Click(object sender, EventArgs e)
         {
-            Server.ServerStart(textBoxIpAddress.Text, textBoxPort.Text);
+            Server.GetInstance.ServerStart(textBoxIpAddress.Text, textBoxPort.Text);
         }
 
         //  Check if the client connects every 1 second. Activate the "Continue" button according to the result.
         private void timer1_Tick(object sender, EventArgs e)
         {
-            if (Server.client != null && Server.client.Connected)
+            if (Server.GetInstance.IsClientConnected)
             {
                 labelServerState.Text = "Player successfully connected.";
                 buttonGoToBoard.Enabled = true;
             }
-            else if (Server.listener != null)
+            else if (Server.GetInstance.IsListenerActive)
             {
                 labelServerState.Text = "The server is started. The player is awaited..";
             }
@@ -97,12 +97,7 @@ namespace BattleshipMp
 
         private void Form1_ServerScreen_FormClosed(object sender, FormClosedEventArgs e)
         {
-            Server.client.Close();
-            Server.client.Dispose();
-            Server.client = null;
-
-            Server.listener.Stop();
-            Server.listener = null;
+            Server.GetInstance.CloseAndDispose();
 
             Environment.Exit(1);
         }

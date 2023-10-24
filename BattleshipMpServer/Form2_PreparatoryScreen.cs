@@ -335,7 +335,7 @@ namespace BattleshipMp
         //  Check every 1 second if the client is disconnected.
         private void timer1_Tick(object sender, EventArgs e)
         {
-            if (Server.listener != null && (Server.client == null && !Server.client.Connected))
+            if (Server.GetInstance.IsListenerActive != null && !Server.GetInstance.IsClientConnected)
             {
                 MessageBox.Show("Client connection failed.");
             }

@@ -313,11 +313,10 @@ namespace BattleshipMpClient
 
         private void timer1_Tick(object sender, EventArgs e)
         {
-            if (Client.client.Connected == false)
+            if (!Client.GetInstance.IsConnected)
             {
                 MessageBox.Show("Connection failed.");
-                Client.client.Dispose();
-                Client.client = null;
+                Client.GetInstance.CloseAndDispose();
                 timer1.Stop();
                 this.Close();
             }
