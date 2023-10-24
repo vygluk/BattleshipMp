@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Threading;
 using System.IO;
+using BattleshipMpServer.Factory.Ship;
 
 namespace BattleshipMp
 {
@@ -77,18 +78,19 @@ namespace BattleshipMp
             }
         }
 
-        //  Go to preparation stage (Form2)
+        //  Go to ship theme selection form, Form12
         private void buttonGoToBoard_Click(object sender, EventArgs e)
         {
 
             timer1.Stop();
 
-            Form2_PreparatoryScreen frm2 = new Form2_PreparatoryScreen();
-            frm2.Show();
+            Form12_ShipThemeSelection frmThemeSelection = new Form12_ShipThemeSelection();
+            frmThemeSelection.Show();
+
             this.Visible = false;
         }
 
-        
+
 
         private void Form1_ServerScreen_Load(object sender, EventArgs e)
         {

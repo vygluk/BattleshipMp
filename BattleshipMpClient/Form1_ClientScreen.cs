@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using BattleshipMpClient.Factory.Ship;
 
 namespace BattleshipMpClient
 {
@@ -31,10 +32,14 @@ namespace BattleshipMpClient
                 labelServerState.Text = "You must connect to the server.";
         }
 
+        //  Go to ship theme selection form, Form12
         private void buttonGoToBoard_Click(object sender, EventArgs e)
         {
-            Form2_PreparatoryScreen frm2 = new Form2_PreparatoryScreen();
-            frm2.Show();
+
+
+            Form12_ShipThemeSelection frmThemeSelection = new Form12_ShipThemeSelection();
+            frmThemeSelection.Show();
+
             this.Visible = false;
         }
 

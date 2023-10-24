@@ -10,14 +10,17 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using BattleshipMpServer.Factory.Ship;
 
 namespace BattleshipMp
 {
     public partial class Form2_PreparatoryScreen : Form
     {
-        
-        public Form2_PreparatoryScreen()
+        private readonly IShipFactory _shipFactory;
+
+        public Form2_PreparatoryScreen(IShipFactory shipFactory)
         {
+            _shipFactory = shipFactory;
             InitializeComponent();
             DoubleBuffered = true;            
         }
@@ -91,14 +94,9 @@ namespace BattleshipMp
 
         #endregion
 
-        public static Dictionary<string, int> shipsCount = new Dictionary<string, int>()
-        {
-            {"Battleship", 1 },{"Cruiser", 2},{"Destroyer", 3},{"Submarine", 4}
-        };
+        public static List<IShip> shipList = new List<IShip>();
 
-        public static List<Ship> shipList = new List<Ship>();
-
-        List<string> AllSelectedButtonList = new List<string>();
+        List<(string, Color)> AllSelectedButtonList = new List<(string, Color)>();
 
         bool isPanelActive = true;
 
@@ -116,16 +114,17 @@ namespace BattleshipMp
         {
             if (shipList == null)
             {
-                shipList = new List<Ship>();
+                shipList = new List<IShip>();
             }
-            foreach (var item in shipsCount)
-            {
-                Ship _ship = new Ship();
-                _ship.shipName = item.Key;
-                _ship.remShips = item.Value;
 
-                shipList.Add(_ship);
-            }
+            IShip submarine = _shipFactory.CreateSubmarine();
+            IShip destroyer = _shipFactory.CreateDestroyer();
+            IShip cruiser = _shipFactory.CreateCruiser();
+            IShip battleship = _shipFactory.CreateBattleship();
+            shipList.Add(submarine);
+            shipList.Add(destroyer);
+            shipList.Add(cruiser);
+            shipList.Add(battleship);
         }
 
         private void GetSelectedButtons()
@@ -181,11 +180,12 @@ namespace BattleshipMp
             // Call the "DeleteShip" method.
             foreach (var item in selected)
             {
-                if (item.BackColor == Color.DarkGray)
-                {
-                    DeleteShip(selected);
-                    return;
-                }
+                foreach (var ship in shipList)
+                    if (item.BackColor == ship.color)
+                    {
+                        DeleteShip(selected);
+                        return;
+                    }
             }
 
             // 6 // If the buttons are selected for the first time, bring up Form3 as a dialog window listing the ship that matches the number of buttons selected.
@@ -211,7 +211,7 @@ namespace BattleshipMp
                                 ShipButtons sb = new ShipButtons() { buttonNames = new List<string>() };
                                 foreach (var item2 in selected)
                                 {
-                                    item2.BackColor = Color.DarkGray;
+                                    item2.BackColor = item.color;
                                     sb.buttonNames.Add(item2.Name);
                                 }
                                 item.shipPerButton.Add(sb);
@@ -317,7 +317,7 @@ namespace BattleshipMp
             frm4.Show();
         }
 
-        private List<string> FillAllButtonList()
+        private List<(string, Color)> FillAllButtonList()
         {
             foreach (var item1 in shipList)
             {
@@ -325,7 +325,7 @@ namespace BattleshipMp
                 {
                     foreach (var item3 in item2.buttonNames)
                     {
-                        AllSelectedButtonList.Add(item3);
+                        AllSelectedButtonList.Add((item3, item1.color));
                     }
                 }
             }

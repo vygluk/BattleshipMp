@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using BattleshipMpClient.Factory.Ship;
 
 namespace BattleshipMpClient
 {
@@ -21,11 +22,11 @@ namespace BattleshipMpClient
         List<Button> gameBoardButtons;
         List<Button> myBoardButtons;
         bool areEnabledButtons = true;
-        List<string> AllSelectedButtonList;
+        List<(string, Color)> AllSelectedButtonList;
         bool myExit = false;
 
 
-        public Form4_GameScreen(List<string> list)
+        public Form4_GameScreen(List<(string, Color)> list)
         {
             InitializeComponent();
             this.AllSelectedButtonList = list;
@@ -50,7 +51,7 @@ namespace BattleshipMpClient
 
             foreach (var item in AllSelectedButtonList)
             {
-                groupBox1.Controls.Find(item, true)[0].BackColor = Color.DarkGray;
+                groupBox1.Controls.Find(item.Item1, true)[0].BackColor = item.Item2;
             }
 
             try
@@ -284,7 +285,7 @@ namespace BattleshipMpClient
             if (!Client.GetInstance.IsConnected)
             {
                 MessageBox.Show("Connection failed.");
-                Form2_PreparatoryScreen frm2 = new Form2_PreparatoryScreen();
+                Form2_PreparatoryScreen frm2 = new Form2_PreparatoryScreen(new DarkShipFactory());
                 frm2.Show();
                 this.Close();
             }
@@ -296,7 +297,7 @@ namespace BattleshipMpClient
             {
                 AttackToEnemy("exitt");
             }
-            Form2_PreparatoryScreen frm2 = new Form2_PreparatoryScreen();
+            Form2_PreparatoryScreen frm2 = new Form2_PreparatoryScreen(new DarkShipFactory());
             frm2.Show();
         }
     }
