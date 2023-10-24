@@ -14,6 +14,11 @@ namespace BattleshipMpServer.Factory.Ship
             return new Submarine() { color = Color.LightCoral };
         }
 
+        public ISpecialShip CreateSpecialSubmarine()
+        {
+            return new SpecialSubmarine() { color = Color.LightCoral };
+        }
+
         public IShip CreateDestroyer()
         {
             return new Destroyer() { color = Color.LightSkyBlue };
