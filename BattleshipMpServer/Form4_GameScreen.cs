@@ -152,6 +152,14 @@ namespace BattleshipMp
                 richTextBox1.AppendText("Hit\n");
                 return;
             }
+            else if (recieve.Contains("hitShielded:"))
+            {
+                string result = recieve.Substring(recieve.Length - 2, 2);
+                result = result + result.Substring(result.Length - 1);
+                gameBoardButtons.FirstOrDefault(x => x.Name == result).BackgroundImage = Image.FromFile(Application.StartupPath + @"\Images\shield.png");
+                richTextBox1.AppendText("Hit a shielded ship\n");
+                return;
+            }
 
             // Even if all boxes are hit, the game will end only when the ship "Battleship" is hit; If the incoming data is "youwin",
             // the party receiving this message wins the game. He is asked if he wants to go to the preparation stage for the new game. Action is taken according to the situation.
@@ -179,6 +187,7 @@ namespace BattleshipMp
 
             //  Variables held for the outcome of the hit.
             bool isShot = false;
+            bool hasShield = false;
             string shotButtonName = "";
             string shottedShip = "";
             ShipButtons deletingButton = null;
@@ -187,6 +196,10 @@ namespace BattleshipMp
             //  The counter move comes with the button name. Then it is searched among the buttons of the ship according to the structure in the "Ship" model.
             //  Depending on whether the attack hit the target or not, values ​​are assigned to the above variables.
             if (Form2_PreparatoryScreen.shipList[0].shipPerButton == null)
+            {
+                return;
+            }
+            if (Form2_PreparatoryScreen.specialShipList[0].shipPerButton == null)
             {
                 return;
             }
@@ -213,6 +226,34 @@ namespace BattleshipMp
                     }
                 }
             }
+            foreach (var item1 in Form2_PreparatoryScreen.specialShipList)
+            {
+                foreach (var item2 in item1.shipPerButton)
+                {
+                    foreach (string item3 in item2.buttonNames)
+                    {
+                        if (item3 == recieve.Substring(0, recieve.Length - 1))
+                        {
+
+                            isShot = true;
+                            shotButtonName = item3;
+                            shottedShip = item1.shipName;
+                            if (item1.remShields > 0)
+                            {
+                                hasShield = true;
+                                item1.remShields--;
+                            }
+                            deletingButton = item2;
+                            break;
+                        }
+                        else
+                        {
+                            string xxx = recieve.Substring(0, recieve.Length - 1);
+                            shotButtonName = xxx;
+                        }
+                    }
+                }
+            }
 
 
             //  If the target has been hit, the button on the target board is marked. Then it sends hit data across. Yine aynı AttackFromEnemy() metodu
@@ -220,36 +261,57 @@ namespace BattleshipMp
             //  The button of the hit ship is deleted from the list.
             if (isShot)
             {
-                myBoardButtons.FirstOrDefault(x => x.Name == shotButtonName).BackgroundImage = Image.FromFile(Application.StartupPath + @"\Images\x.png");
-
-                AttackToEnemy("hit:" + shotButtonName);
-
-                deletingButton.buttonNames.Remove(shotButtonName);
-
-                //  If the hit ship is "Battleship", all buttons of "Battleship" are checked. If they're all hit, it's game over.
-                if (shottedShip == "Battleship")
+                if (shottedShip == "SpecialSubmarine")
                 {
-                    foreach (var item in Form2_PreparatoryScreen.shipList.FirstOrDefault(x => x.shipName == "Battleship").shipPerButton)
+                    if (hasShield)
                     {
-                        if (item.buttonNames.Count > 0)
-                        {
-                            return;
-                        }
-                        AttackToEnemy("youwin");
-                        DialogResult res = MessageBox.Show("You lost. Do you want to return to the preparation screen?", "Server - Game Result", MessageBoxButtons.YesNo);
-                        {
-                            if (res == DialogResult.Yes)
-                            {
-                                myExit = true;
-                                this.Close();
-                            }
-                            else
-                                Environment.Exit(1);
-                        }
+                        myBoardButtons.FirstOrDefault(x => x.Name == shotButtonName).BackgroundImage = Image.FromFile(Application.StartupPath + @"\Images\shield.png");
+                        AttackToEnemy("hitShielded:" + shotButtonName);
                         return;
                     }
+                    else
+                    {
+                        myBoardButtons.FirstOrDefault(x => x.Name == shotButtonName).BackgroundImage = Image.FromFile(Application.StartupPath + @"\Images\x.png");
+
+                        AttackToEnemy("hit:" + shotButtonName);
+
+                        deletingButton.buttonNames.Remove(shotButtonName);
+
+                        return;
+                    }
+                } else
+                {
+                    myBoardButtons.FirstOrDefault(x => x.Name == shotButtonName).BackgroundImage = Image.FromFile(Application.StartupPath + @"\Images\x.png");
+
+                    AttackToEnemy("hit:" + shotButtonName);
+
+                    deletingButton.buttonNames.Remove(shotButtonName);
+
+                    //  If the hit ship is "Battleship", all buttons of "Battleship" are checked. If they're all hit, it's game over.
+                    if (shottedShip == "Battleship")
+                    {
+                        foreach (var item in Form2_PreparatoryScreen.shipList.FirstOrDefault(x => x.shipName == "Battleship").shipPerButton)
+                        {
+                            if (item.buttonNames.Count > 0)
+                            {
+                                return;
+                            }
+                            AttackToEnemy("youwin");
+                            DialogResult res = MessageBox.Show("You lost. Do you want to return to the preparation screen?", "Server - Game Result", MessageBoxButtons.YesNo);
+                            {
+                                if (res == DialogResult.Yes)
+                                {
+                                    myExit = true;
+                                    this.Close();
+                                }
+                                else
+                                    Environment.Exit(1);
+                            }
+                            return;
+                        }
+                    }
+                    return;
                 }
-                return;
             }
 
             //  If the target is not hit, only the background of the relevant button is changed and in the 2nd iteration, data is sent to read this part again.

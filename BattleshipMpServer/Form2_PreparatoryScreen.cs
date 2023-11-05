@@ -95,6 +95,7 @@ namespace BattleshipMp
         #endregion
 
         public static List<IShip> shipList = new List<IShip>();
+        public static List<ISpecialShip> specialShipList = new List<ISpecialShip>();
 
         List<(string, Color)> AllSelectedButtonList = new List<(string, Color)>();
 
@@ -117,14 +118,21 @@ namespace BattleshipMp
                 shipList = new List<IShip>();
             }
 
+            if (specialShipList == null)
+            {
+                specialShipList = new List<ISpecialShip>();
+            }
+
             IShip submarine = _shipFactory.CreateSubmarine();
             IShip destroyer = _shipFactory.CreateDestroyer();
             IShip cruiser = _shipFactory.CreateCruiser();
             IShip battleship = _shipFactory.CreateBattleship();
+            ISpecialShip specialSubmarine = _shipFactory.CreateSpecialSubmarine();
             shipList.Add(submarine);
             shipList.Add(destroyer);
             shipList.Add(cruiser);
             shipList.Add(battleship);
+            specialShipList.Add(specialSubmarine);
         }
 
         private void GetSelectedButtons()
@@ -186,6 +194,12 @@ namespace BattleshipMp
                         DeleteShip(selected);
                         return;
                     }
+                foreach (var ship in specialShipList)
+                    if (item.BackColor == ship.color)
+                    {
+                        DeleteShip(selected);
+                        return;
+                    }
             }
 
             // 6 // If the buttons are selected for the first time, bring up Form3 as a dialog window listing the ship that matches the number of buttons selected.
@@ -200,6 +214,28 @@ namespace BattleshipMp
                     {
                         string val = frm3.returnValue;
                         foreach (var item in shipList)
+                        {
+                            if (item.shipName == val)
+                            {
+                                item.remShips--;
+
+                                if (item.shipPerButton == null)
+                                    item.shipPerButton = new List<ShipButtons>();
+
+                                ShipButtons sb = new ShipButtons() { buttonNames = new List<string>() };
+                                foreach (var item2 in selected)
+                                {
+                                    item2.BackColor = item.color;
+                                    sb.buttonNames.Add(item2.Name);
+                                }
+                                item.shipPerButton.Add(sb);
+
+                                RemainingShips();
+                                break;
+                            }
+                        }
+
+                        foreach (var item in specialShipList)
                         {
                             if (item.shipName == val)
                             {
@@ -255,6 +291,29 @@ namespace BattleshipMp
                         }
                     }
                 }
+                foreach (var item1 in specialShipList)
+                {
+                    if (item1.shipPerButton != null)
+                    {
+                        foreach (var item2 in item1.shipPerButton)
+                        {
+                            foreach (var item3 in selected)
+                            {
+                                if (item2.buttonNames.FirstOrDefault(x => x.Equals(item3.Name)) != null)
+                                {
+                                    item1.remShips++;
+                                    foreach (var item4 in item2.buttonNames)
+                                    {
+                                        this.Controls.Find(item4, true)[0].BackColor = Color.Transparent;
+                                    }
+                                    item1.shipPerButton.Remove(item2);
+                                    RemainingShips();
+                                    return;
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
 
@@ -274,6 +333,9 @@ namespace BattleshipMp
             lblSubmarine.Text = lblSubmarine.Text.Substring(0, lblSubmarine.Text.Length - 1);
             lblSubmarine.Text += shipList.FirstOrDefault(x => x.shipName == "Submarine").remShips.ToString();
 
+            lblSpecialSubmarine.Text = lblSpecialSubmarine.Text.Substring(0, lblSpecialSubmarine.Text.Length - 1);
+            lblSpecialSubmarine.Text += specialShipList.FirstOrDefault(x => x.shipName == "SpecialSubmarine").remShips.ToString();
+
             foreach (var item in shipList)
             {
                 if (item.remShips == 0)
@@ -286,6 +348,18 @@ namespace BattleshipMp
                     break;
                 }
             }
+/*            foreach (var item in specialShipList)
+            {
+                if (item.remShips == 0)
+                {
+                    isPanelActive = true;
+                }
+                else
+                {
+                    isPanelActive = false;
+                    break;
+                }
+            }*/
             if (isPanelActive == true)
             {
                 buttonStart.Enabled = true;
@@ -322,6 +396,16 @@ namespace BattleshipMp
             foreach (var item1 in shipList)
             {
                 foreach(var item2 in item1.shipPerButton)
+                {
+                    foreach (var item3 in item2.buttonNames)
+                    {
+                        AllSelectedButtonList.Add((item3, item1.color));
+                    }
+                }
+            }
+            foreach (var item1 in specialShipList)
+            {
+                foreach (var item2 in item1.shipPerButton)
                 {
                     foreach (var item3 in item2.buttonNames)
                     {
