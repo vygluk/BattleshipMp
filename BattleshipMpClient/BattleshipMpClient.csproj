@@ -58,6 +58,7 @@
     <Compile Include="Factory\Ship\ShipButtons.cs" />
     <Compile Include="Factory\Ship\SpecialSubmarine.cs" />
     <Compile Include="Factory\Ship\Submarine.cs" />
+    <Compile Include="Facade\GameFacade.cs" />
     <Compile Include="Form12_ShipThemeSelection.cs">
       <SubType>Form</SubType>
     </Compile>
