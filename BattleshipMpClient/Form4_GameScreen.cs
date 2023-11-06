@@ -10,13 +10,17 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using BattleshipMpClient.Factory.Ship;
+using BattleshipMpClient.Facade;
 
 namespace BattleshipMpClient
 {
     public partial class Form4_GameScreen : Form
     {
-        public StreamReader STR;
-        public StreamWriter STW;
+        private GameFacade gameFacade;
+        private int currentPlayer;
+
+        //public StreamReader STR;
+        //public StreamWriter STW;
         public string recieve;
         public string TextToSend;
         List<Button> gameBoardButtons;
@@ -31,6 +35,9 @@ namespace BattleshipMpClient
             InitializeComponent();
             this.AllSelectedButtonList = list;
             Control.CheckForIllegalCrossThreadCalls = false;
+
+
+            gameFacade = new GameFacade();
         }
 
         private void button_mousehover(object sender, EventArgs e)
@@ -56,9 +63,10 @@ namespace BattleshipMpClient
 
             try
             {
-                STR = new StreamReader(Client.GetInstance.TcpClient.GetStream());
-                STW = new StreamWriter(Client.GetInstance.TcpClient.GetStream());
-                STW.AutoFlush = true;
+                gameFacade.StartGameCommunication();
+                //STR = new StreamReader(Client.GetInstance.TcpClient.GetStream());
+                //STW = new StreamWriter(Client.GetInstance.TcpClient.GetStream());
+                //STW.AutoFlush = true;
                 backgroundWorker1.RunWorkerAsync();
                 backgroundWorker2.WorkerSupportsCancellation = true;
             }
@@ -76,13 +84,18 @@ namespace BattleshipMpClient
             {
                 try
                 {
-                    recieve = STR.ReadLine();
-
-                    if (recieve != "")
+                    string recieve = gameFacade.ReceiveAttack();
+                    if (!string.IsNullOrEmpty(recieve))
                     {
                         AttackFromEnemy(recieve);
                     }
-                    recieve = "";
+                    //recieve = STR.ReadLine();
+
+                    //if (recieve != "")
+                    //{
+                    //AttackFromEnemy(recieve);
+                    //}
+                    //recieve = "";
                 }
                 catch (Exception ex)
                 {
@@ -93,15 +106,16 @@ namespace BattleshipMpClient
 
         private void backgroundWorker2_DoWork(object sender, DoWorkEventArgs e)
         {
-            if (Client.GetInstance.IsConnected)
-            {
-                STW.WriteLine(TextToSend);
-            }
-            else
-            {
-                MessageBox.Show("Message could not be sent!!");
-            }
+            //if (Client.GetInstance.IsConnected)
+            //{
+            //    STW.WriteLine(TextToSend);
+            //}
+            //else
+            //{
+            //    MessageBox.Show("Message could not be sent!!");
+            //}
 
+            gameFacade.SendAttack(TextToSend);
             backgroundWorker2.CancelAsync();
         }
 

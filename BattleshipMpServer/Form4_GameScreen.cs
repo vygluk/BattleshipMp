@@ -11,14 +11,17 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using BattleshipMpServer.Factory.Ship;
+using BattleshipMpServer.Facade;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Button;
 
 namespace BattleshipMp
 {
     public partial class Form4_GameScreen : Form
     {
-        public StreamReader STR;
-        public StreamWriter STW;
+        private GameFacade gameFacade;
+
+        //public StreamReader STR;
+        //public StreamWriter STW;
         public string recieve;
         public string TextToSend;
         List<Button> gameBoardButtons;
@@ -33,6 +36,8 @@ namespace BattleshipMp
             InitializeComponent();
             this.AllSelectedButtonList = list;
             Control.CheckForIllegalCrossThreadCalls = false;
+
+            gameFacade = new GameFacade();
         }
 
         //  Replace the mouse pointer with a red target image while making moves. return to normal pointer when the button is over.
@@ -62,9 +67,10 @@ namespace BattleshipMp
             // Since the "backgorundWorker1" object will always listen for incoming data, it will be running in the background all the time.
             try
             {
-                STR = new StreamReader(Server.GetInstance.Client.GetStream());
-                STW = new StreamWriter(Server.GetInstance.Client.GetStream());
-                STW.AutoFlush = true;
+                gameFacade.StartGameCommunication();
+                //STR = new StreamReader(Server.GetInstance.Client.GetStream());
+                //STW = new StreamWriter(Server.GetInstance.Client.GetStream());
+                //STW.AutoFlush = true;
                 backgroundWorker1.RunWorkerAsync();
                 backgroundWorker2.WorkerSupportsCancellation = true;
             }
@@ -99,13 +105,18 @@ namespace BattleshipMp
             {
                 try
                 {
-                    recieve = STR.ReadLine();
-
-                    if (recieve != "")
+                    string recieve = gameFacade.ReceiveAttack();
+                    if (!string.IsNullOrEmpty(recieve))
                     {
                         AttackFromEnemy(recieve);
                     }
-                    recieve = "";
+                    //recieve = STR.ReadLine();
+
+                    //if (recieve != "")
+                    //{
+                    //    AttackFromEnemy(recieve);
+                    //}
+                    //recieve = "";
                 }
                 catch (Exception ex)
                 {
@@ -326,15 +337,15 @@ namespace BattleshipMp
         //  The object to which the data will be sent. It is executed only when a attack is made. Otherwise it waits.
         private void backgroundWorker2_DoWork(object sender, DoWorkEventArgs e)
         {
-            if (Server.GetInstance.IsClientConnected)
-            {
-                STW.WriteLine(TextToSend);
-            }
-            else
-            {
-                MessageBox.Show("Message could not be sent!!");
-            }
-
+            //if (Server.GetInstance.IsClientConnected)
+            //{
+            //    STW.WriteLine(TextToSend);
+            //}
+            //else
+            //{
+            //    MessageBox.Show("Message could not be sent!!");
+            //}
+            gameFacade.SendAttack(TextToSend);
             backgroundWorker2.CancelAsync();
         }
 
