@@ -96,6 +96,7 @@
     <Compile Include="Strategy\HorizontalRadarStrategy.cs" />
     <Compile Include="Strategy\IRadarStrategy.cs" />
     <Compile Include="Strategy\Radar.cs" />
+    <Compile Include="Strategy\RadarStrategyGenerator.cs" />
     <Compile Include="Strategy\VerticalHorizontalRadarStrategy.cs" />
     <Compile Include="Strategy\VerticalRadarStrategy.cs" />
     <EmbeddedResource Include="Form12_ShipThemeSelection.resx">

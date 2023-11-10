@@ -11,6 +11,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using BattleshipMpClient.Factory.Ship;
 using BattleshipMpClient.Facade;
+using BattleshipMpClient.Strategy;
 
 namespace BattleshipMpClient
 {
@@ -28,6 +29,10 @@ namespace BattleshipMpClient
         bool areEnabledButtons = true;
         List<(string, Color)> AllSelectedButtonList;
         bool myExit = false;
+        bool enemyHasUsedRadarUse = false;
+        bool hasRadarUse = true;
+        RadarStrategyGenerator radarStrategyGenerator = new RadarStrategyGenerator();
+        IRadarStrategy strategyToUse;
 
 
         public Form4_GameScreen(List<(string, Color)> list)
@@ -36,7 +41,7 @@ namespace BattleshipMpClient
             this.AllSelectedButtonList = list;
             Control.CheckForIllegalCrossThreadCalls = false;
 
-
+            strategyToUse = radarStrategyGenerator.GenerateRadarStrategyRandomly();
             gameFacade = new GameFacade();
         }
 
@@ -176,11 +181,28 @@ namespace BattleshipMpClient
                 }
                 return;
             }
-
             else if (recieve.Contains("exit"))
             {
                 MessageBox.Show("\r\nThe opponent has left the game. You are being directed to the preparation phase.");
                 this.Close();
+                return;
+            } else if (recieve.Contains("[Radar]"))
+            {
+                richTextBox1.AppendText($"{recieve}\n");
+                hasRadarUse = false;
+                return;
+            }
+
+            if (!enemyHasUsedRadarUse)
+            {
+                var radar = new Radar();
+
+                var buttonToShoot = recieve.Substring(0, recieve.Length - 1);
+                var message = radar.ScanAreaWithRandomStrategy(strategyToUse, buttonToShoot);
+
+                AttackToEnemy($"[Radar] {message}");
+
+                enemyHasUsedRadarUse = true;
                 return;
             }
 
@@ -189,6 +211,7 @@ namespace BattleshipMpClient
             string shotButtonName = "";
             string shottedShip = "";
             ShipButtons deletingButton = null;
+
 
             if (Form2_PreparatoryScreen.shipList[0].shipPerButton == null)
             {
@@ -356,7 +379,8 @@ namespace BattleshipMpClient
                 {
                     item.Enabled = true;
                 }
-                labelAttackTurn.Text = "ATTACK";
+
+                labelAttackTurn.Text = hasRadarUse ? "RANDOM RADAR" : "ATTACK";
                 areEnabledButtons = true;
             }
         }

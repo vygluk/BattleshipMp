@@ -1,23 +1,25 @@
 ﻿using BattleshipMpClient.Constants;
 using BattleshipMpClient.Factory.Ship;
 using System.Collections.Generic;
-using System.Windows.Forms;
 
 namespace BattleshipMpClient.Strategy
 {
     public class VerticalRadarStrategy : IRadarStrategy
     {
-        public (bool shipFound, string message) ScanGrid(Button button)
+        public string ScanGrid(string buttonName)
         {
-            var cellsToCheck = GetVerticalCells(button.Name);
+            var cellsToCheck = GetVerticalCells(buttonName);
             bool shipFound = DetectWithRadarIfShipFoundVertically(Form2_PreparatoryScreen.shipList, cellsToCheck)
                              || DetectWithRadarIfShipFoundVertically(Form2_PreparatoryScreen.specialShipList, cellsToCheck);
+            char letterPart = buttonName[0];
+            int numberPart = int.Parse(buttonName.Substring(1)) + 1;
+            string updatedButtonName = $"{letterPart}{numberPart}";
 
             string message = shipFound
-                ? $"Vertically from position '{button.Name}' radar found ship"
-                : $"Vertically from position '{button.Name}' radar did not find ship";
+                ? $"Vertically from position '{updatedButtonName}' radar found ship"
+                : $"Vertically from position '{updatedButtonName}' radar did not find ship";
 
-            return (shipFound, message);
+            return message;
         }
 
         private List<string> GetVerticalCells(string selectedCell)
@@ -64,11 +66,6 @@ namespace BattleshipMpClient.Strategy
             }
 
             return false;
-        }
-
-        public string InformationAboutRadarType()
-        {
-            return "Select button to scan vertically for enemy ships";
         }
     }
 }

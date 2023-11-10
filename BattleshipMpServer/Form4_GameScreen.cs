@@ -13,6 +13,7 @@ using System.Windows.Forms;
 using BattleshipMpServer.Factory.Ship;
 using BattleshipMpServer.Facade;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Button;
+using BattleshipMpServer.Strategy;
 
 namespace BattleshipMp
 {
@@ -29,6 +30,10 @@ namespace BattleshipMp
         bool areEnabledButtons = true;
         List<(string, Color)> AllSelectedButtonList;
         bool myExit = false;
+        bool enemyHasUsedRadarUse = false;
+        bool hasRadarUse = true;
+        RadarStrategyGenerator radarStrategyGenerator = new RadarStrategyGenerator();
+        IRadarStrategy strategyToUse;
 
         //  While creating the "game screen" object, get the list of selected buttons from Form2 and change their color with the help of constructor.
         public Form4_GameScreen(List<(string, Color)> list)
@@ -37,6 +42,7 @@ namespace BattleshipMp
             this.AllSelectedButtonList = list;
             Control.CheckForIllegalCrossThreadCalls = false;
 
+            strategyToUse = radarStrategyGenerator.GenerateRadarStrategyRandomly();
             gameFacade = new GameFacade();
         }
 
@@ -194,6 +200,24 @@ namespace BattleshipMp
                 MessageBox.Show("\r\nThe opponent has left the game. You are being directed to the preparation phase.");
                 this.Close();
                 return;
+            } else if (recieve.Contains("[Radar]"))
+            {
+                richTextBox1.AppendText($"{recieve}\n");
+                hasRadarUse = false;
+                return;
+            }
+
+            if (!enemyHasUsedRadarUse)
+            {
+                var radar = new Radar();
+
+                var buttonToShoot = recieve.Substring(0, recieve.Length - 1);
+                var message = radar.ScanAreaWithRandomStrategy(strategyToUse, buttonToShoot);
+
+                AttackToEnemy($"[Radar] {message}");
+
+                enemyHasUsedRadarUse = true;
+                return;
             }
 
             //  Variables held for the outcome of the hit.
@@ -202,6 +226,8 @@ namespace BattleshipMp
             string shotButtonName = "";
             string shottedShip = "";
             ShipButtons deletingButton = null;
+
+            
 
             //  If the above if conditions are not met, the method considers it as a move.
             //  The counter move comes with the button name. Then it is searched among the buttons of the ship according to the structure in the "Ship" model.
@@ -392,7 +418,8 @@ namespace BattleshipMp
                 {
                     item.Enabled = true;
                 }
-                labelAttackTurn.Text = "ATTACK";
+
+                labelAttackTurn.Text = hasRadarUse ? "RANDOM RADAR" : "ATTACK";
                 areEnabledButtons = true;
             }
         }

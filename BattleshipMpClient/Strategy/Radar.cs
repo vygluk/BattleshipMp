@@ -2,11 +2,9 @@
 {
     public class Radar
     {
-        private IRadarStrategy _strategy;
-
-        public Radar(IRadarStrategy strategy)
+        public string ScanAreaWithRandomStrategy(IRadarStrategy strategy, string buttonName)
         {
-            _strategy = strategy;
+            return strategy.ScanGrid(buttonName);
         }
     }
 }

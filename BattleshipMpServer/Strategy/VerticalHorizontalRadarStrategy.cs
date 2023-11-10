@@ -2,16 +2,15 @@
 using BattleshipMpServer.Constants;
 using BattleshipMpServer.Factory.Ship;
 using System.Collections.Generic;
-using System.Windows.Forms;
 
 namespace BattleshipMpServer.Strategy
 {
     public class VerticalHorizontalRadarStrategy : IRadarStrategy
     {
-        public (bool shipFound, string message) ScanGrid(Button button)
+        public string ScanGrid(string buttonName)
         {
-            var verticalCells = GetVerticalCells(button.Name);
-            var horizontalCells = GetHorizontalCells(button.Name);
+            var verticalCells = GetVerticalCells(buttonName);
+            var horizontalCells = GetHorizontalCells(buttonName);
 
             var cellsToCheck = new List<string>(verticalCells);
             cellsToCheck.AddRange(horizontalCells);
@@ -19,11 +18,15 @@ namespace BattleshipMpServer.Strategy
             bool shipFound = DetectWithRadarIfShipFound(Form2_PreparatoryScreen.shipList, cellsToCheck)
                              || DetectWithRadarIfShipFound(Form2_PreparatoryScreen.specialShipList, cellsToCheck);
 
-            string message = shipFound
-                ? $"Vertically and horizontally from position '{button.Name}' radar found ship"
-                : $"Vertically and horizontally from position '{button.Name}' radar did not find ship";
+            char letterPart = buttonName[0];
+            int numberPart = int.Parse(buttonName.Substring(1)) + 1;
+            string updatedButtonName = $"{letterPart}{numberPart}";
 
-            return (shipFound, message);
+            string message = shipFound
+                ? $"Vertically and horizontally from position '{updatedButtonName}' radar found ship"
+                : $"Vertically and horizontally from position '{updatedButtonName}' radar did not find ship";
+
+            return message;
         }
 
         private List<string> GetVerticalCells(string selectedCell)
@@ -82,11 +85,6 @@ namespace BattleshipMpServer.Strategy
             }
 
             return false;
-        }
-
-        public string InformationAboutRadarType()
-        {
-            return "Select button to scan vertically and horizontally for enemy ships";
         }
     }
 }

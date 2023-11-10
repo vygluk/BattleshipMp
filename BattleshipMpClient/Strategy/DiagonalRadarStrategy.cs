@@ -1,23 +1,26 @@
 ﻿using BattleshipMpClient.Constants;
 using BattleshipMpClient.Factory.Ship;
 using System.Collections.Generic;
-using System.Windows.Forms;
 
 namespace BattleshipMpClient.Strategy
 {
     public class DiagonalRadarStrategy : IRadarStrategy
     {
-        public (bool shipFound, string message) ScanGrid(Button button)
+        public string ScanGrid(string buttonName)
         {
-            var cellsToCheck = GetDiagonalCells(button.Name);
+            var cellsToCheck = GetDiagonalCells(buttonName);
             bool shipFound = DetectWithRadarIfShipFoundDiagonally(Form2_PreparatoryScreen.shipList, cellsToCheck)
                              || DetectWithRadarIfShipFoundDiagonally(Form2_PreparatoryScreen.specialShipList, cellsToCheck);
 
-            string message = shipFound
-                ? $"Diagonally from position '{button.Name}' radar found ship"
-                : $"Diagonally from position '{button.Name}' radar did not find ship";
+            char letterPart = buttonName[0];
+            int numberPart = int.Parse(buttonName.Substring(1)) + 1;
+            string updatedButtonName = $"{letterPart}{numberPart}";
 
-            return (shipFound, message);
+            string message = shipFound
+                ? $"Diagonally from position '{updatedButtonName}' radar found ship"
+                : $"Diagonally from position '{updatedButtonName}' radar did not find ship";
+
+            return message;
         }
 
         private List<string> GetDiagonalCells(string selectedCell)
@@ -26,14 +29,43 @@ namespace BattleshipMpClient.Strategy
             char column = selectedCell[0];
             int row = int.Parse(selectedCell.Substring(1));
 
-            AddDiagonalCell(diagonalCells, (char)(column - 1), row - 1);
-            AddDiagonalCell(diagonalCells, (char)(column + 1), row + 1);
+            char currentColumn = column;
+            int currentRow = row;
+            while (currentColumn >= 'A' && currentRow >= 0)
+            {
+                AddDiagonalCell(diagonalCells, currentColumn, currentRow);
+                currentColumn--;
+                currentRow--;
+            }
+            currentColumn = (char)(column + 1);
+            currentRow = row + 1;
+            while (currentColumn <= BoardSize.WIDTH_LETTER && currentRow < BoardSize.HEIGHT)
+            {
+                AddDiagonalCell(diagonalCells, currentColumn, currentRow);
+                currentColumn++;
+                currentRow++;
+            }
 
-            AddDiagonalCell(diagonalCells, (char)(column + 1), row - 1);
-            AddDiagonalCell(diagonalCells, (char)(column - 1), row + 1);
+            currentColumn = column;
+            currentRow = row;
+            while (currentColumn <= BoardSize.WIDTH_LETTER && currentRow >= 0)
+            {
+                AddDiagonalCell(diagonalCells, currentColumn, currentRow);
+                currentColumn++;
+                currentRow--;
+            }
+            currentColumn = (char)(column - 1);
+            currentRow = row + 1;
+            while (currentColumn >= 'A' && currentRow < BoardSize.HEIGHT)
+            {
+                AddDiagonalCell(diagonalCells, currentColumn, currentRow);
+                currentColumn--;
+                currentRow++;
+            }
 
             return diagonalCells;
         }
+
 
         private void AddDiagonalCell(List<string> cells, char column, int row)
         {
@@ -73,11 +105,6 @@ namespace BattleshipMpClient.Strategy
             }
 
             return false;
-        }
-
-        public string InformationAboutRadarType()
-        {
-            return "Select button to scan diagonally for enemy ships";
         }
     }
 }
