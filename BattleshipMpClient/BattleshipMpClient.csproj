@@ -47,6 +47,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Client.cs" />
+    <Compile Include="Constants\BoardSize.cs" />
     <Compile Include="Factory\Ship\Battleship.cs" />
     <Compile Include="Factory\Ship\Cruiser.cs" />
     <Compile Include="Factory\Ship\DarkShipFactory .cs" />
@@ -91,6 +92,13 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Strategy\DiagonalRadarStrategy.cs" />
+    <Compile Include="Strategy\HorizontalRadarStrategy.cs" />
+    <Compile Include="Strategy\IRadarStrategy.cs" />
+    <Compile Include="Strategy\Radar.cs" />
+    <Compile Include="Strategy\RadarStrategyGenerator.cs" />
+    <Compile Include="Strategy\VerticalHorizontalRadarStrategy.cs" />
+    <Compile Include="Strategy\VerticalRadarStrategy.cs" />
     <EmbeddedResource Include="Form12_ShipThemeSelection.resx">
       <DependentUpon>Form12_ShipThemeSelection.cs</DependentUpon>
     </EmbeddedResource>
