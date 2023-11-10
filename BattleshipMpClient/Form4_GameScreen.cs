@@ -47,9 +47,13 @@ namespace BattleshipMpClient
 
         private void button_mousehover(object sender, EventArgs e)
         {
-            Bitmap bm = new Bitmap(new Bitmap(Application.StartupPath + @"\Images\target.png"), 20, 20);
-            ((Button)sender).Cursor = new Cursor(bm.GetHicon());
+            if (sender is Button button)
+            {
+                Bitmap bm = new Bitmap(new Bitmap(Application.StartupPath + @"\Images\target.png"), 20, 20);
+                button.Cursor = new Cursor(bm.GetHicon());
+            }
         }
+
         private void button_mouseleave(object sender, EventArgs e)
         {
             ((Button)sender).Cursor = Cursors.Default;
