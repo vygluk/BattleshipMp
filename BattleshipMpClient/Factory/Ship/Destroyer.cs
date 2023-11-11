@@ -10,7 +10,7 @@ namespace BattleshipMpClient.Factory.Ship
     public class Destroyer : IShip
     {
         public string shipName => "Destroyer";
-        public int remShips { get; set; } = 3;
+        public int remShips { get; set; } = 2;
         public List<ShipButtons> shipPerButton { get; set; } = new List<ShipButtons>();
         public Color color { get; set; }
     }

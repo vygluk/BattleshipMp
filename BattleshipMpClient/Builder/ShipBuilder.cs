@@ -35,5 +35,15 @@ namespace BattleshipMp.Builder
         {
             return _factory.CreateSubmarine();
         }
+
+        public ISpecialShip CreateSpecialDestroyer()
+        {
+            return _factory.CreateSpecialDestroyer();
+        }
+
+        public ISpecialShip CreateSpecialCruiser()
+        {
+            return _factory.CreateSpecialCruiser();
+        }
     }
 }

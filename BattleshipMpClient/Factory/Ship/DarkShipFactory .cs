@@ -32,5 +32,15 @@ namespace BattleshipMpClient.Factory.Ship
         {
             return new Battleship() { color = Color.DarkMagenta };
         }
+
+        public ISpecialShip CreateSpecialDestroyer()
+        {
+            return new SpecialDestroyer() { color = Color.OliveDrab };
+        }
+
+        public ISpecialShip CreateSpecialCruiser()
+        {
+            return new SpecialCruiser() { color = Color.Cyan };
+        }
     }
 }

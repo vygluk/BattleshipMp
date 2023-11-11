@@ -36,6 +36,8 @@
             this.lblBattleship = new System.Windows.Forms.Label();
             this.lblSubmarine = new System.Windows.Forms.Label();
             this.lblSpecialSubmarine = new System.Windows.Forms.Label();
+            this.lblSpecialCruiser = new System.Windows.Forms.Label();
+            this.lblSpecialDestroyer = new System.Windows.Forms.Label();
             this.lblCruiser = new System.Windows.Forms.Label();
             this.label20 = new System.Windows.Forms.Label();
             this.label19 = new System.Windows.Forms.Label();
@@ -166,12 +168,12 @@
             // lblDestroyer
             // 
             this.lblDestroyer.AutoSize = true;
-            this.lblDestroyer.Location = new System.Drawing.Point(245, 31);
+            this.lblDestroyer.Location = new System.Drawing.Point(297, 31);
             this.lblDestroyer.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblDestroyer.Name = "lblDestroyer";
             this.lblDestroyer.Size = new System.Drawing.Size(79, 16);
             this.lblDestroyer.TabIndex = 7;
-            this.lblDestroyer.Text = "Destroyer: 3";
+            this.lblDestroyer.Text = "Destroyer: 2";
             // 
             // yardımToolStripMenuItem
             // 
@@ -197,6 +199,8 @@
             this.groupBox1.Controls.Add(this.lblBattleship);
             this.groupBox1.Controls.Add(this.lblSubmarine);
             this.groupBox1.Controls.Add(this.lblSpecialSubmarine);
+            this.groupBox1.Controls.Add(this.lblSpecialCruiser);
+            this.groupBox1.Controls.Add(this.lblSpecialDestroyer);
             this.groupBox1.Controls.Add(this.lblCruiser);
             this.groupBox1.Controls.Add(this.lblDestroyer);
             this.groupBox1.Location = new System.Drawing.Point(25, 38);
@@ -221,7 +225,7 @@
             // lblSubmarine
             // 
             this.lblSubmarine.AutoSize = true;
-            this.lblSubmarine.Location = new System.Drawing.Point(349, 31);
+            this.lblSubmarine.Location = new System.Drawing.Point(453, 31);
             this.lblSubmarine.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblSubmarine.Name = "lblSubmarine";
             this.lblSubmarine.Size = new System.Drawing.Size(85, 16);
@@ -231,12 +235,32 @@
             // lblSpecialSubmarine
             // 
             this.lblSpecialSubmarine.AutoSize = true;
-            this.lblSpecialSubmarine.Location = new System.Drawing.Point(453, 31);
+            this.lblSpecialSubmarine.Location = new System.Drawing.Point(453, 45);
             this.lblSpecialSubmarine.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblSpecialSubmarine.Name = "lblSpecialSubmarine";
             this.lblSpecialSubmarine.Size = new System.Drawing.Size(140, 16);
             this.lblSpecialSubmarine.TabIndex = 8;
             this.lblSpecialSubmarine.Text = "Shielded submarine: 1";
+            // 
+            // lblSpecialCruiser
+            // 
+            this.lblSpecialCruiser.AutoSize = true;
+            this.lblSpecialCruiser.Location = new System.Drawing.Point(158, 45);
+            this.lblSpecialCruiser.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblSpecialCruiser.Name = "lblSpecialCruiser";
+            this.lblSpecialCruiser.Size = new System.Drawing.Size(117, 16);
+            this.lblSpecialCruiser.TabIndex = 8;
+            this.lblSpecialCruiser.Text = "Shielded cruiser: 1";
+            // 
+            // lblSpecialDestroyer
+            // 
+            this.lblSpecialDestroyer.AutoSize = true;
+            this.lblSpecialDestroyer.Location = new System.Drawing.Point(297, 47);
+            this.lblSpecialDestroyer.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.lblSpecialDestroyer.Name = "lblSpecialDestroyer";
+            this.lblSpecialDestroyer.Size = new System.Drawing.Size(134, 16);
+            this.lblSpecialDestroyer.TabIndex = 8;
+            this.lblSpecialDestroyer.Text = "Shielded destroyer: 1";
             // 
             // lblCruiser
             // 
@@ -246,7 +270,7 @@
             this.lblCruiser.Name = "lblCruiser";
             this.lblCruiser.Size = new System.Drawing.Size(62, 16);
             this.lblCruiser.TabIndex = 6;
-            this.lblCruiser.Text = "Cruiser: 2";
+            this.lblCruiser.Text = "Cruiser: 1";
             // 
             // label20
             // 
@@ -2158,5 +2182,7 @@
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.Label lblSubmarine;
         private System.Windows.Forms.Label lblSpecialSubmarine;
+        private System.Windows.Forms.Label lblSpecialCruiser;
+        private System.Windows.Forms.Label lblSpecialDestroyer;
     }
 }

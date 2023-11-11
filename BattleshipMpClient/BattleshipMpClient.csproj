@@ -65,6 +65,8 @@
     <Compile Include="Factory\Ship\ISpecialShip.cs" />
     <Compile Include="Factory\Ship\LightShipFactory.cs" />
     <Compile Include="Factory\Ship\ShipButtons.cs" />
+    <Compile Include="Factory\Ship\SpecialCruiser.cs" />
+    <Compile Include="Factory\Ship\SpecialDestroyer.cs" />
     <Compile Include="Factory\Ship\SpecialSubmarine.cs" />
     <Compile Include="Factory\Ship\Submarine.cs" />
     <Compile Include="Facade\GameFacade.cs" />
