@@ -46,6 +46,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Builder\FormBuilder.cs" />
+    <Compile Include="Builder\FormCreator.cs" />
+    <Compile Include="Builder\IFormBuilder.cs" />
+    <Compile Include="Builder\IShipBuilder.cs" />
+    <Compile Include="Builder\ShipBuilder.cs" />
+    <Compile Include="Builder\ShipsCreator.cs" />
     <Compile Include="Constants\BoardSize.cs" />
     <Compile Include="Factory\Ship\Battleship.cs" />
     <Compile Include="Factory\Ship\Cruiser.cs" />
@@ -147,5 +153,6 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
