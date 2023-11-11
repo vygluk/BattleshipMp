@@ -36,8 +36,7 @@ namespace BattleshipMp
         bool hasRadarUse = true;
         bool enemyReceivedExtraRound = false;
         bool weHaveReceivedExtraRound = false;
-        RadarStrategyGenerator radarStrategyGenerator = new RadarStrategyGenerator();
-        IRadarStrategy strategyToUse;
+        private readonly RadarStrategyGenerator _radarStrategyGenerator;
         private readonly ExtraRoundSubscriberMap _extraRoundSubscriberMap;
         private readonly ExtraRoundPublisher _extraRoundPublisher;
         private const int PERCENTAGE_MAX = 100;
@@ -51,7 +50,7 @@ namespace BattleshipMp
             this.AllSelectedButtonList = list;
             Control.CheckForIllegalCrossThreadCalls = false;
 
-            strategyToUse = radarStrategyGenerator.GenerateRadarStrategyRandomly();
+            _radarStrategyGenerator = new RadarStrategyGenerator();
             _extraRoundSubscriberMap = new ExtraRoundSubscriberMap();
             _extraRoundPublisher = new ExtraRoundPublisher();
 
@@ -60,7 +59,6 @@ namespace BattleshipMp
                 _extraRoundPublisher.Subscribe(subscriber);
             }
 
-            strategyToUse = radarStrategyGenerator.GenerateRadarStrategyRandomly();
             gameFacade = new GameFacade();
         }
 
@@ -251,10 +249,10 @@ namespace BattleshipMp
 
             if (!enemyHasUsedRadarUse)
             {
-                var radar = new Radar();
+                var radar = new Radar(_radarStrategyGenerator);
 
                 var buttonToShoot = recieve.Substring(0, recieve.Length - 1);
-                var message = radar.ScanAreaWithRandomStrategy(strategyToUse, buttonToShoot);
+                var message = radar.ScanAreaWithRandomStrategy(buttonToShoot);
 
                 AttackToEnemy($"[Radar] {message}");
 
