@@ -104,10 +104,10 @@ namespace BattleshipMp
 
         private void Form2_Load(object sender, EventArgs e)
         {
-            timer1.Start();
             shipList = null;
             CreateShipList();
             RemainingShips();
+            timer1.Start();
         }
 
         // 1 // In the first step, create ships derived from the "Ship" model (class) and list these ships.
@@ -116,11 +116,6 @@ namespace BattleshipMp
             if (shipList == null)
             {
                 shipList = new List<IShip>();
-            }
-
-            if (specialShipList == null)
-            {
-                specialShipList = new List<ISpecialShip>();
             }
 
             IShip submarine = _shipFactory.CreateSubmarine();
