@@ -5,18 +5,24 @@ namespace BattleshipMpClient.Strategy
 {
     public class RadarStrategyGenerator
     {
-        public IRadarStrategy GenerateRadarStrategyRandomly()
+        private readonly List<IRadarStrategy> _strategies;
+
+        public RadarStrategyGenerator()
         {
-            var rnd = new Random();
-            var strategies = new List<IRadarStrategy>
+            _strategies = new List<IRadarStrategy>
             {
                 new DiagonalRadarStrategy(),
                 new HorizontalRadarStrategy(),
                 new VerticalHorizontalRadarStrategy(),
                 new VerticalRadarStrategy()
             };
+        }
 
-            return strategies[rnd.Next(strategies.Count)];
+        public IRadarStrategy GenerateRadarStrategyRandomly()
+        {
+            var rnd = new Random();
+
+            return _strategies[rnd.Next(_strategies.Count)];
         }
     }
 }
