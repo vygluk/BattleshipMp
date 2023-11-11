@@ -40,6 +40,7 @@ namespace BattleshipMpClient
         private readonly ExtraRoundPublisher _extraRoundPublisher;
         private const int PERCENTAGE_MAX = 100;
         private HashSet<string> clickedButtons = new HashSet<string>();
+        bool hasShield = false;
 
 
         public Form4_GameScreen(List<(string, Color)> list)
@@ -166,8 +167,11 @@ namespace BattleshipMpClient
 
             AttackToEnemy(clickedButton.Name);
 
-            if (specialShip != null && hasArmor)
+            if (specialShip != null && (hasArmor || hasShield))
+            {
+                hasShield = false;
                 return;
+            }
 
             clickedButton.Enabled = false;
             clickedButtons.Add(clickedButton.Name);
@@ -277,7 +281,6 @@ namespace BattleshipMpClient
             }
 
             bool isShot = false;
-            bool hasShield = false;
             string shotButtonName = "";
             string shottedShip = "";
             ShipButtons deletingButton = null;
