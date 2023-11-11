@@ -6,7 +6,7 @@ namespace BattleshipMp.Builder
 {
     public class FormCreator
     {
-        IFormBuilder _builder;
+        private readonly IFormBuilder _builder;
 
         public FormCreator(IFormBuilder builder)
         {

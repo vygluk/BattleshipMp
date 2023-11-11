@@ -6,7 +6,12 @@ namespace BattleshipMp.Builder
 {
     public class FormBuilder : IFormBuilder
     {
-        private Form2_PreparatoryScreen _form = new Form2_PreparatoryScreen();
+        private readonly Form2_PreparatoryScreen _form;
+
+        public FormBuilder()
+        {
+            _form = new Form2_PreparatoryScreen();
+        }
 
         public void AddFormColor(Color color)
         {
