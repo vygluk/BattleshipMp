@@ -60,6 +60,9 @@
     <Compile Include="Factory\Ship\SpecialSubmarine.cs" />
     <Compile Include="Factory\Ship\Submarine.cs" />
     <Compile Include="Facade\GameFacade.cs" />
+    <Compile Include="Facade\FacadeClasses\AttackSender.cs" />
+    <Compile Include="Facade\FacadeClasses\AttackReceiver.cs" />
+    <Compile Include="Facade\FacadeClasses\GameCommunication.cs" />
     <Compile Include="Form12_ShipThemeSelection.cs">
       <SubType>Form</SubType>
     </Compile>

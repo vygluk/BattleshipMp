@@ -90,7 +90,7 @@ namespace BattleshipMpClient
 
             try
             {
-                gameFacade.StartGameCommunication();
+                gameFacade.GetGameCommunication().StartGameCommunication();
                 //STR = new StreamReader(Client.GetInstance.TcpClient.GetStream());
                 //STW = new StreamWriter(Client.GetInstance.TcpClient.GetStream());
                 //STW.AutoFlush = true;
@@ -111,7 +111,7 @@ namespace BattleshipMpClient
             {
                 try
                 {
-                    string recieve = gameFacade.ReceiveAttack();
+                    string recieve = gameFacade.GetAttackReceiver().ReceiveAttack();
                     if (!string.IsNullOrEmpty(recieve))
                     {
                         AttackFromEnemy(recieve);
@@ -142,7 +142,8 @@ namespace BattleshipMpClient
             //    MessageBox.Show("Message could not be sent!!");
             //}
 
-            gameFacade.SendAttack(TextToSend);
+            //gameFacade.SendAttack(TextToSend);
+            gameFacade.GetAttackSender().SendAttack(TextToSend);
             backgroundWorker2.CancelAsync();
         }
 
