@@ -23,9 +23,19 @@ namespace BattleshipMpClient.Factory.Ship
             return new Destroyer() { color = Color.LightSkyBlue };
         }
 
+        public ISpecialShip CreateSpecialDestroyer()
+        {
+            return new SpecialDestroyer() { color = Color.SkyBlue };
+        }
+
         public IShip CreateCruiser()
         {
             return new Cruiser() { color = Color.LightGreen };
+        }
+
+        public ISpecialShip CreateSpecialCruiser()
+        {
+            return new SpecialCruiser() { color = Color.Green };
         }
 
         public IShip CreateBattleship()

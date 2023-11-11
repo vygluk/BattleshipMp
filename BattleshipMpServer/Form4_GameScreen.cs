@@ -216,12 +216,11 @@ namespace BattleshipMp
             // If the game is over, this data is read in the 3rd iteration.
             else if (recieve.Contains("youwin"))
             {
-                DialogResult res = MessageBox.Show("Victory. Would you like to return to the preparation screen?", "Server - Game Result", MessageBoxButtons.YesNo);
+                DialogResult res = MessageBox.Show("Victory.", "Server - Game Result", MessageBoxButtons.OK);
                 {
                     if (res == DialogResult.Yes)
                     {
-                        myExit = true;
-                        this.Close();
+                        Environment.Exit(1);
                     }
                     else
                         Environment.Exit(1);
@@ -351,7 +350,7 @@ namespace BattleshipMp
 
             if (isShot)
             {
-                if (shottedShip == "SpecialSubmarine")
+                if (shottedShip == "SpecialSubmarine" || shottedShip == "SpecialCruiser" || shottedShip == "SpecialDestroyer")
                 {
                     if (hasShield)
                     {
@@ -389,12 +388,11 @@ namespace BattleshipMp
                                 return;
                             }
                             AttackToEnemy("youwin");
-                            DialogResult res = MessageBox.Show("You lost. Do you want to return to the preparation screen?", "Server - Game Result", MessageBoxButtons.YesNo);
+                            DialogResult res = MessageBox.Show("You lost.", "Server - Game Result", MessageBoxButtons.OK);
                             {
                                 if (res == DialogResult.Yes)
                                 {
-                                    myExit = true;
-                                    this.Close();
+                                    Environment.Exit(1);
                                 }
                                 else
                                     Environment.Exit(1);
@@ -460,8 +458,6 @@ namespace BattleshipMp
                 return;
             }
 
-            clickedButton.Enabled = false;
-            clickedButtons.Add(clickedButton.Name);
         }
 
         //  Makes adjustments to the button name while sending data. A11 shaped button sends its name as A1.

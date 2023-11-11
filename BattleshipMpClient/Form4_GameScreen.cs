@@ -174,8 +174,6 @@ namespace BattleshipMpClient
                 return;
             }
 
-            clickedButton.Enabled = false;
-            clickedButtons.Add(clickedButton.Name);
         }
 
         private void AttackFromEnemy(string recieve)
@@ -226,12 +224,11 @@ namespace BattleshipMpClient
             }
             else if (recieve.Contains("youwin"))
             {
-                DialogResult res = MessageBox.Show("Victory. Would you like to return to the preparation screen?", "Client - Game Result", MessageBoxButtons.YesNo);
+                DialogResult res = MessageBox.Show("Victory.", "Client - Game Result", MessageBoxButtons.OK);
                 {
                     if (res == DialogResult.Yes)
                     {
-                        myExit = true;
-                        this.Close();
+                        Environment.Exit(1);
                     }
                     else
                         Environment.Exit(1);
@@ -354,7 +351,7 @@ namespace BattleshipMpClient
 
             if (isShot)
             {
-                if (shottedShip == "SpecialSubmarine")
+                if (shottedShip == "SpecialSubmarine" || shottedShip == "SpecialCruiser" || shottedShip == "SpecialDestroyer")
                 {
                     if (hasShield)
                     {
@@ -396,12 +393,11 @@ namespace BattleshipMpClient
                                 return;
                             }
                             AttackToEnemy("youwin");
-                            DialogResult res = MessageBox.Show("You lost. Do you want to return to the preparation screen?", "Server - Game Result", MessageBoxButtons.YesNo);
+                            DialogResult res = MessageBox.Show("You lost.", "Server - Game Result", MessageBoxButtons.OK);
                             {
                                 if (res == DialogResult.Yes)
                                 {
-                                    myExit = true;
-                                    this.Close();
+                                    Environment.Exit(1);
                                 }
                                 else
                                     Environment.Exit(1);

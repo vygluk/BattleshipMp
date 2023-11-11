@@ -11,7 +11,9 @@ namespace BattleshipMpServer.Factory.Ship
         IShip CreateSubmarine();
         ISpecialShip CreateSpecialSubmarine();
         IShip CreateDestroyer();
+        ISpecialShip CreateSpecialDestroyer();
         IShip CreateCruiser();
+        ISpecialShip CreateSpecialCruiser();
         IShip CreateBattleship();
     }
 }

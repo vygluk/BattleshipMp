@@ -117,11 +117,15 @@ namespace BattleshipMpClient
             IShip cruiser = _shipFactory.CreateCruiser();
             IShip battleship = _shipFactory.CreateBattleship();
             ISpecialShip specialSubmarine = _shipFactory.CreateSpecialSubmarine();
+            ISpecialShip specialCruiser = _shipFactory.CreateSpecialCruiser();
+            ISpecialShip specialDestroyer = _shipFactory.CreateSpecialDestroyer();
             shipList.Add(submarine);
             shipList.Add(destroyer);
             shipList.Add(cruiser);
             shipList.Add(battleship);
             specialShipList.Add(specialSubmarine);
+            specialShipList.Add(specialCruiser);
+            specialShipList.Add(specialDestroyer);
         }
 
         private void GetSelectedButtons()
@@ -322,6 +326,12 @@ namespace BattleshipMpClient
 
             lblSpecialSubmarine.Text = lblSpecialSubmarine.Text.Substring(0, lblSpecialSubmarine.Text.Length - 1);
             lblSpecialSubmarine.Text += specialShipList.FirstOrDefault(x => x.shipName == "SpecialSubmarine").remShips.ToString();
+
+            lblSpecialCruiser.Text = lblSpecialCruiser.Text.Substring(0, lblSpecialCruiser.Text.Length - 1);
+            lblSpecialCruiser.Text += specialShipList.FirstOrDefault(x => x.shipName == "SpecialCruiser").remShips.ToString();
+
+            lblSpecialDestroyer.Text = lblSpecialDestroyer.Text.Substring(0, lblSpecialDestroyer.Text.Length - 1);
+            lblSpecialDestroyer.Text += specialShipList.FirstOrDefault(x => x.shipName == "SpecialDestroyer").remShips.ToString();
 
             foreach (var item in shipList)
             {

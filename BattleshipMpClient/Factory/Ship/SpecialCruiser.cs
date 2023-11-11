@@ -5,13 +5,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace BattleshipMpServer.Factory.Ship
+namespace BattleshipMpClient.Factory.Ship
 {
-    public class Destroyer : IShip
+    public class SpecialCruiser : ISpecialShip
     {
-        public string shipName => "Destroyer";
-        public int remShips { get; set; } = 2;
+        public string shipName => "SpecialCruiser";
+        public int remShips { get; set; } = 1;
         public List<ShipButtons> shipPerButton { get; set; } = new List<ShipButtons>();
         public Color color { get; set; }
+        public int remShields { get; set; } = 3;
     }
 }
