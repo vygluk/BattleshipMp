@@ -18,7 +18,6 @@ namespace BattleshipMpServer.Factory.Ship
         {
             return new SpecialSubmarine() { color = Color.FromArgb(82, 61, 129) };
         }
-
         public IShip CreateDestroyer()
         {
             return new Destroyer() { color = Color.DarkOliveGreen };
@@ -32,6 +31,16 @@ namespace BattleshipMpServer.Factory.Ship
         public IShip CreateBattleship()
         {
             return new Battleship() { color = Color.DarkMagenta };
+        }
+
+        public ISpecialShip CreateSpecialDestroyer()
+        {
+            return new SpecialDestroyer() { color = Color.OliveDrab };
+        }
+
+        public ISpecialShip CreateSpecialCruiser()
+        {
+            return new SpecialCruiser() { color = Color.Cyan };
         }
     }
 }

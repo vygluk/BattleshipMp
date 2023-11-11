@@ -29,6 +29,8 @@ namespace BattleshipMp.Builder
         public List<ISpecialShip> BuildSpecialShips()
         {
             _specialShips.Add(_builder.CreateSpecialSubmarine());
+            _specialShips.Add(_builder.CreateSpecialCruiser());
+            _specialShips.Add(_builder.CreateSpecialDestroyer());
 
             return _specialShips;
         }

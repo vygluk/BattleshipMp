@@ -13,5 +13,9 @@ namespace BattleshipMp.Builder
         IShip CreateBattleship();
 
         ISpecialShip CreateSpecialSubmarine();
+
+        ISpecialShip CreateSpecialDestroyer();
+
+        ISpecialShip CreateSpecialCruiser();
     }
 }

@@ -380,6 +380,12 @@ namespace BattleshipMpClient
             lblSpecialSubmarine.Text = lblSpecialSubmarine.Text.Substring(0, lblSpecialSubmarine.Text.Length - 1);
             lblSpecialSubmarine.Text += specialShipList.FirstOrDefault(x => x.shipName == "SpecialSubmarine").remShips.ToString();
 
+            lblSpecialCruiser.Text = lblSpecialCruiser.Text.Substring(0, lblSpecialCruiser.Text.Length - 1);
+            lblSpecialCruiser.Text += specialShipList.FirstOrDefault(x => x.shipName == "SpecialCruiser").remShips.ToString();
+
+            lblSpecialDestroyer.Text = lblSpecialDestroyer.Text.Substring(0, lblSpecialDestroyer.Text.Length - 1);
+            lblSpecialDestroyer.Text += specialShipList.FirstOrDefault(x => x.shipName == "SpecialDestroyer").remShips.ToString();
+
             foreach (var item in shipList)
             {
                 if (item.remShips == 0)

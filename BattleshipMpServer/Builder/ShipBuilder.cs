@@ -1,4 +1,5 @@
 ﻿using BattleshipMpServer.Factory.Ship;
+using System.Drawing;
 
 namespace BattleshipMp.Builder
 {
@@ -34,6 +35,16 @@ namespace BattleshipMp.Builder
         public IShip CreateSubmarine()
         {
             return _factory.CreateSubmarine();
+        }
+
+        public ISpecialShip CreateSpecialDestroyer()
+        {
+            return _factory.CreateSpecialDestroyer();
+        }
+
+        public ISpecialShip CreateSpecialCruiser()
+        {
+            return _factory.CreateSpecialCruiser();
         }
     }
 }
