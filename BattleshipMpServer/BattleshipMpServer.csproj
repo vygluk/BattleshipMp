@@ -46,6 +46,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entity\Iceberg.cs" />
+    <Compile Include="Entity\Obsticle.cs" />
     <Compile Include="Factory\Ship\Battleship.cs" />
     <Compile Include="Factory\Ship\Cruiser.cs" />
     <Compile Include="Factory\Ship\Destroyer.cs" />

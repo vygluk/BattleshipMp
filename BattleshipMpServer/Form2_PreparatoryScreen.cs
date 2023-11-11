@@ -1,15 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using System.Drawing.Printing;
 using System.Linq;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using BattleshipMpServer.Entity;
 using BattleshipMpServer.Factory.Ship;
 
 namespace BattleshipMp
@@ -22,7 +17,8 @@ namespace BattleshipMp
         {
             _shipFactory = shipFactory;
             InitializeComponent();
-            DoubleBuffered = true;            
+            DoubleBuffered = true;
+            SetObsticlesUp();
         }
 
         //  Create a drawing to select ship positions starting with a mouse click. Get selected buttons when mouse is released.
@@ -96,11 +92,70 @@ namespace BattleshipMp
 
         public static List<IShip> shipList = new List<IShip>();
         public static List<ISpecialShip> specialShipList = new List<ISpecialShip>();
+        public List<ShipButtons> icebergTiles = new List<ShipButtons>();
+        public List<Control> icebergButtons = new List<Control>();
+        public Iceberg iceberg = new Iceberg();
 
         List<(string, Color)> AllSelectedButtonList = new List<(string, Color)>();
-
         bool isPanelActive = true;
 
+        private void SetObsticlesUp()
+        {
+            foreach (Control c in Controls)
+            {
+                if (c is Button)
+                {
+                    if (c.Name == "E4")
+                    {
+                        c.BackColor = Color.Blue;
+                        icebergButtons.Add(c);
+                    }
+                    if (c.Name == "F4")
+                    {
+                        c.BackColor = Color.Blue;
+                        icebergButtons.Add(c);
+                    }
+                }
+            }
+
+            ShipButtons tiles = new ShipButtons();
+            List<string> strings = new List<string>
+            {
+                "E5",
+                "F5"
+            };
+
+            tiles.buttonNames = strings;
+            icebergTiles.Add(tiles);
+            iceberg.ReplaceTiles(icebergTiles);
+        }
+
+        private bool ValidateTile(Control button)
+        {
+            foreach (Control obsticle in icebergButtons)
+            {
+                if (obsticle.Name == button.Name)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private void ValidateSelection()
+        {
+            foreach (Control c in Controls)
+            {
+                if (c is Button && selection.IntersectsWith(c.Bounds) && ValidateTile(c))
+                {
+                    MessageBox.Show("Can't create ship over obsticle.");
+                    selection = new Rectangle();
+
+                    return;
+                }
+            }
+        }
 
         private void Form2_Load(object sender, EventArgs e)
         {
@@ -138,7 +193,7 @@ namespace BattleshipMp
         private void GetSelectedButtons()
         {
             // 2 // Put the buttons selected with the mouse into the list.
-
+            ValidateSelection();
             List<Button> selected = new List<Button>();
 
             foreach (Control c in Controls)

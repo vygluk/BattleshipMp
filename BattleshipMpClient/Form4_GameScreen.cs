@@ -1,16 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using BattleshipMpClient.Factory.Ship;
 using BattleshipMpClient.Facade;
+using BattleshipMpClient.Entity;
 
 namespace BattleshipMpClient
 {
@@ -28,16 +24,20 @@ namespace BattleshipMpClient
         bool areEnabledButtons = true;
         List<(string, Color)> AllSelectedButtonList;
         bool myExit = false;
-
+        List<Control> icebergButtons = new List<Control>();
+        List<ShipButtons> icebergTiles = new List<ShipButtons>();
+        List<Iceberg> icebergs = new List<Iceberg>();
+        Iceberg motherIceberg = new Iceberg();
 
         public Form4_GameScreen(List<(string, Color)> list)
         {
-            InitializeComponent();
+            InitializeComponent(); 
             this.AllSelectedButtonList = list;
             Control.CheckForIllegalCrossThreadCalls = false;
 
 
             gameFacade = new GameFacade();
+
         }
 
         private void button_mousehover(object sender, EventArgs e)
@@ -50,6 +50,85 @@ namespace BattleshipMpClient
             ((Button)sender).Cursor = Cursors.Default;
         }
 
+        private void SetObsticlesUp()
+        {
+            foreach (Control c in groupBox1.Controls)
+            {
+                if (c is Button)
+                {
+                    if (c.Name == "E4")
+                    {
+                        c.BackColor = Color.Blue;
+                        icebergButtons.Add(c);
+                        motherIceberg.AddTiles(c);
+                    }
+                    if (c.Name == "F4")
+                    {
+                        c.BackColor = Color.Blue;
+                        icebergButtons.Add(c);
+                        motherIceberg.AddTiles(c);
+                    }
+                }
+            }
+
+            ShipButtons tiles = new ShipButtons();
+            List<string> strings = new List<string>
+            {
+                "E5",
+                "F5"
+            };
+
+            tiles.buttonNames = strings;
+            icebergTiles.Add(tiles);
+            icebergs.Add(motherIceberg);
+        }
+
+        private void ExpandObsticle()
+        {
+            string randomTileName = GenerateRandomTile();
+            Iceberg iceberg = new Iceberg();
+            iceberg = (Iceberg)motherIceberg.DeepCopy();
+            foreach (Control c in groupBox1.Controls)
+            {
+                if (c is Button && c.Name == randomTileName)
+                {
+                    c.BackColor = Color.Blue;
+                    icebergButtons.Add(c);
+                    iceberg.AddTiles(c);
+                    if (CheckIfShipsTile(c))
+                    {
+                        var nameNumber = c.Name[1];
+                        var nameToSend = $"{c.Name}{nameNumber}";
+                        AttackFromEnemy(nameToSend);
+                        SwitchGameButtonsEnabled();
+                    }
+                }
+            }
+        }
+
+        private bool CheckIfShipsTile(Control c)
+        {
+            foreach(var tile in AllSelectedButtonList)
+            {
+                if(tile.Item1 == c.Name)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private string GenerateRandomTile()
+        {
+            Random rnd = new Random();
+
+            int randomNumber = rnd.Next(1, 10);
+            char randomLetter = (char)('A' + rnd.Next(0, 10));
+            string combined =  randomLetter + randomNumber.ToString();
+
+            return combined;
+        }
 
         private void Form4_Load(object sender, EventArgs e)
         {
@@ -76,10 +155,13 @@ namespace BattleshipMpClient
             }
 
             timer1.Start();
+            SetObsticlesUp();
+
         }
 
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
+            int turns = 0;
             while (Client.GetInstance.IsConnected)
             {
                 try
@@ -88,6 +170,10 @@ namespace BattleshipMpClient
                     if (!string.IsNullOrEmpty(recieve))
                     {
                         AttackFromEnemy(recieve);
+                        if (turns % 2 == 0)
+                        {
+                            ExpandObsticle();
+                        }
                     }
                     //recieve = STR.ReadLine();
 
@@ -96,6 +182,7 @@ namespace BattleshipMpClient
                     //AttackFromEnemy(recieve);
                     //}
                     //recieve = "";
+                    turns++;
                 }
                 catch (Exception ex)
                 {
