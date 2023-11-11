@@ -46,6 +46,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Entity\Iceberg.cs" />
+    <Compile Include="Entity\Obsticle.cs" />
     <Compile Include="Builder\FormBuilder.cs" />
     <Compile Include="Builder\FormCreator.cs" />
     <Compile Include="Builder\IFormBuilder.cs" />

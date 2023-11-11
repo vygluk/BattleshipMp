@@ -53,6 +53,8 @@
     <Compile Include="Builder\ShipBuilder.cs" />
     <Compile Include="Builder\ShipsCreator.cs" />
     <Compile Include="Client.cs" />
+    <Compile Include="Entity\Iceberg.cs" />
+    <Compile Include="Entity\Obsticle.cs" />
     <Compile Include="Constants\BoardSize.cs" />
     <Compile Include="Factory\Ship\Battleship.cs" />
     <Compile Include="Factory\Ship\Cruiser.cs" />

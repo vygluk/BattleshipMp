@@ -1,13 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
 using System.Drawing.Drawing2D;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using BattleshipMpClient.Entity;
 using BattleshipMp.Builder;
 using BattleshipMpClient.Factory.Ship;
 
@@ -23,6 +20,7 @@ namespace BattleshipMpClient
         {
             InitializeComponent();
             DoubleBuffered = true;
+            SetObsticlesUp();
         }
 
         public void AddShipFactory(IShipFactory shipFactory)
@@ -37,6 +35,9 @@ namespace BattleshipMpClient
         private Point selectionEnd;
         private Rectangle selection;
         private bool mouseDown;
+        public List<ShipButtons> icebergTiles = new List<ShipButtons>();
+        public List<Control> icebergButtons = new List<Control>();
+        public Iceberg iceberg = new Iceberg();
 
 
 
@@ -83,6 +84,37 @@ namespace BattleshipMpClient
             }
         }
 
+        private void SetObsticlesUp()
+        {
+            foreach(Control c in Controls)
+            {
+                if (c is Button)
+                {
+                    if (c.Name == "E4")
+                    {
+                        c.BackColor = Color.Blue;
+                        icebergButtons.Add(c);
+                    }
+                    if (c.Name == "F4")
+                    {
+                        c.BackColor = Color.Blue;
+                        icebergButtons.Add(c);
+                    }
+                }
+            }
+            
+            ShipButtons tiles = new ShipButtons();
+            List<string> strings = new List<string>
+            {
+                "E5",
+                "F5"
+            };
+
+            tiles.buttonNames = strings;
+            icebergTiles.Add(tiles);
+            iceberg.ReplaceTiles(icebergTiles);
+        }
+
         private void SetSelectionRect()
         {
             int x, y;
@@ -121,9 +153,36 @@ namespace BattleshipMpClient
             shipList = _shipsCreator.BuildNormalShips();
             specialShipList = _shipsCreator.BuildSpecialShips();
         }
+        private bool ValidateTile(Control button)
+        {
+            foreach (Control obsticle in icebergButtons)
+            {
+                if (obsticle.Name == button.Name)
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        private void ValidateSelection()
+        {
+            foreach (Control c in Controls)
+            {
+                if (c is Button && selection.IntersectsWith(c.Bounds) && ValidateTile(c))
+                {
+                    MessageBox.Show("Can't create ship over obsticle.");
+                    selection = new Rectangle();
+
+                    return;
+                }
+            }
+        }
 
         private void GetSelectedButtons()
         {
+            ValidateSelection();
             List<Button> selected = new List<Button>();
 
             foreach (Control c in Controls)
