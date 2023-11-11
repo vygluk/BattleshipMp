@@ -15,6 +15,7 @@ using BattleshipMpServer.Facade;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Button;
 using BattleshipMpServer.Strategy;
 using BattleshipMpServer.Observer;
+using BattleshipMp.Builder;
 
 namespace BattleshipMp
 {
@@ -560,7 +561,10 @@ namespace BattleshipMp
             {
                 AttackToEnemy("exitt");
             }
-            Form2_PreparatoryScreen frm2 = new Form2_PreparatoryScreen(new LightShipFactory());
+
+            var formBuilder = new FormBuilder();
+            var formCreator = new FormCreator(formBuilder);
+            var frm2 = formCreator.BuildLightForm();
             frm2.Show();
         }
     }

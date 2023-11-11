@@ -8,18 +8,28 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using BattleshipMp.Builder;
 using BattleshipMpClient.Factory.Ship;
 
 namespace BattleshipMpClient
 {
     public partial class Form2_PreparatoryScreen : Form
     {
-        private readonly IShipFactory _shipFactory;
-        public Form2_PreparatoryScreen(IShipFactory shipFactory)
+        private IShipFactory _shipFactory;
+        private IShipBuilder _builder;
+        private ShipsCreator _shipsCreator;
+
+        public Form2_PreparatoryScreen()
         {
-            _shipFactory = shipFactory;
             InitializeComponent();
             DoubleBuffered = true;
+        }
+
+        public void AddShipFactory(IShipFactory shipFactory)
+        {
+            _shipFactory = shipFactory;
+            _builder = new ShipBuilder(_shipFactory);
+            _shipsCreator = new ShipsCreator(_builder);
         }
 
         #region ****************************************************** 2D Drawing ******************************************************
@@ -105,23 +115,11 @@ namespace BattleshipMpClient
             timer1.Start();
         }
 
+        // 1 // In the first step, create ships derived from the "Ship" model (class) and list these ships.
         private void CreateShipList()
         {
-            if (shipList == null)
-            {
-                shipList = new List<IShip>();
-            }
-
-            IShip submarine = _shipFactory.CreateSubmarine();
-            IShip destroyer = _shipFactory.CreateDestroyer();
-            IShip cruiser = _shipFactory.CreateCruiser();
-            IShip battleship = _shipFactory.CreateBattleship();
-            ISpecialShip specialSubmarine = _shipFactory.CreateSpecialSubmarine();
-            shipList.Add(submarine);
-            shipList.Add(destroyer);
-            shipList.Add(cruiser);
-            shipList.Add(battleship);
-            specialShipList.Add(specialSubmarine);
+            shipList = _shipsCreator.BuildNormalShips();
+            specialShipList = _shipsCreator.BuildSpecialShips();
         }
 
         private void GetSelectedButtons()
