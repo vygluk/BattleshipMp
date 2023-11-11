@@ -3,6 +3,7 @@ using System.IO;
 using System.Windows.Forms;
 using BattleshipMp;
 using BattleshipMpServer;
+using BattleshipMpServer.Facade.FacadeClasses;
 
 namespace BattleshipMpServer.Facade
 {
@@ -11,6 +12,10 @@ namespace BattleshipMpServer.Facade
         private StreamReader STR;
         private StreamWriter STW;
 
+        private AttackSender attackSender;
+        private AttackReceiver attackReceiver;
+        private GameCommunication gameCommunication;
+
         public GameFacade()
         {
             try
@@ -18,6 +23,10 @@ namespace BattleshipMpServer.Facade
                 STR = new StreamReader(Server.GetInstance.Client.GetStream());
                 STW = new StreamWriter(Server.GetInstance.Client.GetStream());
                 STW.AutoFlush = true;
+
+                attackSender = new AttackSender(STW);
+                attackReceiver = new AttackReceiver(STR);
+                gameCommunication = new GameCommunication(STR, STW);
             }
             catch (Exception ex)
             {
@@ -25,36 +34,19 @@ namespace BattleshipMpServer.Facade
             }
         }
 
-        public void SendAttack(string buttonName)
+        public AttackSender GetAttackSender()
         {
-            if (Server.GetInstance.IsClientConnected)
-            {
-                STW.WriteLine(buttonName);
-            }
-            else
-            {
-                MessageBox.Show("Message could not be sent!!");
-            }
+            return attackSender;
         }
 
-        public string ReceiveAttack()
+        public AttackReceiver GetAttackReceiver()
         {
-            return STR.ReadLine();
+            return attackReceiver;
         }
 
-        public void StartGameCommunication()
+        public GameCommunication GetGameCommunication()
         {
-            try
-            {
-                STR = new StreamReader(Server.GetInstance.Client.GetStream());
-                STW = new StreamWriter(Server.GetInstance.Client.GetStream());
-                STW.AutoFlush = true;
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show(ex.Message.ToString());
-            }
+            return gameCommunication;
         }
-
     }
 }

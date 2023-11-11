@@ -96,7 +96,7 @@ namespace BattleshipMp
             // Since the "backgorundWorker1" object will always listen for incoming data, it will be running in the background all the time.
             try
             {
-                gameFacade.StartGameCommunication();
+                gameFacade.GetGameCommunication().StartGameCommunication();
                 //STR = new StreamReader(Server.GetInstance.Client.GetStream());
                 //STW = new StreamWriter(Server.GetInstance.Client.GetStream());
                 //STW.AutoFlush = true;
@@ -134,7 +134,7 @@ namespace BattleshipMp
             {
                 try
                 {
-                    string recieve = gameFacade.ReceiveAttack();
+                    string recieve = gameFacade.GetAttackReceiver().ReceiveAttack();
                     if (!string.IsNullOrEmpty(recieve))
                     {
                         AttackFromEnemy(recieve);
@@ -427,7 +427,7 @@ namespace BattleshipMp
             //{
             //    MessageBox.Show("Message could not be sent!!");
             //}
-            gameFacade.SendAttack(TextToSend);
+            gameFacade.GetAttackSender().SendAttack(TextToSend);
             backgroundWorker2.CancelAsync();
         }
 
