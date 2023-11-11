@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BattleshipMp.Builder;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -20,7 +21,7 @@ namespace BattleshipMp
 
         Dictionary<string, int> squarePerShips = new Dictionary<string, int>()
         {
-            {"Battleship", 4}, {"Cruiser", 3}, {"Destroyer", 2}, {"Submarine", 1}
+            {"Battleship", 1}, {"Cruiser", 1}, {"Destroyer", 1}, {"Submarine", 1}
         };
 
         Dictionary<string, int> squarePerSpecialShips = new Dictionary<string, int>()

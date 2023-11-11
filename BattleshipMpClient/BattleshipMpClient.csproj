@@ -46,9 +46,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Builder\FormBuilder.cs" />
+    <Compile Include="Builder\FormCreator.cs" />
+    <Compile Include="Builder\IFormBuilder.cs" />
+    <Compile Include="Builder\IShipBuilder.cs" />
+    <Compile Include="Builder\ShipBuilder.cs" />
+    <Compile Include="Builder\ShipsCreator.cs" />
     <Compile Include="Client.cs" />
     <Compile Include="Entity\Iceberg.cs" />
     <Compile Include="Entity\Obsticle.cs" />
+    <Compile Include="Constants\BoardSize.cs" />
     <Compile Include="Factory\Ship\Battleship.cs" />
     <Compile Include="Factory\Ship\Cruiser.cs" />
     <Compile Include="Factory\Ship\DarkShipFactory .cs" />
@@ -61,6 +68,9 @@
     <Compile Include="Factory\Ship\SpecialSubmarine.cs" />
     <Compile Include="Factory\Ship\Submarine.cs" />
     <Compile Include="Facade\GameFacade.cs" />
+    <Compile Include="Facade\FacadeClasses\AttackSender.cs" />
+    <Compile Include="Facade\FacadeClasses\AttackReceiver.cs" />
+    <Compile Include="Facade\FacadeClasses\GameCommunication.cs" />
     <Compile Include="Form12_ShipThemeSelection.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -91,8 +101,21 @@
     <Compile Include="Form4_GameScreen.Designer.cs">
       <DependentUpon>Form4_GameScreen.cs</DependentUpon>
     </Compile>
+    <Compile Include="Observer\ExtraRoundSubscriberMap.cs" />
+    <Compile Include="Observer\ExtraRoundPublisher.cs" />
+    <Compile Include="Observer\ExtraRoundSubscriber.cs" />
+    <Compile Include="Observer\HighExtraRoundMultiplier.cs" />
+    <Compile Include="Observer\LowExtraRoundMultiplier.cs" />
+    <Compile Include="Observer\MediumExtraRoundMultiplier.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Strategy\DiagonalRadarStrategy.cs" />
+    <Compile Include="Strategy\HorizontalRadarStrategy.cs" />
+    <Compile Include="Strategy\IRadarStrategy.cs" />
+    <Compile Include="Strategy\Radar.cs" />
+    <Compile Include="Strategy\RadarStrategyGenerator.cs" />
+    <Compile Include="Strategy\VerticalHorizontalRadarStrategy.cs" />
+    <Compile Include="Strategy\VerticalRadarStrategy.cs" />
     <EmbeddedResource Include="Form12_ShipThemeSelection.resx">
       <DependentUpon>Form12_ShipThemeSelection.cs</DependentUpon>
     </EmbeddedResource>
@@ -129,6 +152,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

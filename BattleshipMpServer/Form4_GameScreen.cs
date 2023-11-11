@@ -7,6 +7,10 @@ using System.Windows.Forms;
 using BattleshipMpServer.Factory.Ship;
 using BattleshipMpServer.Facade;
 using BattleshipMpServer.Entity;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Button;
+using BattleshipMpServer.Strategy;
+using BattleshipMpServer.Observer;
+using BattleshipMp.Builder;
 
 namespace BattleshipMp
 {
@@ -27,6 +31,16 @@ namespace BattleshipMp
         List<Iceberg> icebergs = new List<Iceberg>();
         Iceberg motherIceberg = new Iceberg();
         bool myExit = false;
+        bool enemyHasUsedRadarUse = false;
+        bool hasRadarUse = true;
+        bool enemyReceivedExtraRound = false;
+        bool weHaveReceivedExtraRound = false;
+        private readonly RadarStrategyGenerator _radarStrategyGenerator;
+        private readonly ExtraRoundSubscriberMap _extraRoundSubscriberMap;
+        private readonly ExtraRoundPublisher _extraRoundPublisher;
+        private const int PERCENTAGE_MAX = 100;
+        private HashSet<string> clickedButtons = new HashSet<string>();
+        bool hasShield = false;
 
         //  While creating the "game screen" object, get the list of selected buttons from Form2 and change their color with the help of constructor.
         public Form4_GameScreen(List<(string, Color)> list)
@@ -35,19 +49,35 @@ namespace BattleshipMp
             this.AllSelectedButtonList = list;
             Control.CheckForIllegalCrossThreadCalls = false;
 
+            _radarStrategyGenerator = new RadarStrategyGenerator();
+            _extraRoundSubscriberMap = new ExtraRoundSubscriberMap();
+            _extraRoundPublisher = new ExtraRoundPublisher();
+
+            foreach (var subscriber in _extraRoundSubscriberMap.GetSubscribers())
+            {
+                _extraRoundPublisher.Subscribe(subscriber);
+            }
+
             gameFacade = new GameFacade();
         }
 
         //  Replace the mouse pointer with a red target image while making moves. return to normal pointer when the button is over.
         private void button_mousehover(object sender, EventArgs e)
         {
-            ((Button)sender).Cursor = Cursors.Default;
-        }
-        private void button_mouseleave(object sender, EventArgs e)
-        {
-            ((Button)sender).Cursor = Cursors.Default;
+            if (sender is Button button)
+            {
+                Bitmap bm = new Bitmap(new Bitmap(Application.StartupPath + @"\Images\target.png"), 20, 20);
+                button.Cursor = new Cursor(bm.GetHicon());
+            }
         }
 
+        private void button_mouseleave(object sender, EventArgs e)
+        {
+            if (sender is Button button)
+            {
+                button.Cursor = Cursors.Default;
+            }
+        }
 
         private void Form4_GameScreen_Load(object sender, EventArgs e)
         {
@@ -65,7 +95,7 @@ namespace BattleshipMp
             // Since the "backgorundWorker1" object will always listen for incoming data, it will be running in the background all the time.
             try
             {
-                gameFacade.StartGameCommunication();
+                gameFacade.GetGameCommunication().StartGameCommunication();
                 //STR = new StreamReader(Server.GetInstance.Client.GetStream());
                 //STW = new StreamWriter(Server.GetInstance.Client.GetStream());
                 //STW.AutoFlush = true;
@@ -186,7 +216,7 @@ namespace BattleshipMp
             {
                 try
                 {
-                    string recieve = gameFacade.ReceiveAttack();
+                    string recieve = gameFacade.GetAttackReceiver().ReceiveAttack();
                     if (!string.IsNullOrEmpty(recieve))
                     {
                         AttackFromEnemy(recieve);
@@ -237,7 +267,11 @@ namespace BattleshipMp
                 //  String operations edit the received button names because the player's ships and the board on which the game is played are separate.
                 string result = recieve.Substring(recieve.Length - 2, 2);
                 result = result + result.Substring(result.Length - 1);
-                gameBoardButtons.FirstOrDefault(x => x.Name == result).BackgroundImage = Image.FromFile(Application.StartupPath + @"\Images\o.png");
+                var button = gameBoardButtons.FirstOrDefault(x => x.Name == result);
+                if (button != null)
+                {
+                    button.BackgroundImage = Image.FromFile(Application.StartupPath + @"\Images\o.png");
+                }
                 richTextBox1.AppendText("Miss\n");
                 return;
             }
@@ -245,7 +279,12 @@ namespace BattleshipMp
             {
                 string result = recieve.Substring(recieve.Length - 2, 2);
                 result = result + result.Substring(result.Length - 1);
-                gameBoardButtons.FirstOrDefault(x => x.Name == result).BackgroundImage = Image.FromFile(Application.StartupPath + @"\Images\x.png");
+                var button = gameBoardButtons.FirstOrDefault(x => x.Name == result);
+                if (button != null)
+                {
+                    button.BackgroundImage = Image.FromFile(Application.StartupPath + @"\Images\x.png");
+                    button.Enabled = false;
+                }
                 richTextBox1.AppendText("Hit\n");
                 return;
             }
@@ -281,13 +320,50 @@ namespace BattleshipMp
                 this.Close();
                 return;
             }
+            else if (recieve.Contains("[Radar]"))
+            {
+                richTextBox1.AppendText($"{recieve}\n");
+                hasRadarUse = false;
+                return;
+            }
+            else if (recieve.Contains("Extra round"))
+            {
+                weHaveReceivedExtraRound = true;
+                SwitchGameButtonsEnabled();
+                richTextBox1.AppendText($"[Lucky] The block you selected gave you extra round!\n");
+                return;
+            }
+
+            if (!enemyHasUsedRadarUse)
+            {
+                var radar = new Radar(_radarStrategyGenerator);
+
+                var buttonToShoot = recieve.Substring(0, recieve.Length - 1);
+                var message = radar.ScanAreaWithRandomStrategy(buttonToShoot);
+
+                AttackToEnemy($"[Radar] {message}");
+
+                enemyHasUsedRadarUse = true;
+                return;
+            }
+
+            var extraSubscriberToGet = recieve.Substring(0, recieve.Length - 1);
+            var rnd = new Random();
+            var extraSubscriberOnClickedButton = _extraRoundSubscriberMap.GetExtraRoundSubscriber(extraSubscriberToGet);
+            enemyReceivedExtraRound = extraSubscriberOnClickedButton.GetExtraRoundChancePercentages() > rnd.Next(PERCENTAGE_MAX + 1);
+            if (enemyReceivedExtraRound)
+            {
+                AttackToEnemy("Extra round");
+                SwitchGameButtonsEnabled();
+            }
 
             //  Variables held for the outcome of the hit.
             bool isShot = false;
-            bool hasShield = false;
             string shotButtonName = "";
             string shottedShip = "";
             ShipButtons deletingButton = null;
+
+            
 
             //  If the above if conditions are not met, the method considers it as a move.
             //  The counter move comes with the button name. Then it is searched among the buttons of the ship according to the structure in the "Ship" model.
@@ -356,6 +432,9 @@ namespace BattleshipMp
             //  If the target has been hit, the button on the target board is marked. Then it sends hit data across. Yine aynı AttackFromEnemy() metodu
             //  Again, the same AttackFromEnemy() method operates according to the incoming hit or miss data. + if(recieve.Contain(miss)) statement.
             //  The button of the hit ship is deleted from the list.
+
+            _extraRoundPublisher.NotifySubscribers();
+
             if (isShot)
             {
                 if (shottedShip == "SpecialSubmarine")
@@ -368,6 +447,7 @@ namespace BattleshipMp
                     }
                     else
                     {
+                        _extraRoundPublisher.Unsubscribe(_extraRoundSubscriberMap.GetExtraRoundSubscriber(extraSubscriberToGet));
                         myBoardButtons.FirstOrDefault(x => x.Name == shotButtonName).BackgroundImage = Image.FromFile(Application.StartupPath + @"\Images\x.png");
 
                         AttackToEnemy("hit:" + shotButtonName);
@@ -378,6 +458,7 @@ namespace BattleshipMp
                     }
                 } else
                 {
+                    _extraRoundPublisher.Unsubscribe(_extraRoundSubscriberMap.GetExtraRoundSubscriber(extraSubscriberToGet));
                     myBoardButtons.FirstOrDefault(x => x.Name == shotButtonName).BackgroundImage = Image.FromFile(Application.StartupPath + @"\Images\x.png");
 
                     AttackToEnemy("hit:" + shotButtonName);
@@ -414,6 +495,7 @@ namespace BattleshipMp
             //  If the target is not hit, only the background of the relevant button is changed and in the 2nd iteration, data is sent to read this part again.
             else
             {
+                _extraRoundPublisher.Unsubscribe(_extraRoundSubscriberMap.GetExtraRoundSubscriber(extraSubscriberToGet));
                 myBoardButtons.FirstOrDefault(x => x.Name == shotButtonName).BackgroundImage = Image.FromFile(Application.StartupPath + @"\Images\o.png");
                 AttackToEnemy("miss:" + shotButtonName);
                 return;
@@ -431,14 +513,41 @@ namespace BattleshipMp
             //{
             //    MessageBox.Show("Message could not be sent!!");
             //}
-            gameFacade.SendAttack(TextToSend);
+            gameFacade.GetAttackSender().SendAttack(TextToSend);
             backgroundWorker2.CancelAsync();
         }
 
         //  Click events of all buttons on which attacks will be made are associated with this method. When clicked, it sends the name of the button to enemy.
+
         private void button_click(object sender, EventArgs e)
         {
-            AttackToEnemy(((Button)sender).Name);
+            Button clickedButton = (Button)sender;
+            if (clickedButton == null || !clickedButton.Enabled)
+            {
+                return;
+            }
+
+            if (hasRadarUse)
+            {
+                AttackToEnemy(clickedButton.Name);
+                return;
+            }
+
+            var buttonToSearchFor = clickedButton.Name.Substring(0, clickedButton.Name.Length - 1);
+            var specialShip = Form2_PreparatoryScreen.specialShipList.Find(ship =>
+                ship.shipPerButton.Any(b => b.buttonNames.Contains(buttonToSearchFor)));
+            var hasArmor = specialShip?.remShields >= 1;
+
+            AttackToEnemy(clickedButton.Name);
+
+            if (specialShip != null && (hasArmor || hasShield))
+            {
+                hasShield = false;
+                return;
+            }
+
+            clickedButton.Enabled = false;
+            clickedButtons.Add(clickedButton.Name);
         }
 
         //  Makes adjustments to the button name while sending data. A11 shaped button sends its name as A1.
@@ -463,7 +572,40 @@ namespace BattleshipMp
         //  The method to activate or deactivate the buttons on the attack board according to the attack order.
         private void SwitchGameButtonsEnabled()
         {
-            if (areEnabledButtons == true)
+            if (weHaveReceivedExtraRound)
+            {
+                weHaveReceivedExtraRound = false;
+                foreach (var item in gameBoardButtons)
+                {
+                    if (!clickedButtons.Contains(item.Name))
+                    {
+                        item.Enabled = true;
+                    }
+                }
+
+                labelAttackTurn.Text = "ATTACK";
+                areEnabledButtons = true;
+
+                return;
+            }
+
+            if (enemyReceivedExtraRound)
+            {
+                foreach (var item in gameBoardButtons)
+                {
+                    item.Enabled = false;
+                }
+                labelAttackTurn.Text = "WAIT...";
+                areEnabledButtons = false;
+
+                enemyReceivedExtraRound = false;
+
+
+                richTextBox1.AppendText("Enemy extra round\n");
+                return;
+            }
+
+            if (areEnabledButtons)
             {
                 foreach (var item in gameBoardButtons)
                 {
@@ -476,12 +618,17 @@ namespace BattleshipMp
             {
                 foreach (var item in gameBoardButtons)
                 {
-                    item.Enabled = true;
+                    if (!clickedButtons.Contains(item.Name))
+                    {
+                        item.Enabled = true;
+                    }
                 }
-                labelAttackTurn.Text = "ATTACK";
+
+                labelAttackTurn.Text = hasRadarUse ? "RANDOM RADAR" : "ATTACK";
                 areEnabledButtons = true;
             }
         }
+
 
         private void timer1_Tick(object sender, EventArgs e)
         {
@@ -499,7 +646,10 @@ namespace BattleshipMp
             {
                 AttackToEnemy("exitt");
             }
-            Form2_PreparatoryScreen frm2 = new Form2_PreparatoryScreen(new LightShipFactory());
+
+            var formBuilder = new FormBuilder();
+            var formCreator = new FormCreator(formBuilder);
+            var frm2 = formCreator.BuildLightForm();
             frm2.Show();
         }
     }
