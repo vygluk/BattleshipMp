@@ -18,7 +18,7 @@ namespace BattleshipMpClient
 
         Dictionary<string, int> squarePerShips = new Dictionary<string, int>()
         {
-            {"Battleship", 1}, {"Cruiser", 1}, {"Destroyer", 1}, {"Submarine", 1}
+            {"Battleship", 4}, {"Cruiser", 3}, {"Destroyer", 2}, {"Submarine", 1}
         };
 
         Dictionary<string, int> squarePerSpecialShips = new Dictionary<string, int>()

@@ -153,20 +153,21 @@ namespace BattleshipMpClient
                 return;
             }
 
-            AttackToEnemy(clickedButton.Name);
-
             if (hasRadarUse)
-                return;
-
-            var buttonToSearchFor = clickedButton.Name.Substring(0, clickedButton.Name.Length - 1);
-            var specialShipHasArmor = Form2_PreparatoryScreen.specialShipList
-             .Exists(ship => ship.remShields >= 1 && ship.shipPerButton
-             .Exists(buttonInfo => buttonInfo.buttonNames.Contains(buttonToSearchFor)));
-
-            if (specialShipHasArmor)
             {
+                AttackToEnemy(clickedButton.Name);
                 return;
             }
+
+            var buttonToSearchFor = clickedButton.Name.Substring(0, clickedButton.Name.Length - 1);
+            var specialShip = Form2_PreparatoryScreen.specialShipList.Find(ship =>
+                ship.shipPerButton.Any(b => b.buttonNames.Contains(buttonToSearchFor)));
+            var hasArmor = specialShip?.remShields >= 1;
+
+            AttackToEnemy(clickedButton.Name);
+
+            if (specialShip != null && hasArmor)
+                return;
 
             clickedButton.Enabled = false;
             clickedButtons.Add(clickedButton.Name);
