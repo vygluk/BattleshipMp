@@ -41,6 +41,7 @@ namespace BattleshipMp
         private readonly ExtraRoundPublisher _extraRoundPublisher;
         private const int PERCENTAGE_MAX = 100;
         private HashSet<string> clickedButtons = new HashSet<string>();
+        bool hasShield = false;
 
         //  While creating the "game screen" object, get the list of selected buttons from Form2 and change their color with the help of constructor.
         public Form4_GameScreen(List<(string, Color)> list)
@@ -271,7 +272,6 @@ namespace BattleshipMp
             }
 
             //  Variables held for the outcome of the hit.
-            bool hasShield = false;
             bool isShot = false;
             string shotButtonName = "";
             string shottedShip = "";
@@ -454,8 +454,11 @@ namespace BattleshipMp
 
             AttackToEnemy(clickedButton.Name);
 
-            if (specialShip != null && hasArmor)
+            if (specialShip != null && (hasArmor || hasShield))
+            {
+                hasShield = false;
                 return;
+            }
 
             clickedButton.Enabled = false;
             clickedButtons.Add(clickedButton.Name);
