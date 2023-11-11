@@ -5,14 +5,12 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using BattleshipMpClient.Factory.Ship;
 using BattleshipMpClient.Facade;
 using BattleshipMpClient.Strategy;
 using BattleshipMpClient.Observer;
+using BattleshipMp.Builder;
 
 namespace BattleshipMpClient
 {
@@ -41,6 +39,8 @@ namespace BattleshipMpClient
         private const int PERCENTAGE_MAX = 100;
         private HashSet<string> clickedButtons = new HashSet<string>();
         bool hasShield = false;
+        private readonly IFormBuilder _formBuilder;
+        private readonly FormCreator _formCreator;
 
 
         public Form4_GameScreen(List<(string, Color)> list)
@@ -49,6 +49,8 @@ namespace BattleshipMpClient
             this.AllSelectedButtonList = list;
             Control.CheckForIllegalCrossThreadCalls = false;
 
+            _formBuilder = new FormBuilder();
+            _formCreator = new FormCreator(_formBuilder);
             strategyToUse = radarStrategyGenerator.GenerateRadarStrategyRandomly();
             _extraRoundSubscriberMap = new ExtraRoundSubscriberMap();
             _extraRoundPublisher = new ExtraRoundPublisher();
@@ -509,7 +511,7 @@ namespace BattleshipMpClient
             if (!Client.GetInstance.IsConnected)
             {
                 MessageBox.Show("Connection failed.");
-                Form2_PreparatoryScreen frm2 = new Form2_PreparatoryScreen(new DarkShipFactory());
+                Form2_PreparatoryScreen frm2 = _formCreator.BuildDarkForm();
                 frm2.Show();
                 this.Close();
             }
@@ -521,7 +523,7 @@ namespace BattleshipMpClient
             {
                 AttackToEnemy("exitt");
             }
-            Form2_PreparatoryScreen frm2 = new Form2_PreparatoryScreen(new DarkShipFactory());
+            Form2_PreparatoryScreen frm2 = _formCreator.BuildDarkForm();
             frm2.Show();
         }
     }
