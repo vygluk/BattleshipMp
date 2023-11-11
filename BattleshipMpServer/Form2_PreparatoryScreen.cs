@@ -10,28 +10,19 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using BattleshipMp.Builder;
 using BattleshipMpServer.Factory.Ship;
 
 namespace BattleshipMp
 {
     public partial class Form2_PreparatoryScreen : Form
     {
-        private IShipFactory _shipFactory;
-        private IShipBuilder _builder;
-        private ShipsCreator _shipsCreator;
+        private readonly IShipFactory _shipFactory;
 
-        public Form2_PreparatoryScreen()
-        {
-            InitializeComponent();
-            DoubleBuffered = true;            
-        }
-
-        public void AddShipFactory(IShipFactory shipFactory)
+        public Form2_PreparatoryScreen(IShipFactory shipFactory)
         {
             _shipFactory = shipFactory;
-            _builder = new ShipBuilder(_shipFactory);
-            _shipsCreator = new ShipsCreator(_builder);
+            InitializeComponent();
+            DoubleBuffered = true;            
         }
 
         //  Create a drawing to select ship positions starting with a mouse click. Get selected buttons when mouse is released.
@@ -122,8 +113,25 @@ namespace BattleshipMp
         // 1 // In the first step, create ships derived from the "Ship" model (class) and list these ships.
         private void CreateShipList()
         {
-            shipList = _shipsCreator.BuildNormalShips();
-            specialShipList = _shipsCreator.BuildSpecialShips();
+            if (shipList == null)
+            {
+                shipList = new List<IShip>();
+            }
+
+            IShip submarine = _shipFactory.CreateSubmarine();
+            IShip destroyer = _shipFactory.CreateDestroyer();
+            IShip cruiser = _shipFactory.CreateCruiser();
+            IShip battleship = _shipFactory.CreateBattleship();
+            ISpecialShip specialSubmarine = _shipFactory.CreateSpecialSubmarine();
+            ISpecialShip specialCruiser = _shipFactory.CreateSpecialCruiser();
+            ISpecialShip specialDestroyer = _shipFactory.CreateSpecialDestroyer();
+            shipList.Add(submarine);
+            shipList.Add(destroyer);
+            shipList.Add(cruiser);
+            shipList.Add(battleship);
+            specialShipList.Add(specialSubmarine);
+            specialShipList.Add(specialCruiser);
+            specialShipList.Add(specialDestroyer);
         }
 
         private void GetSelectedButtons()

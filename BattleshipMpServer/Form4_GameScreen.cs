@@ -15,7 +15,6 @@ using BattleshipMpServer.Facade;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Button;
 using BattleshipMpServer.Strategy;
 using BattleshipMpServer.Observer;
-using BattleshipMp.Builder;
 
 namespace BattleshipMp
 {
@@ -36,7 +35,8 @@ namespace BattleshipMp
         bool hasRadarUse = true;
         bool enemyReceivedExtraRound = false;
         bool weHaveReceivedExtraRound = false;
-        private readonly RadarStrategyGenerator _radarStrategyGenerator;
+        RadarStrategyGenerator radarStrategyGenerator = new RadarStrategyGenerator();
+        IRadarStrategy strategyToUse;
         private readonly ExtraRoundSubscriberMap _extraRoundSubscriberMap;
         private readonly ExtraRoundPublisher _extraRoundPublisher;
         private const int PERCENTAGE_MAX = 100;
@@ -50,7 +50,7 @@ namespace BattleshipMp
             this.AllSelectedButtonList = list;
             Control.CheckForIllegalCrossThreadCalls = false;
 
-            _radarStrategyGenerator = new RadarStrategyGenerator();
+            strategyToUse = radarStrategyGenerator.GenerateRadarStrategyRandomly();
             _extraRoundSubscriberMap = new ExtraRoundSubscriberMap();
             _extraRoundPublisher = new ExtraRoundPublisher();
 
@@ -59,6 +59,7 @@ namespace BattleshipMp
                 _extraRoundPublisher.Subscribe(subscriber);
             }
 
+            strategyToUse = radarStrategyGenerator.GenerateRadarStrategyRandomly();
             gameFacade = new GameFacade();
         }
 
@@ -248,10 +249,10 @@ namespace BattleshipMp
 
             if (!enemyHasUsedRadarUse)
             {
-                var radar = new Radar(_radarStrategyGenerator);
+                var radar = new Radar();
 
                 var buttonToShoot = recieve.Substring(0, recieve.Length - 1);
-                var message = radar.ScanAreaWithRandomStrategy(buttonToShoot);
+                var message = radar.ScanAreaWithRandomStrategy(strategyToUse, buttonToShoot);
 
                 AttackToEnemy($"[Radar] {message}");
 
@@ -555,10 +556,7 @@ namespace BattleshipMp
             {
                 AttackToEnemy("exitt");
             }
-
-            var formBuilder = new FormBuilder();
-            var formCreator = new FormCreator(formBuilder);
-            var frm2 = formCreator.BuildLightForm();
+            Form2_PreparatoryScreen frm2 = new Form2_PreparatoryScreen(new LightShipFactory());
             frm2.Show();
         }
     }

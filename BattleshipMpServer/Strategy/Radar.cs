@@ -2,18 +2,9 @@
 {
     public class Radar
     {
-        private readonly RadarStrategyGenerator _strategyGenerator;
-
-        public Radar(RadarStrategyGenerator strategyGenerator)
+        public string ScanAreaWithRandomStrategy(IRadarStrategy strategy, string buttonName)
         {
-            _strategyGenerator = strategyGenerator;
-        }
-
-        public string ScanAreaWithRandomStrategy(string buttonName)
-        {
-            var randomStrategy = _strategyGenerator.GenerateRadarStrategyRandomly();
-
-            return randomStrategy.ScanGrid(buttonName);
+            return strategy.ScanGrid(buttonName);
         }
     }
 }
