@@ -79,6 +79,14 @@
     <Compile Include="Facade\FacadeClasses\AttackSender.cs" />
     <Compile Include="Facade\FacadeClasses\AttackReceiver.cs" />
     <Compile Include="Facade\FacadeClasses\GameCommunication.cs" />
+    <Compile Include="Bridge\Abstraction\BackgroundMusicPlayer.cs" />
+    <Compile Include="Bridge\Abstraction\MissSoundPlayer.cs" />
+    <Compile Include="Bridge\Abstraction\HitSoundPlayer.cs" />
+    <Compile Include="Bridge\Abstraction\SoundPlayerBridge.cs" />
+    <Compile Include="Bridge\Concrete\HitSound.cs" />
+    <Compile Include="Bridge\Concrete\MissSound.cs" />
+    <Compile Include="Bridge\Concrete\BackgroundMusic.cs" />
+    <Compile Include="Bridge\Concrete\ISoundImplementation.cs" />
     <Compile Include="Form12_ShipThemeSelection.cs">
       <SubType>Form</SubType>
     </Compile>
