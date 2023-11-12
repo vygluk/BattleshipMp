@@ -12,6 +12,8 @@ using BattleshipMpServer.Strategy;
 using BattleshipMpServer.Observer;
 using BattleshipMp.Builder;
 using BattleshipMp.Adapter;
+using BattleshipMpServer.Bridge.Abstraction;
+using BattleshipMpServer.Bridge.Concrete;
 
 namespace BattleshipMp
 {
@@ -240,6 +242,10 @@ namespace BattleshipMp
         // It's also mentioned in the description.
         public void AttackFromEnemy(string recieve)
         {
+            ISoundImplementation hitSoundImplementation = new HitSound();
+            ISoundImplementation missSoundImplementation = new MissSound();
+            SoundPlayerBridge hitSoundPlayer = new HitSoundPlayer(hitSoundImplementation);
+            SoundPlayerBridge missSoundPlayer = new MissSoundPlayer(missSoundImplementation);
             //  Read the data that determines who is next in step four. If the data is 0, Server will start; If the data is 1, Client will start.
             if (recieve == "0")
             {
@@ -268,6 +274,7 @@ namespace BattleshipMp
                     button.BackgroundImage = Image.FromFile(Application.StartupPath + @"\Images\o.png");
                 }
                 richTextBox1.AppendText("Miss\n");
+                missSoundPlayer.Play();
                 return;
             }
             else if (recieve.Contains("hit:"))
@@ -281,6 +288,7 @@ namespace BattleshipMp
                     button.Enabled = false;
                 }
                 richTextBox1.AppendText("Hit\n");
+                hitSoundPlayer.Play();
                 return;
             }
             else if (recieve.Contains("hitShielded:"))
@@ -289,6 +297,7 @@ namespace BattleshipMp
                 result = result + result.Substring(result.Length - 1);
                 gameBoardButtons.FirstOrDefault(x => x.Name == result).BackgroundImage = Image.FromFile(Application.StartupPath + @"\Images\shield.png");
                 richTextBox1.AppendText("Hit a shielded ship\n");
+                hitSoundPlayer.Play();
                 return;
             }
 
@@ -649,6 +658,20 @@ namespace BattleshipMp
             var formCreator = new FormCreator(formBuilder);
             var frm2 = formCreator.BuildLightForm();
             frm2.Show();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            ISoundImplementation backgroudSoundImplementation = new BackgroundMusic();
+            SoundPlayerBridge backgroundSoundPlayer = new BackgroundMusicPlayer(backgroudSoundImplementation);
+            backgroundSoundPlayer.Play();
+        }
+
+        private void button2_Click_1(object sender, EventArgs e)
+        {
+            ISoundImplementation backgroudSoundImplementation = new BackgroundMusic();
+            SoundPlayerBridge backgroundSoundPlayer = new BackgroundMusicPlayer(backgroudSoundImplementation);
+            backgroundSoundPlayer.Stop();
         }
     }
 }

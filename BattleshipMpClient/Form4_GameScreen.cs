@@ -9,6 +9,8 @@ using BattleshipMpClient.Facade;
 using BattleshipMpClient.Entity;
 using BattleshipMpClient.Strategy;
 using BattleshipMpClient.Observer;
+using BattleshipMpClient.Bridge.Abstraction;
+using BattleshipMpClient.Bridge.Concrete;
 using BattleshipMp.Builder;
 using BattleshipMpClient.Adapter;
 
@@ -246,6 +248,10 @@ namespace BattleshipMpClient
 
         public void AttackFromEnemy(string recieve)
         {
+            ISoundImplementation hitSoundImplementation = new HitSound();
+            ISoundImplementation missSoundImplementation = new MissSound();
+            SoundPlayerBridge hitSoundPlayer = new HitSoundPlayer(hitSoundImplementation);
+            SoundPlayerBridge missSoundPlayer = new MissSoundPlayer(missSoundImplementation);
             if (recieve == "0")
             {
                 areEnabledButtons = true;
@@ -268,6 +274,7 @@ namespace BattleshipMpClient
                     button.BackgroundImage = Image.FromFile(Application.StartupPath + @"\Images\o.png");
                 }
                 richTextBox1.AppendText("Miss\n");
+                missSoundPlayer.Play();
                 return;
             }
             else if (recieve.Contains("hit:"))
@@ -280,6 +287,7 @@ namespace BattleshipMpClient
                     button.BackgroundImage = Image.FromFile(Application.StartupPath + @"\Images\x.png");
                 }
                 richTextBox1.AppendText("Hit\n");
+                hitSoundPlayer.Play();
                 return;
             }
             else if (recieve.Contains("hitShielded:"))
@@ -288,6 +296,7 @@ namespace BattleshipMpClient
                 result = result + result.Substring(result.Length - 1);
                 gameBoardButtons.FirstOrDefault(x => x.Name == result).BackgroundImage = Image.FromFile(Application.StartupPath + @"\Images\shield.png");
                 richTextBox1.AppendText("Hit shield\n");
+                hitSoundPlayer.Play();
                 return;
             }
             else if (recieve.Contains("youwin"))
@@ -638,6 +647,20 @@ namespace BattleshipMpClient
             }
             Form2_PreparatoryScreen frm2 = _formCreator.BuildDarkForm();
             frm2.Show();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            ISoundImplementation backgroudSoundImplementation = new BackgroundMusic();
+            SoundPlayerBridge backgroundSoundPlayer = new BackgroundMusicPlayer(backgroudSoundImplementation);
+            backgroundSoundPlayer.Play();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            ISoundImplementation backgroudSoundImplementation = new BackgroundMusic();
+            SoundPlayerBridge backgroundSoundPlayer = new BackgroundMusicPlayer(backgroudSoundImplementation);
+            backgroundSoundPlayer.Stop();
         }
     }
 }
