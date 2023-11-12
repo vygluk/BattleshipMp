@@ -20,7 +20,6 @@ namespace BattleshipMp.Builder
         {
             _normalShips.Add(_builder.CreateCruiser());
             _normalShips.Add(_builder.CreateSubmarine());
-            _normalShips.Add(_builder.CreateBattleship());
             _normalShips.Add(_builder.CreateDestroyer());
 
             return _normalShips;
@@ -31,6 +30,7 @@ namespace BattleshipMp.Builder
             _specialShips.Add(_builder.CreateSpecialSubmarine());
             _specialShips.Add(_builder.CreateSpecialCruiser());
             _specialShips.Add(_builder.CreateSpecialDestroyer());
+            _specialShips.Add(_builder.CreateBattleship());
 
             return _specialShips;
         }

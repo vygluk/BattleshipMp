@@ -12,7 +12,7 @@ namespace BattleshipMpClient.Factory.Ship
         ISpecialShip CreateSpecialSubmarine();
         IShip CreateDestroyer();
         IShip CreateCruiser();
-        IShip CreateBattleship();
+        ISpecialShip CreateBattleship();
 
         ISpecialShip CreateSpecialDestroyer();
 

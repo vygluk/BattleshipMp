@@ -10,7 +10,7 @@ namespace BattleshipMp.Builder
 
         IShip CreateCruiser();
 
-        IShip CreateBattleship();
+        ISpecialShip CreateBattleship();
 
         ISpecialShip CreateSpecialSubmarine();
 

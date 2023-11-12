@@ -23,7 +23,7 @@ namespace BattleshipMpClient.Factory.Ship
             return new Cruiser() { color = Color.LightGreen };
         }
 
-        public IShip CreateBattleship()
+        public ISpecialShip CreateBattleship()
         {
             return new Battleship() { color = Color.LightGoldenrodYellow };
         }

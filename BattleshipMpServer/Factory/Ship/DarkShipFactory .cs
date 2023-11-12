@@ -28,7 +28,7 @@ namespace BattleshipMpServer.Factory.Ship
             return new Cruiser() { color = Color.DarkCyan };
         }
 
-        public IShip CreateBattleship()
+        public ISpecialShip CreateBattleship()
         {
             return new Battleship() { color = Color.DarkMagenta };
         }
