@@ -5,7 +5,7 @@ namespace BattleshipMpClient.Entity
 {
     public abstract class Obsticle
     {
-        protected List<Control> obsticlePerButton { get; set; }
+        public List<Control> obsticlePerButton { get; set; }
 
         public abstract Obsticle ShallowCopy();
         public abstract Obsticle DeepCopy();

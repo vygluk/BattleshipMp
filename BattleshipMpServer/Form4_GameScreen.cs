@@ -11,6 +11,7 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.Button;
 using BattleshipMpServer.Strategy;
 using BattleshipMpServer.Observer;
 using BattleshipMp.Builder;
+using BattleshipMp.Adapter;
 
 namespace BattleshipMp
 {
@@ -38,6 +39,7 @@ namespace BattleshipMp
         private readonly RadarStrategyGenerator _radarStrategyGenerator;
         private readonly ExtraRoundSubscriberMap _extraRoundSubscriberMap;
         private readonly ExtraRoundPublisher _extraRoundPublisher;
+        private IcebergShipInteractionAdapter icebergShipInteractionAdapter = new IcebergShipInteractionAdapter();
         private const int PERCENTAGE_MAX = 100;
         private HashSet<string> clickedButtons = new HashSet<string>();
         bool isIceberg = false;
@@ -175,13 +177,8 @@ namespace BattleshipMp
                     c.BackColor = Color.Blue;
                     icebergButtons.Add(c);
                     iceberg.AddTiles(c);
-                    if (CheckIfShipsTile(c))
-                    {
-                        var nameNumber = c.Name[1];
-                        var nameToSend = $"{c.Name}{nameNumber}";
-                        isIceberg = true;
-                        AttackFromEnemy(nameToSend);
-                    }
+                    icebergShipInteractionAdapter.ProcessIcebergShipCollision(iceberg, AllSelectedButtonList, this, out isIceberg);
+
                 }
             }
         }
@@ -241,7 +238,7 @@ namespace BattleshipMp
 
         // 6 // This is the method where the important operations are done. Necessary explanations are in the method. When a move is made, this method is reached with more than 1 iteration.
         // It's also mentioned in the description.
-        private void AttackFromEnemy(string recieve)
+        public void AttackFromEnemy(string recieve)
         {
             //  Read the data that determines who is next in step four. If the data is 0, Server will start; If the data is 1, Client will start.
             if (recieve == "0")
