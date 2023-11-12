@@ -11,6 +11,7 @@ using BattleshipMpClient.Entity;
 using BattleshipMpClient.Strategy;
 using BattleshipMpClient.Observer;
 using BattleshipMp.Builder;
+using BattleshipMpClient.Adapter;
 
 namespace BattleshipMpClient
 {
@@ -39,6 +40,7 @@ namespace BattleshipMpClient
         private readonly RadarStrategyGenerator _radarStrategyGenerator;
         private readonly ExtraRoundSubscriberMap _extraRoundSubscriberMap;
         private readonly ExtraRoundPublisher _extraRoundPublisher;
+        private IcebergShipInteractionAdapter icebergShipInteractionAdapter = new IcebergShipInteractionAdapter();
         private const int PERCENTAGE_MAX = 100;
         private HashSet<string> clickedButtons = new HashSet<string>();
         private readonly IFormBuilder _formBuilder;
@@ -133,13 +135,7 @@ namespace BattleshipMpClient
                     c.BackColor = Color.Blue;
                     icebergButtons.Add(c);
                     iceberg.AddTiles(c);
-                    if (CheckIfShipsTile(c))
-                    {
-                        isIceberg = true;
-                        var nameNumber = c.Name[1];
-                        var nameToSend = $"{c.Name}{nameNumber}";
-                        AttackFromEnemy(nameToSend);
-                    }
+                    icebergShipInteractionAdapter.ProcessIcebergShipCollision(iceberg, AllSelectedButtonList, this, out isIceberg);
                 }
             }
         }
@@ -252,7 +248,7 @@ namespace BattleshipMpClient
             AttackToEnemy(clickedButton.Name);
         }
 
-        private void AttackFromEnemy(string recieve)
+        public void AttackFromEnemy(string recieve)
         {
             if (recieve == "0")
             {
