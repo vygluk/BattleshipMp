@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using BattleshipMpClient.Factory.Ship;
+using BattleshipMpClient.Factory.Item;
 using BattleshipMpClient.Facade;
 using BattleshipMpClient.Entity;
 using BattleshipMpClient.Strategy;
@@ -47,6 +48,7 @@ namespace BattleshipMpClient
         bool isIceberg = false;
         bool skipIcebergChange = false;
         int turns = 0;
+        IItem playerItem;
 
         public Form4_GameScreen(List<(string, Color)> list)
         {
@@ -67,6 +69,8 @@ namespace BattleshipMpClient
 
             gameFacade = new GameFacade();
 
+            IItemFactory itemFactory = new FindShipFactory();
+            playerItem = itemFactory.CreateItem();
         }
 
         private void button_mousehover(object sender, EventArgs e)
@@ -328,6 +332,21 @@ namespace BattleshipMpClient
                 return;
             }
 
+            else if (recieve.Contains("[Item]"))
+            {
+                richTextBox1.AppendText($"{recieve}\n");
+                return;
+            }
+
+            else if (recieve.Contains("[EnemyItem]"))
+            {
+                var message = playerItem.FindRandomShip();
+
+                AttackToEnemy($"[Item] {message}");
+
+                return;
+            }
+
             if (!enemyHasUsedRadarUse)
             {
                 var radar = new Radar(_radarStrategyGenerator);
@@ -340,7 +359,11 @@ namespace BattleshipMpClient
                 enemyHasUsedRadarUse = true;
                 return;
             }
-
+            else if (recieve.Contains("[Item]"))
+            {
+                richTextBox1.AppendText($"{recieve}\n");
+                return;
+            }
             var extraSubscriberToGet = recieve.Substring(0, recieve.Length - 1);
             var rnd = new Random();
             var extraSubscriberOnClickedButton = _extraRoundSubscriberMap.GetExtraRoundSubscriber(extraSubscriberToGet);
@@ -610,11 +633,22 @@ namespace BattleshipMpClient
                 {
                     if (!clickedButtons.Contains(item.Name))
                     {
-                        item.Enabled = true;
+                        if (item.Name == "itemButton" && playerItem.remItems <= 0)
+                        {
+                            item.Enabled = false;
+                        }
+                        else
+                        {
+                            item.Enabled = true;
+                        }
                     }
                 }
 
                 labelAttackTurn.Text = hasRadarUse ? "RANDOM RADAR" : "ATTACK";
+                if (labelAttackTurn.Text == "RANDOM RADAR")
+                {
+                    itemButton.Enabled = false;
+                }
                 areEnabledButtons = true;
             }
         }
@@ -638,6 +672,13 @@ namespace BattleshipMpClient
             }
             Form2_PreparatoryScreen frm2 = _formCreator.BuildDarkForm();
             frm2.Show();
+        }
+
+        private void itemButton_Click(object sender, EventArgs e)
+        {
+            AttackToEnemy("[EnemyItem]");
+            playerItem.remItems--;
+            return;
         }
     }
 }

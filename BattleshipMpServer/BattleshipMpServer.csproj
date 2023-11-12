@@ -57,6 +57,10 @@
     <Compile Include="Builder\ShipBuilder.cs" />
     <Compile Include="Builder\ShipsCreator.cs" />
     <Compile Include="Constants\BoardSize.cs" />
+    <Compile Include="Factory\Item\FindShip.cs" />
+    <Compile Include="Factory\Item\FindShipFactory.cs" />
+    <Compile Include="Factory\Item\IItem.cs" />
+    <Compile Include="Factory\Item\IItemFactory.cs" />
     <Compile Include="Factory\Ship\Battleship.cs" />
     <Compile Include="Factory\Ship\Cruiser.cs" />
     <Compile Include="Factory\Ship\Destroyer.cs" />
