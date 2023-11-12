@@ -44,6 +44,7 @@ namespace BattleshipMpClient
         private readonly FormCreator _formCreator;
         bool isIceberg = false;
         bool skipIcebergChange = false;
+        int turns = 0;
 
         public Form4_GameScreen(List<(string, Color)> list)
         {
@@ -130,19 +131,10 @@ namespace BattleshipMpClient
                     iceberg.AddTiles(c);
                     if (CheckIfShipsTile(c))
                     {
+                        isIceberg = true;
                         var nameNumber = c.Name[1];
-
-                        AttackFromEnemy("iceberg");
                         var nameToSend = $"{c.Name}{nameNumber}";
                         AttackFromEnemy(nameToSend);
-
-                        if (skipIcebergChange)
-                        {
-                            skipIcebergChange = false;
-                            return;
-                        }
-
-                        SwitchGameButtonsEnabled();
                     }
                 }
             }
@@ -212,11 +204,6 @@ namespace BattleshipMpClient
                     if (!string.IsNullOrEmpty(recieve))
                     {
                         AttackFromEnemy(recieve);
-
-                        if (turns % 2 == 0)
-                        {
-                            ExpandObsticle();
-                        }
                     }
                     //recieve = STR.ReadLine();
 
@@ -335,7 +322,6 @@ namespace BattleshipMpClient
             else if (recieve.Contains("Extra round"))
             {
                 weHaveReceivedExtraRound = true;
-                skipIcebergChange = true;
                 richTextBox1.AppendText($"[Lucky] The block you selected gave you extra round!\n");
                 SwitchGameButtonsEnabled();
                 return;
@@ -363,11 +349,26 @@ namespace BattleshipMpClient
             var rnd = new Random();
             var extraSubscriberOnClickedButton = _extraRoundSubscriberMap.GetExtraRoundSubscriber(extraSubscriberToGet);
             enemyReceivedExtraRound = extraSubscriberOnClickedButton.GetExtraRoundChancePercentages() > rnd.Next(PERCENTAGE_MAX + 1);
-            if (!isIceberg && enemyReceivedExtraRound)
+            if (enemyReceivedExtraRound)
             {
-                skipIcebergChange = true;
                 AttackToEnemy("Extra round");
                 SwitchGameButtonsEnabled();
+            }
+
+            if (!isIceberg)
+            {
+                if (!enemyReceivedExtraRound && !weHaveReceivedExtraRound)
+                {
+                    if (turns % 2 == 0)
+                    {
+                        ExpandObsticle();
+                        turns = 0;
+                    }
+                    else
+                    {
+                        turns++;
+                    }
+                }
             }
 
             bool hasShield = false;
@@ -385,6 +386,7 @@ namespace BattleshipMpClient
             {
                 return;
             }
+
             foreach (var item1 in Form2_PreparatoryScreen.shipList)
             {
                 foreach (var item2 in item1.shipPerButton)
@@ -502,7 +504,6 @@ namespace BattleshipMpClient
                             return;
                         }
                     }
-                    return;
                 }
             }
             else
@@ -515,9 +516,7 @@ namespace BattleshipMpClient
                 _extraRoundPublisher.Unsubscribe(_extraRoundSubscriberMap.GetExtraRoundSubscriber(extraSubscriberToGet));
                 myBoardButtons.FirstOrDefault(x => x.Name == shotButtonName).BackgroundImage = Image.FromFile(Application.StartupPath + @"\Images\o.png");
                 AttackToEnemy("miss:" + shotButtonName);
-                return;
             }
-
         }
 
         private void AttackToEnemy(string buttonName)
@@ -539,7 +538,6 @@ namespace BattleshipMpClient
             {
                 isIceberg = false;
                 return;
-
             }
 
             SwitchGameButtonsEnabled();
