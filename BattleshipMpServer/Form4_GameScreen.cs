@@ -452,7 +452,7 @@ namespace BattleshipMp
 
             if (isShot)
             {
-                if (shottedShip == "SpecialSubmarine" || shottedShip == "SpecialCruiser" || shottedShip == "SpecialDestroyer")
+                if (shottedShip == "SpecialSubmarine" || shottedShip == "SpecialCruiser" || shottedShip == "SpecialDestroyer" || shottedShip == "Battleship")
                 {
                     if (hasShield)
                     {
@@ -469,6 +469,29 @@ namespace BattleshipMp
 
                         deletingButton.buttonNames.Remove(shotButtonName);
 
+                        //  If the hit ship is "Battleship", all buttons of "Battleship" are checked. If they're all hit, it's game over.
+                        if (shottedShip == "Battleship")
+                        {
+                            foreach (var item in Form2_PreparatoryScreen.specialShipList.FirstOrDefault(x => x.shipName == "Battleship").shipPerButton)
+                            {
+                                if (item.buttonNames.Count > 0)
+                                {
+                                    return;
+                                }
+                                AttackToEnemy("youwin");
+                                DialogResult res = MessageBox.Show("You lost.", "Server - Game Result", MessageBoxButtons.OK);
+                                {
+                                    if (res == DialogResult.Yes)
+                                    {
+                                        Environment.Exit(1);
+                                    }
+                                    else
+                                        Environment.Exit(1);
+                                }
+                                return;
+                            }
+                        }
+
                         return;
                     }
                 } else
@@ -480,28 +503,6 @@ namespace BattleshipMp
 
                     deletingButton.buttonNames.Remove(shotButtonName);
 
-                    //  If the hit ship is "Battleship", all buttons of "Battleship" are checked. If they're all hit, it's game over.
-                    if (shottedShip == "Battleship")
-                    {
-                        foreach (var item in Form2_PreparatoryScreen.shipList.FirstOrDefault(x => x.shipName == "Battleship").shipPerButton)
-                        {
-                            if (item.buttonNames.Count > 0)
-                            {
-                                return;
-                            }
-                            AttackToEnemy("youwin");
-                            DialogResult res = MessageBox.Show("You lost.", "Server - Game Result", MessageBoxButtons.OK);
-                            {
-                                if (res == DialogResult.Yes)
-                                {
-                                    Environment.Exit(1);
-                                }
-                                else
-                                    Environment.Exit(1);
-                            }
-                            return;
-                        }
-                    }
                     return;
                 }
             }

@@ -366,7 +366,7 @@ namespace BattleshipMpClient
         void RemainingShips()
         {
             lblBattleship.Text = lblBattleship.Text.Substring(0, lblBattleship.Text.Length - 1);
-            lblBattleship.Text += shipList.FirstOrDefault(x => x.shipName == "Battleship").remShips.ToString();
+            lblBattleship.Text += specialShipList.FirstOrDefault(x => x.shipName == "Battleship").remShips.ToString();
 
             lblCruiser.Text = lblCruiser.Text.Substring(0, lblCruiser.Text.Length - 1);
             lblCruiser.Text += shipList.FirstOrDefault(x => x.shipName == "Cruiser").remShips.ToString();
@@ -387,6 +387,18 @@ namespace BattleshipMpClient
             lblSpecialDestroyer.Text += specialShipList.FirstOrDefault(x => x.shipName == "SpecialDestroyer").remShips.ToString();
 
             foreach (var item in shipList)
+            {
+                if (item.remShips == 0)
+                {
+                    isPanelActive = true;
+                }
+                else
+                {
+                    isPanelActive = false;
+                    break;
+                }
+            }
+            foreach (var item in specialShipList)
             {
                 if (item.remShips == 0)
                 {

@@ -12,7 +12,7 @@ namespace BattleshipMp.Builder
             _factory = factory;
         }
 
-        public IShip CreateBattleship()
+        public ISpecialShip CreateBattleship()
         {
             return _factory.CreateBattleship();
         }
