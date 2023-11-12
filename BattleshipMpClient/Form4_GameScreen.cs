@@ -14,6 +14,7 @@ using BattleshipMpClient.Bridge.Abstraction;
 using BattleshipMpClient.Bridge.Concrete;
 using BattleshipMp.Builder;
 using BattleshipMpClient.Adapter;
+using BattleshipMpClient.Command;
 
 namespace BattleshipMpClient
 {
@@ -51,6 +52,7 @@ namespace BattleshipMpClient
         bool skipIcebergChange = false;
         int turns = 0;
         IItem playerItem;
+        private Stack<ICommand> commandHistory = new Stack<ICommand>();
 
         public Form4_GameScreen(List<(string, Color)> list)
         {
@@ -250,12 +252,30 @@ namespace BattleshipMpClient
             AttackToEnemy(clickedButton.Name);
         }
 
+        public void UndoLastMove()
+        {
+            if (commandHistory.Count > 0)
+            {
+                ICommand lastCommand = commandHistory.Pop();
+                lastCommand.Undo();
+            }
+        }
+
+
         public void AttackFromEnemy(string recieve)
         {
             ISoundImplementation hitSoundImplementation = new HitSound();
             ISoundImplementation missSoundImplementation = new MissSound();
             SoundPlayerBridge hitSoundPlayer = new HitSoundPlayer(hitSoundImplementation);
             SoundPlayerBridge missSoundPlayer = new MissSoundPlayer(missSoundImplementation);
+            ICommand command = CreateCommand(recieve, gameBoardButtons, richTextBox1, hitSoundPlayer, missSoundPlayer);
+            command.Execute();
+            if (command is HitCommand || command is MissCommand)
+            {
+                commandHistory.Push(command);
+                return;
+            }
+            
             if (recieve == "0")
             {
                 areEnabledButtons = true;
@@ -266,32 +286,6 @@ namespace BattleshipMpClient
             {
                 areEnabledButtons = false;
                 SwitchGameButtonsEnabled();
-                return;
-            }
-            else if (recieve.Contains("miss:"))
-            {
-                string result = recieve.Substring(recieve.Length - 2, 2);
-                result = result + result.Substring(result.Length - 1);
-                var button = gameBoardButtons.FirstOrDefault(x => x.Name == result);
-                if (button != null)
-                {
-                    button.BackgroundImage = Image.FromFile(Application.StartupPath + @"\Images\o.png");
-                }
-                richTextBox1.AppendText("Miss\n");
-                missSoundPlayer.Play();
-                return;
-            }
-            else if (recieve.Contains("hit:"))
-            {
-                string result = recieve.Substring(recieve.Length - 2, 2);
-                result = result + result.Substring(result.Length - 1);
-                var button = gameBoardButtons.FirstOrDefault(x => x.Name == result);
-                if (button != null)
-                {
-                    button.BackgroundImage = Image.FromFile(Application.StartupPath + @"\Images\x.png");
-                }
-                richTextBox1.AppendText("Hit\n");
-                hitSoundPlayer.Play();
                 return;
             }
             else if (recieve.Contains("hitShielded:"))
@@ -569,6 +563,21 @@ namespace BattleshipMpClient
             }
         }
 
+        private ICommand CreateCommand(string receive, List<Button> gameBoardButtons, RichTextBox richTextBox, SoundPlayerBridge hitSoundPlayer, SoundPlayerBridge missSoundPlayer)
+        {
+            if (receive.Contains("miss:"))
+            {
+                return new MissCommand(gameBoardButtons, richTextBox, missSoundPlayer, receive);
+            }
+            else if (receive.Contains("hit:"))
+            {
+                return new HitCommand(gameBoardButtons, richTextBox, hitSoundPlayer, receive);
+            }
+
+            // If no specific command matches, return a default or null command
+            return new DefaultCommand();
+        }
+
         private void AttackToEnemy(string buttonName)
         {
             if (buttonName == null)
@@ -702,6 +711,11 @@ namespace BattleshipMpClient
             AttackToEnemy("[EnemyItem]");
             playerItem.remItems--;
             return;
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            UndoLastMove();
         }
     }
 }
