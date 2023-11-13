@@ -5,13 +5,17 @@ using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
 using BattleshipMpClient.Factory.Ship;
+using BattleshipMpClient.Factory.Item;
 using BattleshipMpClient.Facade;
 using BattleshipMpClient.Entity;
 using BattleshipMpClient.Strategy;
 using BattleshipMpClient.Observer;
+using BattleshipMpClient.Bridge.Abstraction;
+using BattleshipMpClient.Bridge.Concrete;
 using BattleshipMp.Builder;
 using BattleshipMpClient.Adapter;
 using BattleshipMpClient.Decorator;
+using BattleshipMpClient.Command;
 
 namespace BattleshipMpClient
 {
@@ -48,6 +52,11 @@ namespace BattleshipMpClient
         bool isIceberg = false;
         bool skipIcebergChange = false;
         int turns = 0;
+        IItem playerItem;
+        IItem playerItem2;
+        IItem playerItem3;
+        static private int remainingJams = 0;
+        private Stack<ICommand> commandHistory = new Stack<ICommand>();
 
         public Form4_GameScreen(List<(string, Color)> list)
         {
@@ -68,6 +77,10 @@ namespace BattleshipMpClient
 
             gameFacade = new GameFacade();
 
+            IItemFactory itemFactory = new ItemFactory();
+            playerItem = itemFactory.CreateFindShipItem();
+            playerItem2 = itemFactory.CreateBattleshipHitItem();
+            playerItem3 = itemFactory.CreateJamItem();
         }
 
         private void button_mousehover(object sender, EventArgs e)
@@ -277,8 +290,30 @@ namespace BattleshipMpClient
             AttackToEnemy(clickedButton.Name);
         }
 
+        public void UndoLastMove()
+        {
+            if (commandHistory.Count > 0)
+            {
+                ICommand lastCommand = commandHistory.Pop();
+                lastCommand.Undo();
+            }
+        }
+
+
         public void AttackFromEnemy(string recieve)
         {
+            ISoundImplementation hitSoundImplementation = new HitSound();
+            ISoundImplementation missSoundImplementation = new MissSound();
+            SoundPlayerBridge hitSoundPlayer = new HitSoundPlayer(hitSoundImplementation);
+            SoundPlayerBridge missSoundPlayer = new MissSoundPlayer(missSoundImplementation);
+            ICommand command = CreateCommand(recieve, gameBoardButtons, richTextBox1, hitSoundPlayer, missSoundPlayer);
+            command.Execute();
+            if (command is HitCommand || command is MissCommand)
+            {
+                commandHistory.Push(command);
+                return;
+            }
+            
             if (recieve == "0")
             {
                 areEnabledButtons = true;
@@ -291,36 +326,13 @@ namespace BattleshipMpClient
                 SwitchGameButtonsEnabled();
                 return;
             }
-            else if (recieve.Contains("miss:"))
-            {
-                string result = recieve.Substring(recieve.Length - 2, 2);
-                result = result + result.Substring(result.Length - 1);
-                var button = gameBoardButtons.FirstOrDefault(x => x.Name == result);
-                if (button != null)
-                {
-                    button.BackgroundImage = Image.FromFile(Application.StartupPath + @"\Images\o.png");
-                }
-                richTextBox1.AppendText("Miss\n");
-                return;
-            }
-            else if (recieve.Contains("hit:"))
-            {
-                string result = recieve.Substring(recieve.Length - 2, 2);
-                result = result + result.Substring(result.Length - 1);
-                var button = gameBoardButtons.FirstOrDefault(x => x.Name == result);
-                if (button != null)
-                {
-                    button.BackgroundImage = Image.FromFile(Application.StartupPath + @"\Images\x.png");
-                }
-                richTextBox1.AppendText("Hit\n");
-                return;
-            }
             else if (recieve.Contains("hitShielded:"))
             {
                 string result = recieve.Substring(recieve.Length - 2, 2);
                 result = result + result.Substring(result.Length - 1);
                 gameBoardButtons.FirstOrDefault(x => x.Name == result).BackgroundImage = Image.FromFile(Application.StartupPath + @"\Images\shield.png");
                 richTextBox1.AppendText("Hit shield\n");
+                hitSoundPlayer.Play();
                 return;
             }
             else if (recieve.Contains("youwin"))
@@ -361,6 +373,49 @@ namespace BattleshipMpClient
                 return;
             }
 
+            else if (recieve.Contains("[Item]"))
+            {
+                richTextBox1.AppendText($"{recieve}\n");
+                return;
+            }
+
+            else if (recieve.Contains("[EnemyItem]"))
+            {
+                var message = playerItem.Activate();
+
+                AttackToEnemy($"[Item] {message}");
+
+                return;
+            }
+            else if (recieve.Contains("[BsItem]"))
+            {
+                richTextBox1.AppendText($"{recieve}\n");
+                return;
+            }
+
+            else if (recieve.Contains("[EnemyBsItem]"))
+            {
+                var message = playerItem2.Activate();
+
+                AttackToEnemy($"[BsItem] {message}");
+
+                return;
+            }
+            else if (recieve.Contains("[JamItem]"))
+            {
+                richTextBox1.AppendText($"{recieve}\n");
+                return;
+            }
+
+            else if (recieve.Contains("[EnemyJamItem]"))
+            {
+                var message = playerItem3.Activate();
+
+                richTextBox1.AppendText($"[JamItem] Your ability to use items was jammed!\n");
+                AttackToEnemy($"[JamItem] {message}");
+
+                return;
+            }
             if (!enemyHasUsedRadarUse)
             {
                 var radar = new Radar(_radarStrategyGenerator);
@@ -373,7 +428,11 @@ namespace BattleshipMpClient
                 enemyHasUsedRadarUse = true;
                 return;
             }
-
+            else if (recieve.Contains("[Item]"))
+            {
+                richTextBox1.AppendText($"{recieve}\n");
+                return;
+            }
             var extraSubscriberToGet = recieve.Substring(0, recieve.Length - 1);
             var rnd = new Random();
             var extraSubscriberOnClickedButton = _extraRoundSubscriberMap.GetExtraRoundSubscriber(extraSubscriberToGet);
@@ -507,7 +566,7 @@ namespace BattleshipMpClient
                                     return;
                                 }
                                 AttackToEnemy("youwin");
-                                DialogResult res = MessageBox.Show("You lost.", "Server - Game Result", MessageBoxButtons.OK);
+                                DialogResult res = MessageBox.Show("You lost.", "Client - Game Result", MessageBoxButtons.OK);
                                 {
                                     if (res == DialogResult.Yes)
                                     {
@@ -568,6 +627,21 @@ namespace BattleshipMpClient
                 myBoardButtons.FirstOrDefault(x => x.Name == shotButtonName).BackgroundImage = Image.FromFile(Application.StartupPath + @"\Images\o.png");
                 AttackToEnemy("miss:" + shotButtonName);
             }
+        }
+
+        private ICommand CreateCommand(string receive, List<Button> gameBoardButtons, RichTextBox richTextBox, SoundPlayerBridge hitSoundPlayer, SoundPlayerBridge missSoundPlayer)
+        {
+            if (receive.Contains("miss:"))
+            {
+                return new MissCommand(gameBoardButtons, richTextBox, missSoundPlayer, receive);
+            }
+            else if (receive.Contains("hit:"))
+            {
+                return new HitCommand(gameBoardButtons, richTextBox, hitSoundPlayer, receive);
+            }
+
+            // If no specific command matches, return a default or null command
+            return new DefaultCommand();
         }
 
         private void AttackToEnemy(string buttonName)
@@ -643,11 +717,33 @@ namespace BattleshipMpClient
                 {
                     if (!clickedButtons.Contains(item.Name))
                     {
-                        item.Enabled = true;
+                        if (item.Name == "itemButton" && (playerItem.remItems <= 0 || remainingJams > 0))
+                        {
+                            item.Enabled = false;
+                        }
+                        else if (item.Name == "itemButton2" && (playerItem2.remItems <= 0 || remainingJams > 0))
+                        {
+                            item.Enabled = false;
+                        }
+                        else if (item.Name == "itemButton3" && (playerItem3.remItems <= 0 || remainingJams > 0))
+                        {
+                            item.Enabled = false;
+                            remainingJams--;
+                        }
+                        else
+                        {
+                            item.Enabled = true;
+                        }
                     }
                 }
 
                 labelAttackTurn.Text = hasRadarUse ? "RANDOM RADAR" : "ATTACK";
+                if (labelAttackTurn.Text == "RANDOM RADAR")
+                {
+                    itemButton.Enabled = false;
+                    itemButton2.Enabled = false;
+                    itemButton3.Enabled = false;
+                }
                 areEnabledButtons = true;
             }
         }
@@ -671,6 +767,58 @@ namespace BattleshipMpClient
             }
             Form2_PreparatoryScreen frm2 = _formCreator.BuildDarkForm();
             frm2.Show();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            ISoundImplementation backgroudSoundImplementation = new BackgroundMusic();
+            SoundPlayerBridge backgroundSoundPlayer = new BackgroundMusicPlayer(backgroudSoundImplementation);
+            backgroundSoundPlayer.Play();
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            ISoundImplementation backgroudSoundImplementation = new BackgroundMusic();
+            SoundPlayerBridge backgroundSoundPlayer = new BackgroundMusicPlayer(backgroudSoundImplementation);
+            backgroundSoundPlayer.Stop();
+        }
+
+        private void itemButton_Click(object sender, EventArgs e)
+        {
+            AttackToEnemy("[EnemyItem]");
+            playerItem.remItems--;
+            return;
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            UndoLastMove();
+        }
+
+        private void itemButton2_Click(object sender, EventArgs e)
+        {
+            AttackToEnemy("[EnemyBsItem]");
+
+            playerItem2.remItems--;
+            return;
+        }
+
+        private void itemButton3_Click(object sender, EventArgs e)
+        {
+            AttackToEnemy("[EnemyJamItem]");
+
+            playerItem3.remItems--;
+            return;
+        }
+
+        public static int getRemainingJams()
+        {
+            return remainingJams;
+        }
+
+        public static void setRemainingJams(int jams)
+        {
+            remainingJams = jams;
         }
     }
 }

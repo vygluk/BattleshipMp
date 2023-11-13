@@ -386,28 +386,24 @@ namespace BattleshipMpClient
             lblSpecialDestroyer.Text = lblSpecialDestroyer.Text.Substring(0, lblSpecialDestroyer.Text.Length - 1);
             lblSpecialDestroyer.Text += specialShipList.FirstOrDefault(x => x.shipName == "SpecialDestroyer").remShips.ToString();
 
+            isPanelActive = true;
+
             foreach (var item in shipList)
             {
-                if (item.remShips == 0)
-                {
-                    isPanelActive = true;
-                }
-                else
+                if (item.remShips != 0)
                 {
                     isPanelActive = false;
                     break;
                 }
             }
-            foreach (var item in specialShipList)
+            if (isPanelActive)
             {
-                if (item.remShips == 0)
+                foreach (var item in specialShipList)
                 {
-                    isPanelActive = true;
-                }
-                else
-                {
-                    isPanelActive = false;
-                    break;
+                    if (item.remShips != 0)
+                    {
+                        isPanelActive = false;
+                    }
                 }
             }
             if (isPanelActive == true)
@@ -426,6 +422,8 @@ namespace BattleshipMpClient
         {
             timer1.Stop();
             Form4_GameScreen frm4 = new Form4_GameScreen(FillAllButtonList());
+            frm4.BackColor = this.BackColor;
+            frm4.ForeColor = this.ForeColor;
             this.Visible = false;
             frm4.Show();
         }
