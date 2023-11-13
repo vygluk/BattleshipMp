@@ -1,12 +1,15 @@
-﻿using BattleshipMpServer.Factory.Ship;
+﻿using BattleshipMpServer.Entity;
+using BattleshipMpServer.Factory.Ship;
+using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace BattleshipMpServer.Entity
 {
     public class Iceberg : Obsticle
     {
-        public Iceberg()
+        public Iceberg() : base()
         {
             this.obsticlePerButton = new List<Control>();
         }
@@ -36,6 +39,22 @@ namespace BattleshipMpServer.Entity
             Iceberg newIceberg = (Iceberg)this.MemberwiseClone();
             newIceberg.obsticlePerButton = new List<Control>(this.obsticlePerButton);
             return newIceberg;
+        }
+
+        public string GenerateRandomTile()
+        {
+            Random rnd = new Random();
+
+            int randomNumber = rnd.Next(1, 10);
+            char randomLetter = (char)('A' + rnd.Next(0, 10));
+            string combined = randomLetter + randomNumber.ToString();
+
+            return combined;
+        }
+
+        internal Color getColor()
+        {
+            return Color.Blue;
         }
     }
 }

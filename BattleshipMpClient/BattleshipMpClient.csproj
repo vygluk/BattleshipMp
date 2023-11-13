@@ -55,6 +55,7 @@
     <Compile Include="Builder\ShipBuilder.cs" />
     <Compile Include="Builder\ShipsCreator.cs" />
     <Compile Include="Client.cs" />
+    <Compile Include="Decorator\IcebergDecorator.cs" />
     <Compile Include="Command\DefaultCommand.cs" />
     <Compile Include="Command\HitCommand.cs" />
     <Compile Include="Command\MissCommand.cs" />
