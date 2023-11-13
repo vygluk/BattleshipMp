@@ -55,6 +55,7 @@
     <Compile Include="Builder\ShipBuilder.cs" />
     <Compile Include="Builder\ShipsCreator.cs" />
     <Compile Include="Client.cs" />
+    <Compile Include="Decorator\IcebergDecorator.cs" />
     <Compile Include="Entity\Iceberg.cs" />
     <Compile Include="Entity\Obsticle.cs" />
     <Compile Include="Constants\BoardSize.cs" />

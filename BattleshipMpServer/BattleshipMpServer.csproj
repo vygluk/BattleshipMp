@@ -48,6 +48,7 @@
   <ItemGroup>
     <Compile Include="Adapter\IcebergShipInteractionAdapter.cs" />
     <Compile Include="Adapter\IIcebergShipInteractionAdapter.cs" />
+    <Compile Include="Decorator\IcebergDecorator.cs" />
     <Compile Include="Entity\Iceberg.cs" />
     <Compile Include="Entity\Obsticle.cs" />
     <Compile Include="Builder\FormBuilder.cs" />

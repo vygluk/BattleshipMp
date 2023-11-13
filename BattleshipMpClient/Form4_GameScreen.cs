@@ -11,6 +11,7 @@ using BattleshipMpClient.Strategy;
 using BattleshipMpClient.Observer;
 using BattleshipMp.Builder;
 using BattleshipMpClient.Adapter;
+using BattleshipMpClient.Decorator;
 
 namespace BattleshipMpClient
 {
@@ -121,44 +122,76 @@ namespace BattleshipMpClient
 
         private void ExpandObsticle()
         {
-            string randomTileName = GenerateRandomTile();
             Iceberg iceberg = new Iceberg();
-            iceberg = (Iceberg)motherIceberg.DeepCopy();
-            foreach (Control c in groupBox1.Controls)
-            {
-                if (c is Button && c.Name == randomTileName)
-                {
-                    c.BackColor = Color.Blue;
-                    icebergButtons.Add(c);
-                    iceberg.AddTiles(c);
-                    icebergShipInteractionAdapter.ProcessIcebergShipCollision(iceberg, AllSelectedButtonList, this, out isIceberg);
-                }
-            }
-        }
-
-        private bool CheckIfShipsTile(Control c)
-        {
-            foreach(var tile in AllSelectedButtonList)
-            {
-                if(tile.Item1 == c.Name)
-                {
-                    return true;
-                }
-            }
-
-            return false;
-        }
-
-        private string GenerateRandomTile()
-        {
             Random rnd = new Random();
+            int randomNum = rnd.Next(0, 4);
+            IcebergDecorator icebergDecorator = new IcebergDecorator(iceberg, randomNum);
+            string randomTileName = icebergDecorator.GenerateRandomTile();
+            icebergDecorator.PerformEnhancedBehavior();
+            iceberg = (Iceberg)motherIceberg.DeepCopy();
 
-            int randomNumber = rnd.Next(1, 10);
-            char randomLetter = (char)('A' + rnd.Next(0, 10));
-            string combined =  randomLetter + randomNumber.ToString();
+            switch (randomNum)
+            {
+                case 1:
+                    richTextBox1.AppendText("Iceberg changed color\n");
+                    break;
+                case 2:
+                    richTextBox1.AppendText("Another iceberg was created\n");
+                    break;
+                case 3:
+                    richTextBox1.AppendText("Iceberg has melted\n");
+                    break;
+                default:
+                    richTextBox1.AppendText("Iceberg\n");
+                    break;
+            }
 
-            return combined;
+            if (icebergDecorator.getIceberg() != null)
+            {
+                if (icebergDecorator.GetExtraSpawn())
+                {
+                    string secondRandomTileName = icebergDecorator.GenerateRandomTile();
+
+                    foreach (Control c in groupBox1.Controls)
+                    {
+                        if (c is Button && c.Name == secondRandomTileName)
+                        {
+                            Iceberg extraIceberg = (Iceberg)icebergDecorator.ShallowCopy();
+                            c.BackColor = extraIceberg.getColor();
+                            icebergButtons.Add(c);
+                            extraIceberg.AddTiles(c);
+                            icebergShipInteractionAdapter.ProcessIcebergShipCollision(extraIceberg, AllSelectedButtonList, this, out isIceberg);
+                        }
+                    }
+
+                    secondRandomTileName = icebergDecorator.GenerateRandomTile();
+
+                    foreach (Control c in groupBox1.Controls)
+                    {
+                        if (c is Button && c.Name == secondRandomTileName)
+                        {
+                            Iceberg extraIceberg = (Iceberg)icebergDecorator.ShallowCopy();
+                            c.BackColor = extraIceberg.getColor();
+                            icebergButtons.Add(c);
+                            extraIceberg.AddTiles(c);
+                            icebergShipInteractionAdapter.ProcessIcebergShipCollision(extraIceberg, AllSelectedButtonList, this, out isIceberg);
+                        }
+                    }
+                }
+
+                foreach (Control c in groupBox1.Controls)
+                {
+                    if (c is Button && c.Name == randomTileName)
+                    {
+                        c.BackColor = icebergDecorator.getColor();
+                        icebergButtons.Add(c);
+                        icebergDecorator.AddTiles(c);
+                        icebergShipInteractionAdapter.ProcessIcebergShipCollision(icebergDecorator, AllSelectedButtonList, this, out isIceberg);
+                    }
+                }
+            }
         }
+
 
         private void Form4_Load(object sender, EventArgs e)
         {
