@@ -422,6 +422,8 @@ namespace BattleshipMpClient
         {
             timer1.Stop();
             Form4_GameScreen frm4 = new Form4_GameScreen(FillAllButtonList());
+            frm4.BackColor = this.BackColor;
+            frm4.ForeColor = this.ForeColor;
             this.Visible = false;
             frm4.Show();
         }
