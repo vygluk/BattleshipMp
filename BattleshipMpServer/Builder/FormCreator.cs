@@ -14,7 +14,7 @@ namespace BattleshipMp.Builder
 
         public Form2_PreparatoryScreen BuildDarkForm()
         {
-            _builder.AddFormColor(Color.FromArgb(45, 45, 48));
+            _builder.AddFormColor(Color.Gray);
             _builder.AddForegroundColor(Color.White);
             _builder.AddShipFactory(new DarkShipFactory());
 
