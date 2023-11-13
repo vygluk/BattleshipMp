@@ -8,6 +8,8 @@ namespace BattleshipMpClient.Factory.Item
 {
     public interface IItemFactory
     {
-        IItem CreateItem();
+        IItem CreateFindShipItem();
+        IItem CreateBattleshipHitItem();
+        IItem CreateJamItem();
     }
 }

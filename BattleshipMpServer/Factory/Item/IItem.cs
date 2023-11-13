@@ -11,6 +11,6 @@ namespace BattleshipMp.Factory.Item
         string itemName { get; }
         int remItems { get; set; }
 
-        string FindRandomShip();
+        string Activate();
     }
 }
