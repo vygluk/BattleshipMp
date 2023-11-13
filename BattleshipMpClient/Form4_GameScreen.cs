@@ -52,6 +52,9 @@ namespace BattleshipMpClient
         bool skipIcebergChange = false;
         int turns = 0;
         IItem playerItem;
+        IItem playerItem2;
+        IItem playerItem3;
+        static private int remainingJams = 0;
         private Stack<ICommand> commandHistory = new Stack<ICommand>();
 
         public Form4_GameScreen(List<(string, Color)> list)
@@ -73,8 +76,10 @@ namespace BattleshipMpClient
 
             gameFacade = new GameFacade();
 
-            IItemFactory itemFactory = new FindShipFactory();
-            playerItem = itemFactory.CreateItem();
+            IItemFactory itemFactory = new ItemFactory();
+            playerItem = itemFactory.CreateFindShipItem();
+            playerItem2 = itemFactory.CreateBattleshipHitItem();
+            playerItem3 = itemFactory.CreateJamItem();
         }
 
         private void button_mousehover(object sender, EventArgs e)
@@ -343,13 +348,41 @@ namespace BattleshipMpClient
 
             else if (recieve.Contains("[EnemyItem]"))
             {
-                var message = playerItem.FindRandomShip();
+                var message = playerItem.Activate();
 
                 AttackToEnemy($"[Item] {message}");
 
                 return;
             }
+            else if (recieve.Contains("[BsItem]"))
+            {
+                richTextBox1.AppendText($"{recieve}\n");
+                return;
+            }
 
+            else if (recieve.Contains("[EnemyBsItem]"))
+            {
+                var message = playerItem2.Activate();
+
+                AttackToEnemy($"[BsItem] {message}");
+
+                return;
+            }
+            else if (recieve.Contains("[JamItem]"))
+            {
+                richTextBox1.AppendText($"{recieve}\n");
+                return;
+            }
+
+            else if (recieve.Contains("[EnemyJamItem]"))
+            {
+                var message = playerItem3.Activate();
+
+                richTextBox1.AppendText($"[JamItem] Your ability to use items was jammed!\n");
+                AttackToEnemy($"[JamItem] {message}");
+
+                return;
+            }
             if (!enemyHasUsedRadarUse)
             {
                 var radar = new Radar(_radarStrategyGenerator);
@@ -500,7 +533,7 @@ namespace BattleshipMpClient
                                     return;
                                 }
                                 AttackToEnemy("youwin");
-                                DialogResult res = MessageBox.Show("You lost.", "Server - Game Result", MessageBoxButtons.OK);
+                                DialogResult res = MessageBox.Show("You lost.", "Client - Game Result", MessageBoxButtons.OK);
                                 {
                                     if (res == DialogResult.Yes)
                                     {
@@ -651,9 +684,18 @@ namespace BattleshipMpClient
                 {
                     if (!clickedButtons.Contains(item.Name))
                     {
-                        if (item.Name == "itemButton" && playerItem.remItems <= 0)
+                        if (item.Name == "itemButton" && (playerItem.remItems <= 0 || remainingJams > 0))
                         {
                             item.Enabled = false;
+                        }
+                        else if (item.Name == "itemButton2" && (playerItem2.remItems <= 0 || remainingJams > 0))
+                        {
+                            item.Enabled = false;
+                        }
+                        else if (item.Name == "itemButton3" && (playerItem3.remItems <= 0 || remainingJams > 0))
+                        {
+                            item.Enabled = false;
+                            remainingJams--;
                         }
                         else
                         {
@@ -666,6 +708,8 @@ namespace BattleshipMpClient
                 if (labelAttackTurn.Text == "RANDOM RADAR")
                 {
                     itemButton.Enabled = false;
+                    itemButton2.Enabled = false;
+                    itemButton3.Enabled = false;
                 }
                 areEnabledButtons = true;
             }
@@ -716,6 +760,32 @@ namespace BattleshipMpClient
         private void button3_Click(object sender, EventArgs e)
         {
             UndoLastMove();
+        }
+
+        private void itemButton2_Click(object sender, EventArgs e)
+        {
+            AttackToEnemy("[EnemyBsItem]");
+
+            playerItem2.remItems--;
+            return;
+        }
+
+        private void itemButton3_Click(object sender, EventArgs e)
+        {
+            AttackToEnemy("[EnemyJamItem]");
+
+            playerItem3.remItems--;
+            return;
+        }
+
+        public static int getRemainingJams()
+        {
+            return remainingJams;
+        }
+
+        public static void setRemainingJams(int jams)
+        {
+            remainingJams = jams;
         }
     }
 }

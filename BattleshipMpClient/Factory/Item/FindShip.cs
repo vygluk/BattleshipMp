@@ -11,7 +11,7 @@ namespace BattleshipMpClient.Factory.Item
         public string itemName => "FindShip";
         public int remItems { get; set; } = 1;
 
-        public string FindRandomShip()
+        public string Activate()
         {
             List<string> allButtons = new List<string>();
 

@@ -62,8 +62,10 @@
     <Compile Include="Entity\Iceberg.cs" />
     <Compile Include="Entity\Obsticle.cs" />
     <Compile Include="Constants\BoardSize.cs" />
+    <Compile Include="Factory\Item\BattleshipHit.cs" />
+    <Compile Include="Factory\Item\Jam.cs" />
     <Compile Include="Factory\Item\FindShip.cs" />
-    <Compile Include="Factory\Item\FindShipFactory.cs" />
+    <Compile Include="Factory\Item\ItemFactory.cs" />
     <Compile Include="Factory\Item\IItem.cs" />
     <Compile Include="Factory\Item\IItemFactory.cs" />
     <Compile Include="Factory\Ship\Battleship.cs" />
