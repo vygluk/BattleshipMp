@@ -239,7 +239,6 @@ namespace BattleshipMpClient
 
         private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
-            int turns = 0;
             while (Client.GetInstance.IsConnected)
             {
                 try
@@ -248,6 +247,14 @@ namespace BattleshipMpClient
                     if (!string.IsNullOrEmpty(recieve))
                     {
                         AttackFromEnemy(recieve);
+
+                        if (!enemyReceivedExtraRound && !weHaveReceivedExtraRound)
+                        {
+                            if (turns % 2 == 0)
+                            {
+                                ExpandObsticle();
+                            }
+                        }
                     }
                     //recieve = STR.ReadLine();
 
@@ -444,22 +451,6 @@ namespace BattleshipMpClient
             {
                 AttackToEnemy("Extra round");
                 SwitchGameButtonsEnabled();
-            }
-
-            if (!isIceberg)
-            {
-                if (!enemyReceivedExtraRound && !weHaveReceivedExtraRound)
-                {
-                    if (turns % 2 == 0)
-                    {
-                        ExpandObsticle();
-                        turns = 0;
-                    }
-                    else
-                    {
-                        turns++;
-                    }
-                }
             }
 
             bool hasShield = false;
@@ -698,7 +689,6 @@ namespace BattleshipMpClient
                 }
                 labelAttackTurn.Text = "WAIT...";
                 areEnabledButtons = false;
-
                 enemyReceivedExtraRound = false;
 
                 richTextBox1.AppendText("Enemy extra round\n");

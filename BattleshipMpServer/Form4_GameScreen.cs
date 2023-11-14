@@ -263,6 +263,14 @@ namespace BattleshipMp
                     if (!string.IsNullOrEmpty(recieve))
                     {
                         AttackFromEnemy(recieve);
+
+                        if (!enemyReceivedExtraRound && !weHaveReceivedExtraRound)
+                        {
+                            if (turns % 2 == 0)
+                            {
+                                ExpandObsticle();
+                            }
+                        }
                     }
                     //recieve = STR.ReadLine();
 
@@ -444,22 +452,6 @@ namespace BattleshipMp
             {
                 AttackToEnemy("Extra round");
                 SwitchGameButtonsEnabled();
-            }
-
-            if (!isIceberg)
-            {
-                if (!enemyReceivedExtraRound && !weHaveReceivedExtraRound)
-                {
-                    if (turns % 2 == 0)
-                    {
-                        ExpandObsticle();
-                        turns = 0;
-                    }
-                    else
-                    {
-                        turns++;
-                    }
-                }
             }
 
             //  Variables held for the outcome of the hit.
