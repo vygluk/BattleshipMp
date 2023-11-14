@@ -1,13 +1,11 @@
 ﻿using System;
 using System.IO;
 using System.Windows.Forms;
-using BattleshipMp;
-using BattleshipMpServer;
 
-namespace BattleshipMpServer.Facade.FacadeClasses
+namespace SharedFile.Facade.FacadeClasses
 {
     public class GameCommunication
-	{
+    {
         private StreamReader STR;
         private StreamWriter STW;
 
@@ -17,12 +15,13 @@ namespace BattleshipMpServer.Facade.FacadeClasses
             STW = stw;
         }
 
-        public void StartGameCommunication()
+        public void StartGameCommunication(ITcpStreamProvider tcpStreamProvider)
         {
             try
             {
-                STR = new StreamReader(Server.GetInstance.Client.GetStream());
-                STW = new StreamWriter(Server.GetInstance.Client.GetStream());
+                Stream tcpStream = tcpStreamProvider.GetTcpStream();
+                STR = new StreamReader(tcpStream);
+                STW = new StreamWriter(tcpStream);
                 STW.AutoFlush = true;
             }
             catch (Exception ex)

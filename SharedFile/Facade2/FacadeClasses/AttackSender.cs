@@ -2,7 +2,7 @@
 using System.IO;
 using System.Windows.Forms;
 
-namespace BattleshipMpClient.Facade.FacadeClasses
+namespace SharedFiles.Facade.FacadeClasses
 {
     public class AttackSender
 	{
@@ -15,14 +15,14 @@ namespace BattleshipMpClient.Facade.FacadeClasses
 
         public void SendAttack(string buttonName)
         {
-            if (Client.GetInstance.IsConnected)
-            {
-                STW.WriteLine(buttonName);
-            }
-            else
-            {
-                MessageBox.Show("Message could not be sent!!");
-            }
+            //if (Client.GetInstance.IsConnected)
+            //{
+            //    STW.WriteLine(buttonName);
+            //}
+            //else
+            //{
+            //    MessageBox.Show("Message could not be sent!!");
+            //}
         }
     }
 }

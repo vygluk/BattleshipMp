@@ -2,7 +2,7 @@
 using System.IO;
 using System.Windows.Forms;
 
-namespace BattleshipMpClient.Facade.FacadeClasses
+namespace SharedFiles.Facade.FacadeClasses
 {
     public class GameCommunication
 	{
@@ -15,12 +15,13 @@ namespace BattleshipMpClient.Facade.FacadeClasses
             STW = stw;
         }
 
-        public void StartGameCommunication()
+        public void StartGameCommunication(ITcpStreamProvider tcpStreamProvider)
         {
             try
             {
-                STR = new StreamReader(Client.GetInstance.TcpClient.GetStream());
-                STW = new StreamWriter(Client.GetInstance.TcpClient.GetStream());
+                Stream tcpStream = tcpStreamProvider.GetTcpStream();
+                STR = new StreamReader(tcpStream);
+                STW = new StreamWriter(tcpStream);
                 STW.AutoFlush = true;
             }
             catch (Exception ex)

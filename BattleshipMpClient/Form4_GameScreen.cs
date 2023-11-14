@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows.Forms;
 using BattleshipMpClient.Factory.Ship;
 using BattleshipMpClient.Factory.Item;
+using SharedFile.Facade;
 using BattleshipMpClient.Facade;
 using BattleshipMpClient.Entity;
 using BattleshipMpClient.Strategy;
@@ -77,7 +78,10 @@ namespace BattleshipMpClient
                 _extraRoundPublisher.Subscribe(subscriber);
             }
 
-            gameFacade = new GameFacade();
+            ITcpStreamProvider tcpStreamProvider;
+            tcpStreamProvider = new TcpStreamProviderClient();
+
+            gameFacade = new GameFacade(tcpStreamProvider);
 
             IItemFactory itemFactory = new ItemFactory();
             playerItem = itemFactory.CreateFindShipItem();
@@ -220,7 +224,9 @@ namespace BattleshipMpClient
 
             try
             {
-                gameFacade.GetGameCommunication().StartGameCommunication();
+                ITcpStreamProvider tcpStreamProvider;
+                tcpStreamProvider = new TcpStreamProviderClient();
+                gameFacade.GetGameCommunication().StartGameCommunication(tcpStreamProvider);
                 //STR = new StreamReader(Client.GetInstance.TcpClient.GetStream());
                 //STW = new StreamWriter(Client.GetInstance.TcpClient.GetStream());
                 //STW.AutoFlush = true;
@@ -284,7 +290,7 @@ namespace BattleshipMpClient
             //}
 
             //gameFacade.SendAttack(TextToSend);
-            gameFacade.GetAttackSender().SendAttack(TextToSend);
+            gameFacade.GetAttackSender().SendAttack(TextToSend, new TcpStreamProviderClient());
             backgroundWorker2.CancelAsync();
         }
 

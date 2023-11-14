@@ -1,10 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Windows.Forms;
-using BattleshipMp;
-using BattleshipMpServer;
 
-namespace BattleshipMpServer.Facade.FacadeClasses
+
+namespace SharedFiles.Facade.FacadeClasses
 {
     public class AttackReceiver
 	{

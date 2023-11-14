@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows.Forms;
 using BattleshipMpServer.Factory.Ship;
 using BattleshipMpServer.Facade;
+using SharedFile.Facade;
 using BattleshipMpServer.Entity;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.Button;
 using BattleshipMpServer.Strategy;
@@ -71,7 +72,9 @@ namespace BattleshipMp
                 _extraRoundPublisher.Subscribe(subscriber);
             }
 
-            gameFacade = new GameFacade();
+            ITcpStreamProvider tcpStreamProvider;
+            tcpStreamProvider = new TcpStreamProviderServer();
+            gameFacade = new GameFacade(tcpStreamProvider);
 
             IItemFactory itemFactory = new ItemFactory();
             playerItem = itemFactory.CreateFindShipItem();
@@ -113,7 +116,9 @@ namespace BattleshipMp
             // Since the "backgorundWorker1" object will always listen for incoming data, it will be running in the background all the time.
             try
             {
-                gameFacade.GetGameCommunication().StartGameCommunication();
+                ITcpStreamProvider tcpStreamProvider;
+                tcpStreamProvider = new TcpStreamProviderServer();
+                gameFacade.GetGameCommunication().StartGameCommunication(tcpStreamProvider);
                 //STR = new StreamReader(Server.GetInstance.Client.GetStream());
                 //STW = new StreamWriter(Server.GetInstance.Client.GetStream());
                 //STW.AutoFlush = true;
@@ -611,7 +616,7 @@ namespace BattleshipMp
             //{
             //    MessageBox.Show("Message could not be sent!!");
             //}
-            gameFacade.GetAttackSender().SendAttack(TextToSend);
+            gameFacade.GetAttackSender().SendAttack(TextToSend, new TcpStreamProviderServer());
             backgroundWorker2.CancelAsync();
         }
 

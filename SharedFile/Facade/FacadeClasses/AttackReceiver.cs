@@ -2,10 +2,10 @@
 using System.IO;
 using System.Windows.Forms;
 
-namespace BattleshipMpClient.Facade.FacadeClasses
+namespace SharedFile.Facade.FacadeClasses
 {
     public class AttackReceiver
-	{
+    {
         private StreamReader STR;
 
         public AttackReceiver(StreamReader str)

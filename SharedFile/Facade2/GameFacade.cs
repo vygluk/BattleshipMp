@@ -1,9 +1,9 @@
 ﻿using System;
 using System.IO;
 using System.Windows.Forms;
-using BattleshipMpClient.Facade.FacadeClasses;
+using SharedFiles.Facade.FacadeClasses;
 
-namespace BattleshipMpClient.Facade
+namespace SharedFiles.Facade
 {
     public class GameFacade
     {
@@ -13,12 +13,13 @@ namespace BattleshipMpClient.Facade
         private AttackReceiver attackReceiver;
         private GameCommunication gameCommunication;
 
-        public GameFacade()
+        public GameFacade(ITcpStreamProvider tcpStreamProvider)
         {
             try
             {
-                STR = new StreamReader(Client.GetInstance.TcpClient.GetStream());
-                STW = new StreamWriter(Client.GetInstance.TcpClient.GetStream());
+                Stream tcpStream = tcpStreamProvider.GetTcpStream();
+                STR = new StreamReader(tcpStream);
+                STW = new StreamWriter(tcpStream);
                 STW.AutoFlush = true;
 
                 attackSender = new AttackSender(STW);
@@ -45,6 +46,5 @@ namespace BattleshipMpClient.Facade
         {
             return gameCommunication;
         }
-
     }
 }

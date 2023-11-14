@@ -44,6 +44,7 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <Library Include="..\SharedFile\SharedFile.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Adapter\IcebergShipInteractionAdapter.cs" />
@@ -63,6 +64,7 @@
     <Compile Include="Entity\Iceberg.cs" />
     <Compile Include="Entity\Obsticle.cs" />
     <Compile Include="Constants\BoardSize.cs" />
+    <Compile Include="Facade\TcpStreamProviderClient.cs" />
     <Compile Include="Factory\Item\BattleshipHit.cs" />
     <Compile Include="Factory\Item\Jam.cs" />
     <Compile Include="Factory\Item\FindShip.cs" />
@@ -82,10 +84,6 @@
     <Compile Include="Factory\Ship\SpecialDestroyer.cs" />
     <Compile Include="Factory\Ship\SpecialSubmarine.cs" />
     <Compile Include="Factory\Ship\Submarine.cs" />
-    <Compile Include="Facade\GameFacade.cs" />
-    <Compile Include="Facade\FacadeClasses\AttackSender.cs" />
-    <Compile Include="Facade\FacadeClasses\AttackReceiver.cs" />
-    <Compile Include="Facade\FacadeClasses\GameCommunication.cs" />
     <Compile Include="Bridge\Abstraction\BackgroundMusicPlayer.cs" />
     <Compile Include="Bridge\Abstraction\MissSoundPlayer.cs" />
     <Compile Include="Bridge\Abstraction\HitSoundPlayer.cs" />
@@ -178,6 +176,12 @@
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\SharedFile\SharedFile.csproj">
+      <Project>{0dcfdad0-8108-40fc-ab2a-9f429f884cea}</Project>
+      <Name>SharedFile</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

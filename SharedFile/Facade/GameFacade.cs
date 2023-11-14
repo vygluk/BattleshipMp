@@ -1,27 +1,25 @@
 ﻿using System;
 using System.IO;
 using System.Windows.Forms;
-using BattleshipMp;
-using BattleshipMpServer;
-using BattleshipMpServer.Facade.FacadeClasses;
+using SharedFile.Facade.FacadeClasses;
 
-namespace BattleshipMpServer.Facade
+namespace SharedFile.Facade
 {
     public class GameFacade
     {
         private StreamReader STR;
         private StreamWriter STW;
-
         private AttackSender attackSender;
         private AttackReceiver attackReceiver;
         private GameCommunication gameCommunication;
 
-        public GameFacade()
+        public GameFacade(ITcpStreamProvider tcpStreamProvider)
         {
             try
             {
-                STR = new StreamReader(Server.GetInstance.Client.GetStream());
-                STW = new StreamWriter(Server.GetInstance.Client.GetStream());
+                Stream tcpStream = tcpStreamProvider.GetTcpStream();
+                STR = new StreamReader(tcpStream);
+                STW = new StreamWriter(tcpStream);
                 STW.AutoFlush = true;
 
                 attackSender = new AttackSender(STW);

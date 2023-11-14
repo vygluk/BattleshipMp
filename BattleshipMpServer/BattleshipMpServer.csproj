@@ -44,6 +44,7 @@
     <Reference Include="System.Net.Http" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
+    <ProjectReference Include="..\SharedFile\SharedFile.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Adapter\IcebergShipInteractionAdapter.cs" />
@@ -58,6 +59,7 @@
     <Compile Include="Builder\ShipBuilder.cs" />
     <Compile Include="Builder\ShipsCreator.cs" />
     <Compile Include="Constants\BoardSize.cs" />
+    <Compile Include="Facade\TcpStreamProviderServer.cs" />
     <Compile Include="Factory\Item\BattleshipHit.cs" />
     <Compile Include="Factory\Item\Jam.cs" />
     <Compile Include="Factory\Item\FindShip.cs" />
@@ -77,10 +79,6 @@
     <Compile Include="Factory\Ship\SpecialDestroyer.cs" />
     <Compile Include="Factory\Ship\SpecialSubmarine.cs" />
     <Compile Include="Factory\Ship\Submarine.cs" />
-    <Compile Include="Facade\GameFacade.cs" />
-    <Compile Include="Facade\FacadeClasses\AttackSender.cs" />
-    <Compile Include="Facade\FacadeClasses\AttackReceiver.cs" />
-    <Compile Include="Facade\FacadeClasses\GameCommunication.cs" />
     <Compile Include="Bridge\Abstraction\BackgroundMusicPlayer.cs" />
     <Compile Include="Bridge\Abstraction\MissSoundPlayer.cs" />
     <Compile Include="Bridge\Abstraction\HitSoundPlayer.cs" />

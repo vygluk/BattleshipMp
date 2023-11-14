@@ -1,13 +1,11 @@
 ﻿using System;
 using System.IO;
 using System.Windows.Forms;
-using BattleshipMp;
-using BattleshipMpServer;
 
-namespace BattleshipMpServer.Facade.FacadeClasses
+namespace SharedFile.Facade.FacadeClasses
 {
     public class AttackSender
-	{
+    {
         private StreamWriter STW;
 
         public AttackSender(StreamWriter stw)
@@ -15,9 +13,9 @@ namespace BattleshipMpServer.Facade.FacadeClasses
             STW = stw;
         }
 
-        public void SendAttack(string buttonName)
+        public void SendAttack(string buttonName, ITcpStreamProvider tcpStreamProvider)
         {
-            if (Server.GetInstance.IsClientConnected)
+            if (tcpStreamProvider.GetConnection())
             {
                 STW.WriteLine(buttonName);
             }
