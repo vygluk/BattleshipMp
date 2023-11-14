@@ -58,6 +58,7 @@ namespace BattleshipMpClient
         IItem playerItem3;
         static private int remainingJams = 0;
         private Stack<ICommand> commandHistory = new Stack<ICommand>();
+        private delegate bool StateChecker();
 
         public Form4_GameScreen(List<(string, Color)> list)
         {
@@ -318,6 +319,7 @@ namespace BattleshipMpClient
             if (recieve == "0")
             {
                 areEnabledButtons = true;
+                hasRadarUse = true;
                 SwitchGameButtonsEnabled();
                 return;
             }
