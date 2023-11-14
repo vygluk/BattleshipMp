@@ -61,6 +61,8 @@ namespace BattleshipMpClient
         private Stack<ICommand> commandHistory = new Stack<ICommand>();
         private delegate bool StateChecker();
 
+        public Button myBoardButtonToUndo;
+
         public Form4_GameScreen(List<(string, Color)> list)
         {
             InitializeComponent(); 
@@ -305,12 +307,12 @@ namespace BattleshipMpClient
             AttackToEnemy(clickedButton.Name);
         }
 
-        public void UndoLastMove()
+        public void UndoLastMove(Button button)
         {
             if (commandHistory.Count > 0)
             {
                 ICommand lastCommand = commandHistory.Pop();
-                lastCommand.Undo();
+                lastCommand.Undo(button);
             }
         }
 
@@ -549,8 +551,8 @@ namespace BattleshipMpClient
                     else
                     {
                         _extraRoundPublisher.Unsubscribe(_extraRoundSubscriberMap.GetExtraRoundSubscriber(extraSubscriberToGet));
-
-                        myBoardButtons.FirstOrDefault(x => x.Name == shotButtonName).BackgroundImage = Image.FromFile(Application.StartupPath + @"\Images\x.png");
+                        myBoardButtonToUndo = myBoardButtons.FirstOrDefault(x => x.Name == shotButtonName);
+                        myBoardButtonToUndo.BackgroundImage = Image.FromFile(Application.StartupPath + @"\Images\x.png");
 
                         AttackToEnemy("hit:" + shotButtonName);
 
@@ -586,7 +588,8 @@ namespace BattleshipMpClient
                 {
                     _extraRoundPublisher.Unsubscribe(_extraRoundSubscriberMap.GetExtraRoundSubscriber(extraSubscriberToGet));
 
-                    myBoardButtons.FirstOrDefault(x => x.Name == shotButtonName).BackgroundImage = Image.FromFile(Application.StartupPath + @"\Images\x.png");
+                    myBoardButtonToUndo = myBoardButtons.FirstOrDefault(x => x.Name == shotButtonName);
+                    myBoardButtonToUndo.BackgroundImage = Image.FromFile(Application.StartupPath + @"\Images\x.png");
 
                     AttackToEnemy("hit:" + shotButtonName);
 
@@ -624,7 +627,8 @@ namespace BattleshipMpClient
                 }
 
                 _extraRoundPublisher.Unsubscribe(_extraRoundSubscriberMap.GetExtraRoundSubscriber(extraSubscriberToGet));
-                myBoardButtons.FirstOrDefault(x => x.Name == shotButtonName).BackgroundImage = Image.FromFile(Application.StartupPath + @"\Images\o.png");
+                myBoardButtonToUndo = myBoardButtons.FirstOrDefault(x => x.Name == shotButtonName);
+                myBoardButtonToUndo.BackgroundImage = Image.FromFile(Application.StartupPath + @"\Images\o.png");
                 AttackToEnemy("miss:" + shotButtonName);
             }
         }
@@ -791,7 +795,8 @@ namespace BattleshipMpClient
 
         private void button3_Click(object sender, EventArgs e)
         {
-            UndoLastMove();
+            UndoLastMove(myBoardButtonToUndo);
+            button3.Enabled = false;
         }
 
         private void itemButton2_Click(object sender, EventArgs e)

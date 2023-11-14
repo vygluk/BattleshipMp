@@ -1,4 +1,4 @@
-﻿using BattleshipMpClient.Bridge.Abstraction;
+﻿using BattleshipMpServer.Bridge.Abstraction;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -7,7 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace BattleshipMpClient.Command
+namespace BattleshipMpServer.Command
 {
     public class MissCommand : ICommand
     {

@@ -52,17 +52,18 @@ namespace BattleshipMpClient.Command
             _hitSoundPlayer.Play();
         }
 
-        public void Undo()
+        public void Undo(Button button)
         {
             Console.WriteLine("Undoing HitCommand");
             string result = _receive.Substring(_receive.Length - 2, 2);
             result = result + result.Substring(result.Length - 1);
-            var button = _gameBoardButtons.FirstOrDefault(x => x.Name == result);
+            var button1 = _gameBoardButtons.FirstOrDefault(x => x.Name == result);
 
             if (button != null)
             {
                 Console.WriteLine("Restoring previous state");
-                button.BackgroundImage = _previousBackgroundImage; // Restore the previous state
+                button1.BackgroundImage = _previousBackgroundImage; // Restore the previous state
+                button.BackgroundImage = null;
             }
             else
             {

@@ -342,7 +342,7 @@
             this.itemButton3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.itemButton3.ForeColor = System.Drawing.Color.Black;
             this.itemButton3.Location = new System.Drawing.Point(448, 160);
-            this.itemButton3.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.itemButton3.Margin = new System.Windows.Forms.Padding(2);
             this.itemButton3.Name = "itemButton3";
             this.itemButton3.Size = new System.Drawing.Size(80, 37);
             this.itemButton3.TabIndex = 1001;
@@ -1227,12 +1227,16 @@
             // 
             // button3
             // 
-            this.button3.Location = new System.Drawing.Point(452, 233);
+            this.button3.BackColor = System.Drawing.Color.Transparent;
+            this.button3.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.button3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button3.ForeColor = System.Drawing.Color.Black;
+            this.button3.Location = new System.Drawing.Point(449, 202);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(75, 23);
             this.button3.TabIndex = 1000;
             this.button3.Text = "Undo move";
-            this.button3.UseVisualStyleBackColor = true;
+            this.button3.UseVisualStyleBackColor = false;
             this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
             // label21
@@ -4045,7 +4049,7 @@
             // button1
             // 
             this.button1.Location = new System.Drawing.Point(910, 486);
-            this.button1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.button1.Margin = new System.Windows.Forms.Padding(2);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(66, 28);
             this.button1.TabIndex = 133;
@@ -4056,7 +4060,7 @@
             // button2
             // 
             this.button2.Location = new System.Drawing.Point(1011, 486);
-            this.button2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.button2.Margin = new System.Windows.Forms.Padding(2);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(65, 28);
             this.button2.TabIndex = 134;

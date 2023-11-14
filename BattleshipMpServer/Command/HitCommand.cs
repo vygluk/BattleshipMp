@@ -1,4 +1,4 @@
-﻿using BattleshipMpClient.Bridge.Abstraction;
+﻿using BattleshipMpServer.Bridge.Abstraction;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -7,22 +7,22 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace BattleshipMpClient.Command
+namespace BattleshipMpServer.Command
 {
-    public class MissCommand : ICommand
+    public class HitCommand : ICommand
     {
         private readonly List<Button> _gameBoardButtons;
         private readonly RichTextBox _richTextBox;
-        private readonly SoundPlayerBridge _missSoundPlayer;
+        private readonly SoundPlayerBridge _hitSoundPlayer;
         private readonly string _receive;
 
         private Image _previousBackgroundImage; // Store the previous state for undo
 
-        public MissCommand(List<Button> gameBoardButtons, RichTextBox richTextBox, SoundPlayerBridge missSoundPlayer, string receive)
+        public HitCommand(List<Button> gameBoardButtons, RichTextBox richTextBox, SoundPlayerBridge hitSoundPlayer, string receive)
         {
             _gameBoardButtons = gameBoardButtons;
             _richTextBox = richTextBox;
-            _missSoundPlayer = missSoundPlayer;
+            _hitSoundPlayer = hitSoundPlayer;
             _receive = receive;
         }
 
@@ -36,9 +36,10 @@ namespace BattleshipMpClient.Command
             {
                 // Store the previous state for undo
                 _previousBackgroundImage = button.BackgroundImage;
+
                 try
                 {
-                    button.BackgroundImage = Image.FromFile(Application.StartupPath + @"\Images\o.png");
+                    button.BackgroundImage = Image.FromFile(Application.StartupPath + @"\Images\x.png");
                 }
                 catch (Exception ex)
                 {
@@ -47,13 +48,13 @@ namespace BattleshipMpClient.Command
                 }
             }
 
-            _richTextBox.AppendText("Miss\n");
-            _missSoundPlayer.Play();
+            _richTextBox.AppendText("Hit\n");
+            _hitSoundPlayer.Play();
         }
 
         public void Undo(Button button)
         {
-            Console.WriteLine("Undoing MissCommand");
+            Console.WriteLine("Undoing HitCommand");
             string result = _receive.Substring(_receive.Length - 2, 2);
             result = result + result.Substring(result.Length - 1);
             var button1 = _gameBoardButtons.FirstOrDefault(x => x.Name == result);

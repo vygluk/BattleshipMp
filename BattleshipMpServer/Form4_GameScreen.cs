@@ -18,6 +18,7 @@ using BattleshipMpServer.Decorator;
 using BattleshipMpServer.Bridge.Abstraction;
 using BattleshipMpServer.Bridge.Concrete;
 using System.Threading.Tasks;
+using BattleshipMpServer.Command;
 
 namespace BattleshipMp
 {
@@ -55,6 +56,8 @@ namespace BattleshipMp
         IItem playerItem2;
         IItem playerItem3;
         static private int remainingJams = 0;
+        private Stack<ICommand> commandHistory = new Stack<ICommand>();
+        public Button myBoardButtonToUndo;
 
         //  While creating the "game screen" object, get the list of selected buttons from Form2 and change their color with the help of constructor.
         public Form4_GameScreen(List<(string, Color)> list)
@@ -293,6 +296,15 @@ namespace BattleshipMp
             }
         }
 
+        public void UndoLastMove(Button button)
+        {
+            if (commandHistory.Count > 0)
+            {
+                ICommand lastCommand = commandHistory.Pop();
+                lastCommand.Undo(button);
+            }
+        }
+
         // 6 // This is the method where the important operations are done. Necessary explanations are in the method. When a move is made, this method is reached with more than 1 iteration.
         // It's also mentioned in the description.
         public void AttackFromEnemy(string recieve)
@@ -302,6 +314,14 @@ namespace BattleshipMp
             SoundPlayerBridge hitSoundPlayer = new HitSoundPlayer(hitSoundImplementation);
             SoundPlayerBridge missSoundPlayer = new MissSoundPlayer(missSoundImplementation);
             //  Read the data that determines who is next in step four. If the data is 0, Server will start; If the data is 1, Client will start.
+            ICommand command = CreateCommand(recieve, gameBoardButtons, richTextBox1, hitSoundPlayer, missSoundPlayer);
+            command.Execute();
+            if (command is HitCommand || command is MissCommand)
+            {
+                commandHistory.Push(command);
+                return;
+            }
+
             if (recieve == "0")
             {
                 areEnabledButtons = true;
@@ -313,38 +333,6 @@ namespace BattleshipMp
             {
                 areEnabledButtons = false;
                 SwitchGameButtonsEnabled();
-                return;
-            }
-
-            //  Information about whether the attacking party hit the target or not is written to the RichTextBox object in the interface.
-            //  If it is a miss, the background of the button is tiled with the "O" image, otherwise the "X" image is used.
-            //  This process takes place in the 2nd iteration.
-            else if (recieve.Contains("miss:"))
-            {
-                //  String operations edit the received button names because the player's ships and the board on which the game is played are separate.
-                string result = recieve.Substring(recieve.Length - 2, 2);
-                result = result + result.Substring(result.Length - 1);
-                var button = gameBoardButtons.FirstOrDefault(x => x.Name == result);
-                if (button != null)
-                {
-                    button.BackgroundImage = Image.FromFile(Application.StartupPath + @"\Images\o.png");
-                }
-                richTextBox1.AppendText("Miss\n");
-                missSoundPlayer.Play();
-                return;
-            }
-            else if (recieve.Contains("hit:"))
-            {
-                string result = recieve.Substring(recieve.Length - 2, 2);
-                result = result + result.Substring(result.Length - 1);
-                var button = gameBoardButtons.FirstOrDefault(x => x.Name == result);
-                if (button != null)
-                {
-                    button.BackgroundImage = Image.FromFile(Application.StartupPath + @"\Images\x.png");
-                    button.Enabled = false;
-                }
-                richTextBox1.AppendText("Hit\n");
-                hitSoundPlayer.Play();
                 return;
             }
             else if (recieve.Contains("hitShielded:"))
@@ -551,7 +539,8 @@ namespace BattleshipMp
                     else
                     {
                         _extraRoundPublisher.Unsubscribe(_extraRoundSubscriberMap.GetExtraRoundSubscriber(extraSubscriberToGet));
-                        myBoardButtons.FirstOrDefault(x => x.Name == shotButtonName).BackgroundImage = Image.FromFile(Application.StartupPath + @"\Images\x.png");
+                        myBoardButtonToUndo = myBoardButtons.FirstOrDefault(x => x.Name == shotButtonName);
+                        myBoardButtonToUndo.BackgroundImage = Image.FromFile(Application.StartupPath + @"\Images\x.png");
 
                         AttackToEnemy("hit:" + shotButtonName);
 
@@ -585,7 +574,8 @@ namespace BattleshipMp
                 } else
                 {
                     _extraRoundPublisher.Unsubscribe(_extraRoundSubscriberMap.GetExtraRoundSubscriber(extraSubscriberToGet));
-                    myBoardButtons.FirstOrDefault(x => x.Name == shotButtonName).BackgroundImage = Image.FromFile(Application.StartupPath + @"\Images\x.png");
+                    myBoardButtonToUndo = myBoardButtons.FirstOrDefault(x => x.Name == shotButtonName);
+                    myBoardButtonToUndo.BackgroundImage = Image.FromFile(Application.StartupPath + @"\Images\x.png");
 
                     AttackToEnemy("hit:" + shotButtonName);
 
@@ -599,10 +589,26 @@ namespace BattleshipMp
             else
             {
                 _extraRoundPublisher.Unsubscribe(_extraRoundSubscriberMap.GetExtraRoundSubscriber(extraSubscriberToGet));
-                myBoardButtons.FirstOrDefault(x => x.Name == shotButtonName).BackgroundImage = Image.FromFile(Application.StartupPath + @"\Images\o.png");
+                myBoardButtonToUndo = myBoardButtons.FirstOrDefault(x => x.Name == shotButtonName);
+                myBoardButtonToUndo.BackgroundImage = Image.FromFile(Application.StartupPath + @"\Images\o.png");
                 AttackToEnemy("miss:" + shotButtonName);
                 return;
             }
+        }
+
+        private ICommand CreateCommand(string receive, List<Button> gameBoardButtons, RichTextBox richTextBox, SoundPlayerBridge hitSoundPlayer, SoundPlayerBridge missSoundPlayer)
+        {
+            if (receive.Contains("miss:"))
+            {
+                return new MissCommand(gameBoardButtons, richTextBox, missSoundPlayer, receive);
+            }
+            else if (receive.Contains("hit:"))
+            {
+                return new HitCommand(gameBoardButtons, richTextBox, hitSoundPlayer, receive);
+            }
+
+            // If no specific command matches, return a default or null command
+            return new DefaultCommand();
         }
 
         //  The object to which the data will be sent. It is executed only when a attack is made. Otherwise it waits.
@@ -814,6 +820,12 @@ namespace BattleshipMp
         private void labelAttackTurn_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            button3.Enabled = false;
+            UndoLastMove(myBoardButtonToUndo);
         }
     }
 }

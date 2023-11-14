@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.label20 = new System.Windows.Forms.Label();
             this.label19 = new System.Windows.Forms.Label();
             this.label18 = new System.Windows.Forms.Label();
@@ -278,9 +277,10 @@
             this.backgroundWorker2 = new System.ComponentModel.BackgroundWorker();
             this.labelAttackTurn = new System.Windows.Forms.Label();
             this.richTextBox1 = new System.Windows.Forms.RichTextBox();
-            this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.timer1 = new System.Windows.Forms.Timer();
             this.button2 = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
+            this.button3 = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -1894,7 +1894,7 @@
             this.itemButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.itemButton.ForeColor = System.Drawing.Color.Black;
             this.itemButton.Location = new System.Drawing.Point(448, 65);
-            this.itemButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.itemButton.Margin = new System.Windows.Forms.Padding(2);
             this.itemButton.Name = "itemButton";
             this.itemButton.Size = new System.Drawing.Size(80, 24);
             this.itemButton.TabIndex = 999;
@@ -1911,7 +1911,7 @@
             this.itemButton2.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.itemButton2.ForeColor = System.Drawing.Color.Black;
             this.itemButton2.Location = new System.Drawing.Point(448, 99);
-            this.itemButton2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.itemButton2.Margin = new System.Windows.Forms.Padding(2);
             this.itemButton2.Name = "itemButton2";
             this.itemButton2.Size = new System.Drawing.Size(80, 50);
             this.itemButton2.TabIndex = 1000;
@@ -1928,7 +1928,7 @@
             this.itemButton3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.itemButton3.ForeColor = System.Drawing.Color.Black;
             this.itemButton3.Location = new System.Drawing.Point(448, 160);
-            this.itemButton3.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.itemButton3.Margin = new System.Windows.Forms.Padding(2);
             this.itemButton3.Name = "itemButton3";
             this.itemButton3.Size = new System.Drawing.Size(80, 37);
             this.itemButton3.TabIndex = 1001;
@@ -2067,6 +2067,7 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.button3);
             this.groupBox2.Controls.Add(this.label21);
             this.groupBox2.Controls.Add(this.J11);
             this.groupBox2.Controls.Add(this.itemButton);
@@ -4033,7 +4034,7 @@
             // button2
             // 
             this.button2.Location = new System.Drawing.Point(1011, 486);
-            this.button2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.button2.Margin = new System.Windows.Forms.Padding(2);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(65, 28);
             this.button2.TabIndex = 136;
@@ -4044,13 +4045,27 @@
             // button1
             // 
             this.button1.Location = new System.Drawing.Point(910, 486);
-            this.button1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.button1.Margin = new System.Windows.Forms.Padding(2);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(66, 28);
             this.button1.TabIndex = 135;
             this.button1.Text = "Turn on background music";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // button3
+            // 
+            this.button3.BackColor = System.Drawing.Color.Transparent;
+            this.button3.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.button3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.button3.ForeColor = System.Drawing.Color.Black;
+            this.button3.Location = new System.Drawing.Point(449, 202);
+            this.button3.Name = "button3";
+            this.button3.Size = new System.Drawing.Size(75, 23);
+            this.button3.TabIndex = 1002;
+            this.button3.Text = "Undo move";
+            this.button3.UseVisualStyleBackColor = false;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
             // Form4_GameScreen
             // 
@@ -4332,5 +4347,6 @@
         private System.Windows.Forms.Timer timer1;
         private System.Windows.Forms.Button button2;
         private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.Button button3;
     }
 }

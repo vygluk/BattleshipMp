@@ -49,6 +49,10 @@
   <ItemGroup>
     <Compile Include="Adapter\IcebergShipInteractionAdapter.cs" />
     <Compile Include="Adapter\IIcebergShipInteractionAdapter.cs" />
+    <Compile Include="Command\DefaultCommand.cs" />
+    <Compile Include="Command\HitCommand.cs" />
+    <Compile Include="Command\ICommand.cs" />
+    <Compile Include="Command\MissCommand.cs" />
     <Compile Include="Decorator\IcebergDecorator.cs" />
     <Compile Include="Entity\Iceberg.cs" />
     <Compile Include="Entity\Obsticle.cs" />
