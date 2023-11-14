@@ -292,6 +292,7 @@ namespace BattleshipMp
             if (recieve == "0")
             {
                 areEnabledButtons = true;
+                hasRadarUse = true;
                 SwitchGameButtonsEnabled();
                 return;
             }
@@ -811,6 +812,11 @@ namespace BattleshipMp
         public static void setRemainingJams(int jams)
         {
             remainingJams = jams;
+        }
+
+        private void labelAttackTurn_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
