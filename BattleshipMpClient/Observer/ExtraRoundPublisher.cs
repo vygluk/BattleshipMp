@@ -13,11 +13,23 @@ namespace BattleshipMpClient.Observer
 
         public void Subscribe(ExtraRoundSubscriber subscriber)
         {
+            if (_subscribers.Contains(subscriber))
+            {
+                return;
+            }
+
+            subscriber.SwitchState();
             _subscribers.Add(subscriber);
         }
 
         public void Unsubscribe(ExtraRoundSubscriber subscriber)
         {
+            if (!_subscribers.Contains(subscriber))
+            {
+                return;
+            }
+
+            subscriber.SwitchState();
             _subscribers.Remove(subscriber);
         }
 

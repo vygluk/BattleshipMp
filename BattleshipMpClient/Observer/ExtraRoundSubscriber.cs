@@ -6,11 +6,18 @@
 
         protected int RoundsInARow = 0;
 
+        public bool Enabled { get; set; } = false;
+
         protected abstract float ExtraRoundChanceMultiplier { get; }
 
         public void UpdateRoundsInARow()
         {
             RoundsInARow += 1;
+        }
+
+        public void SwitchState()
+        {
+            Enabled = !Enabled;
         }
 
         public float GetExtraRoundChancePercentages() 

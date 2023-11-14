@@ -16,6 +16,7 @@ using BattleshipMp.Builder;
 using BattleshipMpClient.Adapter;
 using BattleshipMpClient.Decorator;
 using BattleshipMpClient.Command;
+using System.Threading.Tasks;
 
 namespace BattleshipMpClient
 {
@@ -436,7 +437,7 @@ namespace BattleshipMpClient
             var extraSubscriberToGet = recieve.Substring(0, recieve.Length - 1);
             var rnd = new Random();
             var extraSubscriberOnClickedButton = _extraRoundSubscriberMap.GetExtraRoundSubscriber(extraSubscriberToGet);
-            enemyReceivedExtraRound = extraSubscriberOnClickedButton.GetExtraRoundChancePercentages() > rnd.Next(PERCENTAGE_MAX + 1);
+            enemyReceivedExtraRound = extraSubscriberOnClickedButton.GetExtraRoundChancePercentages() > rnd.Next(PERCENTAGE_MAX + 1) && !isIceberg && extraSubscriberOnClickedButton.Enabled;
             if (enemyReceivedExtraRound)
             {
                 AttackToEnemy("Extra round");
