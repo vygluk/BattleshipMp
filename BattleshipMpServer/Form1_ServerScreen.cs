@@ -12,6 +12,7 @@ using System.Windows.Forms;
 using System.Threading;
 using System.IO;
 using BattleshipMpServer.Factory.Ship;
+using BattleshipMp.State;
 
 namespace BattleshipMp
 {
@@ -84,8 +85,8 @@ namespace BattleshipMp
 
             timer1.Stop();
 
-            Form12_ShipThemeSelection frmThemeSelection = new Form12_ShipThemeSelection();
-            frmThemeSelection.Show();
+            GameContext gameContext = GameContext.Instance;
+            gameContext.TransitionTo(new SetupState());
 
             this.Visible = false;
         }

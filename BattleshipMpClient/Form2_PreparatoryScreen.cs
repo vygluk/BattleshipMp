@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using BattleshipMpClient.Entity;
 using BattleshipMp.Builder;
 using BattleshipMpClient.Factory.Ship;
+using BattleshipMpClient.State;
 
 namespace BattleshipMpClient
 {
@@ -421,11 +422,13 @@ namespace BattleshipMpClient
         private void buttonStart_Click(object sender, EventArgs e)
         {
             timer1.Stop();
-            Form4_GameScreen frm4 = new Form4_GameScreen(FillAllButtonList());
-            frm4.BackColor = this.BackColor;
-            frm4.ForeColor = this.ForeColor;
+            
+            GameContext gameContext = GameContext.Instance;
+            var ships = FillAllButtonList();
+            gameContext.SetTheme(ships);
+            PlayerTurnState playerTurnState = PlayerTurnState.Instance;
+            gameContext.TransitionTo(playerTurnState);
             this.Visible = false;
-            frm4.Show();
         }
 
         private List<(string, Color)> FillAllButtonList()

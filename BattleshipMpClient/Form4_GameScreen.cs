@@ -18,6 +18,7 @@ using BattleshipMpClient.Adapter;
 using BattleshipMpClient.Decorator;
 using BattleshipMpClient.Command;
 using System.Threading.Tasks;
+using BattleshipMpClient.State;
 
 namespace BattleshipMpClient
 {
@@ -25,7 +26,7 @@ namespace BattleshipMpClient
     {
         private GameFacade gameFacade;
         private int currentPlayer;
-
+        public List<(string, Color)> selectedShipList;
         //public StreamReader STR;
         //public StreamWriter STW;
         public string recieve;
@@ -33,7 +34,6 @@ namespace BattleshipMpClient
         List<Button> gameBoardButtons;
         List<Button> myBoardButtons;
         bool areEnabledButtons = true;
-        List<(string, Color)> AllSelectedButtonList;
         bool myExit = false;
         List<Control> icebergButtons = new List<Control>();
         List<ShipButtons> icebergTiles = new List<ShipButtons>();
@@ -65,8 +65,11 @@ namespace BattleshipMpClient
 
         public Form4_GameScreen(List<(string, Color)> list)
         {
-            InitializeComponent(); 
-            this.AllSelectedButtonList = list;
+            InitializeComponent();
+            GameContext gameContext = GameContext.Instance;
+            this.selectedShipList = list;
+            gameContext.SetTheme(this.selectedShipList);
+
             Control.CheckForIllegalCrossThreadCalls = false;
 
             _formBuilder = new FormBuilder();
@@ -181,7 +184,7 @@ namespace BattleshipMpClient
                             c.BackColor = extraIceberg.getColor();
                             icebergButtons.Add(c);
                             extraIceberg.AddTiles(c);
-                            icebergShipInteractionAdapter.ProcessIcebergShipCollision(extraIceberg, AllSelectedButtonList, this, out isIceberg);
+                            icebergShipInteractionAdapter.ProcessIcebergShipCollision(extraIceberg, selectedShipList, this, out isIceberg);
                         }
                     }
 
@@ -195,7 +198,7 @@ namespace BattleshipMpClient
                             c.BackColor = extraIceberg.getColor();
                             icebergButtons.Add(c);
                             extraIceberg.AddTiles(c);
-                            icebergShipInteractionAdapter.ProcessIcebergShipCollision(extraIceberg, AllSelectedButtonList, this, out isIceberg);
+                            icebergShipInteractionAdapter.ProcessIcebergShipCollision(extraIceberg, selectedShipList, this, out isIceberg);
                         }
                     }
                 }
@@ -207,7 +210,7 @@ namespace BattleshipMpClient
                         c.BackColor = icebergDecorator.getColor();
                         icebergButtons.Add(c);
                         icebergDecorator.AddTiles(c);
-                        icebergShipInteractionAdapter.ProcessIcebergShipCollision(icebergDecorator, AllSelectedButtonList, this, out isIceberg);
+                        icebergShipInteractionAdapter.ProcessIcebergShipCollision(icebergDecorator, selectedShipList, this, out isIceberg);
                     }
                 }
             }
@@ -219,7 +222,10 @@ namespace BattleshipMpClient
             gameBoardButtons = groupBox2.Controls.OfType<Button>().ToList();
             myBoardButtons = groupBox1.Controls.OfType<Button>().ToList();
 
-            foreach (var item in AllSelectedButtonList)
+            GameContext gameContext = GameContext.Instance;
+
+            gameContext.SetTheme(this.selectedShipList);
+            foreach (var item in gameContext.GetTheme())
             {
                 groupBox1.Controls.Find(item.Item1, true)[0].BackColor = item.Item2;
             }
@@ -304,7 +310,9 @@ namespace BattleshipMpClient
                 return;
             }
 
-            AttackToEnemy(clickedButton.Name);
+            GameContext gameContext = GameContext.Instance;
+            gameContext.HandleInput(clickedButton.Name);
+            //AttackToEnemy(clickedButton.Name);
         }
 
         public void UndoLastMove(Button button)
@@ -355,15 +363,18 @@ namespace BattleshipMpClient
             }
             else if (recieve.Contains("youwin"))
             {
-                DialogResult res = MessageBox.Show("Victory.", "Client - Game Result", MessageBoxButtons.OK);
-                {
-                    if (res == DialogResult.Yes)
-                    {
-                        Environment.Exit(1);
-                    }
-                    else
-                        Environment.Exit(1);
-                }
+                //DialogResult res = MessageBox.Show("Victory.", "Client - Game Result", MessageBoxButtons.OK);
+                //{
+                //    if (res == DialogResult.Yes)
+                //    {
+                //        Environment.Exit(1);
+                //    }
+                //    else
+                //        Environment.Exit(1);
+                //}
+                GameContext gameContext = GameContext.Instance;
+                gameContext.SetVictoryMessage("Victory");
+                gameContext.TransitionTo(new GameOverState());
                 return;
             }
             else if (recieve.Contains("exit"))
@@ -568,15 +579,18 @@ namespace BattleshipMpClient
                                     return;
                                 }
                                 AttackToEnemy("youwin");
-                                DialogResult res = MessageBox.Show("You lost.", "Client - Game Result", MessageBoxButtons.OK);
-                                {
-                                    if (res == DialogResult.Yes)
-                                    {
-                                        Environment.Exit(1);
-                                    }
-                                    else
-                                        Environment.Exit(1);
-                                }
+                                GameContext gameContext = GameContext.Instance;
+                                gameContext.SetVictoryMessage("You lost.");
+                                gameContext.TransitionTo(new GameOverState());
+                                //DialogResult res = MessageBox.Show("You lost.", "Client - Game Result", MessageBoxButtons.OK);
+                                //{
+                                //    if (res == DialogResult.Yes)
+                                //    {
+                                //        Environment.Exit(1);
+                                //    }
+                                //    else
+                                //        Environment.Exit(1);
+                                //}
                                 return;
                             }
                         }
@@ -605,15 +619,18 @@ namespace BattleshipMpClient
                                 return;
                             }
                             AttackToEnemy("youwin");
-                            DialogResult res = MessageBox.Show("You lost.", "Client - Game Result", MessageBoxButtons.OK);
-                            {
-                                if (res == DialogResult.Yes)
-                                {
-                                    Environment.Exit(1);
-                                }
-                                else
-                                    Environment.Exit(1);
-                            }
+                            GameContext gameContext = GameContext.Instance;
+                            gameContext.SetVictoryMessage("You lost.");
+                            gameContext.TransitionTo(new GameOverState());
+                            //DialogResult res = MessageBox.Show("You lost.", "Client - Game Result", MessageBoxButtons.OK);
+                            //{
+                            //    if (res == DialogResult.Yes)
+                            //    {
+                            //        Environment.Exit(1);
+                            //    }
+                            //    else
+                            //        Environment.Exit(1);
+                            //}
                             return;
                         }
                     }
@@ -648,7 +665,7 @@ namespace BattleshipMpClient
             return new DefaultCommand();
         }
 
-        private void AttackToEnemy(string buttonName)
+        public void AttackToEnemy(string buttonName)
         {
             if (buttonName == null)
             {

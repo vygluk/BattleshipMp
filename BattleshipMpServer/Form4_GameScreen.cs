@@ -19,6 +19,7 @@ using BattleshipMpServer.Bridge.Abstraction;
 using BattleshipMpServer.Bridge.Concrete;
 using System.Threading.Tasks;
 using BattleshipMpServer.Command;
+using BattleshipMp.State;
 
 namespace BattleshipMp
 {
@@ -33,7 +34,7 @@ namespace BattleshipMp
         List<Button> gameBoardButtons;
         List<Button> myBoardButtons;
         bool areEnabledButtons = true;
-        List<(string, Color)> AllSelectedButtonList;
+        public List<(string, Color)> selectedShipList;
         List<Control> icebergButtons = new List<Control>();
         List<ShipButtons> icebergTiles = new List<ShipButtons>();
         List<Iceberg> icebergs = new List<Iceberg>();
@@ -63,7 +64,7 @@ namespace BattleshipMp
         public Form4_GameScreen(List<(string, Color)> list)
         {
             InitializeComponent();
-            this.AllSelectedButtonList = list;
+            this.selectedShipList = list;
             Control.CheckForIllegalCrossThreadCalls = false;
 
             _radarStrategyGenerator = new RadarStrategyGenerator();
@@ -108,9 +109,11 @@ namespace BattleshipMp
             // 1 // Save all the buttons on the game board and the selected ships to the list.
             gameBoardButtons = groupBox2.Controls.OfType<Button>().ToList();
             myBoardButtons = groupBox1.Controls.OfType<Button>().ToList();
+            GameContext gameContext = GameContext.Instance;
 
+            gameContext.SetTheme(this.selectedShipList);
             // 2 // Change the color of the ships in the "My Ships" section according to the button list from Form2.
-            foreach (var item in AllSelectedButtonList)
+            foreach (var item in selectedShipList)
             {
                 groupBox1.Controls.Find(item.Item1, true)[0].BackColor = item.Item2;
             }
@@ -227,7 +230,7 @@ namespace BattleshipMp
                             c.BackColor = extraIceberg.getColor();
                             icebergButtons.Add(c);
                             extraIceberg.AddTiles(c);
-                            icebergShipInteractionAdapter.ProcessIcebergShipCollision(extraIceberg, AllSelectedButtonList, this, out isIceberg);
+                            icebergShipInteractionAdapter.ProcessIcebergShipCollision(extraIceberg, selectedShipList, this, out isIceberg);
                         }
                     }
 
@@ -241,7 +244,7 @@ namespace BattleshipMp
                             c.BackColor = extraIceberg.getColor();
                             icebergButtons.Add(c);
                             extraIceberg.AddTiles(c);
-                            icebergShipInteractionAdapter.ProcessIcebergShipCollision(extraIceberg, AllSelectedButtonList, this, out isIceberg);
+                            icebergShipInteractionAdapter.ProcessIcebergShipCollision(extraIceberg, selectedShipList, this, out isIceberg);
                         }
                     }
                 }
@@ -253,7 +256,7 @@ namespace BattleshipMp
                         c.BackColor = icebergDecorator.getColor();
                         icebergButtons.Add(c);
                         icebergDecorator.AddTiles(c);
-                        icebergShipInteractionAdapter.ProcessIcebergShipCollision(icebergDecorator, AllSelectedButtonList, this, out isIceberg);
+                        icebergShipInteractionAdapter.ProcessIcebergShipCollision(icebergDecorator, selectedShipList, this, out isIceberg);
                     }
                 }
             }
@@ -350,15 +353,18 @@ namespace BattleshipMp
             // If the game is over, this data is read in the 3rd iteration.
             else if (recieve.Contains("youwin"))
             {
-                DialogResult res = MessageBox.Show("Victory.", "Server - Game Result", MessageBoxButtons.OK);
-                {
-                    if (res == DialogResult.Yes)
-                    {
-                        Environment.Exit(1);
-                    }
-                    else
-                        Environment.Exit(1);
-                }
+                GameContext gameContext = GameContext.Instance;
+                gameContext.SetVictoryMessage("Victory");
+                gameContext.TransitionTo(new GameOverState());
+                //DialogResult res = MessageBox.Show("Victory.", "Server - Game Result", MessageBoxButtons.OK);
+                //{
+                //    if (res == DialogResult.Yes)
+                //    {
+                //        Environment.Exit(1);
+                //    }
+                //    else
+                //        Environment.Exit(1);
+                //}
                 return;
             }
             else if (recieve.Contains("exit"))
@@ -556,15 +562,18 @@ namespace BattleshipMp
                                     return;
                                 }
                                 AttackToEnemy("youwin");
-                                DialogResult res = MessageBox.Show("You lost.", "Server - Game Result", MessageBoxButtons.OK);
-                                {
-                                    if (res == DialogResult.Yes)
-                                    {
-                                        Environment.Exit(1);
-                                    }
-                                    else
-                                        Environment.Exit(1);
-                                }
+                                GameContext gameContext = GameContext.Instance;
+                                gameContext.SetVictoryMessage("You lost.");
+                                gameContext.TransitionTo(new GameOverState());
+                                //DialogResult res = MessageBox.Show("You lost.", "Server - Game Result", MessageBoxButtons.OK);
+                                //{
+                                //    if (res == DialogResult.Yes)
+                                //    {
+                                //        Environment.Exit(1);
+                                //    }
+                                //    else
+                                //        Environment.Exit(1);
+                                //}
                                 return;
                             }
                         }
@@ -636,11 +645,13 @@ namespace BattleshipMp
                 return;
             }
 
-            AttackToEnemy(clickedButton.Name);
+            GameContext gameContext = GameContext.Instance;
+            gameContext.HandleInput(clickedButton.Name);
+            //AttackToEnemy(clickedButton.Name);
         }
 
         //  Makes adjustments to the button name while sending data. A11 shaped button sends its name as A1.
-        private void AttackToEnemy(string buttonName)
+        public void AttackToEnemy(string buttonName)
         {
             if (buttonName == null)
             {
