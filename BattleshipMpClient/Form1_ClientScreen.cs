@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using BattleshipMpClient.Factory.Ship;
+using BattleshipMpClient.State;
 
 namespace BattleshipMpClient
 {
@@ -35,11 +36,8 @@ namespace BattleshipMpClient
         //  Go to ship theme selection form, Form12
         private void buttonGoToBoard_Click(object sender, EventArgs e)
         {
-
-
-            Form12_ShipThemeSelection frmThemeSelection = new Form12_ShipThemeSelection();
-            frmThemeSelection.Show();
-
+            GameContext gameContext = GameContext.Instance;
+            gameContext.TransitionTo(new SetupState());
             this.Visible = false;
         }
 
