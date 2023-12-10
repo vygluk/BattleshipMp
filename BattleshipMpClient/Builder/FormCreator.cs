@@ -18,6 +18,7 @@ namespace BattleshipMp.Builder
             _builder.AddFormColor(Color.Gray);
             _builder.AddForegroundColor(Color.White);
             _builder.AddShipFactory(new DarkShipFactory());
+            _builder.SetRandomPreparationMode();
 
             return _builder.Build();
         }
@@ -27,6 +28,7 @@ namespace BattleshipMp.Builder
             _builder.AddFormColor(Color.White);
             _builder.AddForegroundColor(Color.Black);
             _builder.AddShipFactory(new LightShipFactory());
+            _builder.SetRandomPreparationMode();
 
             return _builder.Build();
         }

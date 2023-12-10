@@ -150,6 +150,9 @@
     <Compile Include="Strategy\RadarStrategyGenerator.cs" />
     <Compile Include="Strategy\VerticalHorizontalRadarStrategy.cs" />
     <Compile Include="Strategy\VerticalRadarStrategy.cs" />
+    <Compile Include="Template\TimedPreparationMode.cs" />
+    <Compile Include="Template\ClassicPreparationMode.cs" />
+    <Compile Include="Template\PreparationMode.cs" />
     <EmbeddedResource Include="Form12_ShipThemeSelection.resx">
       <DependentUpon>Form12_ShipThemeSelection.cs</DependentUpon>
     </EmbeddedResource>

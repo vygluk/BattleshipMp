@@ -1,5 +1,6 @@
 ﻿using BattleshipMpClient;
 using BattleshipMpClient.Factory.Ship;
+using System;
 using System.Drawing;
 
 namespace BattleshipMp.Builder
@@ -26,6 +27,15 @@ namespace BattleshipMp.Builder
         public void AddShipFactory(IShipFactory shipFactory)
         {
             _form.AddShipFactory(shipFactory);
+        }
+
+        public void SetRandomPreparationMode()
+        {
+            Random rnd = new Random();
+            bool isClassicMode = false; //rnd.Next(2) == 0;
+
+            int timeLimitInSeconds = 10;
+            _form.SetPreparationMode(isClassicMode, timeLimitInSeconds);
         }
 
         public Form2_PreparatoryScreen Build()

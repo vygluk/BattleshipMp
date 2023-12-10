@@ -9,6 +9,7 @@ namespace BattleshipMp.Builder
         void AddFormColor(Color color);
         void AddForegroundColor(Color color);
         void AddShipFactory(IShipFactory shipFactory);
+        void SetRandomPreparationMode();
         Form2_PreparatoryScreen Build();
     }
 }
