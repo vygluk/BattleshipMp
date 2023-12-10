@@ -8,6 +8,7 @@ using BattleshipMpServer.Entity;
 using BattleshipMp.Builder;
 using BattleshipMpServer.Factory.Ship;
 using BattleshipMp.State;
+using BattleshipMpServer.Flyweight;
 
 namespace BattleshipMp
 {
@@ -105,9 +106,16 @@ namespace BattleshipMp
         public List<ShipButtons> icebergTiles = new List<ShipButtons>();
         public List<Control> icebergButtons = new List<Control>();
         public Iceberg iceberg = new Iceberg();
+        private ShipButtonFlyweightFactory flyweightFactory = new ShipButtonFlyweightFactory();
 
         List<(string, Color)> AllSelectedButtonList = new List<(string, Color)>();
         bool isPanelActive = true;
+
+        private void SetButtonProperties(Button button, Color color)
+        {
+            var flyweight = flyweightFactory.GetFlyweight(color);
+            flyweight.DisplayShipButton(new ShipButtonContext { Button = button });
+        }
 
         private void SetObsticlesUp()
         {
@@ -273,6 +281,7 @@ namespace BattleshipMp
                                 foreach (var item2 in selected)
                                 {
                                     item2.BackColor = item.color;
+                                    SetButtonProperties(item2, item.color);
                                     sb.buttonNames.Add(item2.Name);
                                 }
                                 item.shipPerButton.Add(sb);

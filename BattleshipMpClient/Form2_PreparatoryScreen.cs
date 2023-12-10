@@ -8,6 +8,9 @@ using BattleshipMpClient.Entity;
 using BattleshipMp.Builder;
 using BattleshipMpClient.Factory.Ship;
 using BattleshipMpClient.State;
+using BattleshipMpClient.Flyweight;
+using System.Diagnostics;
+using System.Threading;
 
 namespace BattleshipMpClient
 {
@@ -16,12 +19,18 @@ namespace BattleshipMpClient
         private IShipFactory _shipFactory;
         private IShipBuilder _builder;
         private ShipsCreator _shipsCreator;
+        private ShipButtonFlyweightFactory flyweightFactory = new ShipButtonFlyweightFactory();
 
         public Form2_PreparatoryScreen()
         {
             InitializeComponent();
             DoubleBuffered = true;
             SetObsticlesUp();
+        }
+        private void SetButtonProperties(Button button, Color color)
+        {
+            var flyweight = flyweightFactory.GetFlyweight(color);
+            flyweight.DisplayShipButton(new ShipButtonContext { Button = button });
         }
 
         public void AddShipFactory(IShipFactory shipFactory)
@@ -146,7 +155,90 @@ namespace BattleshipMpClient
             CreateShipList();
             RemainingShips();
             timer1.Start();
+            //TestFlyweight();
         }
+
+        private void TestFlyweight()
+        {
+            PrepareForMemoryMeasurement();
+
+            Stopwatch stopwatch = new Stopwatch();
+
+            // Testing Without Flyweight
+            stopwatch.Start();
+            long memoryWithoutFlyweight = WithoutFlyweightTest();
+            stopwatch.Stop();
+            long timeWithoutFlyweight = stopwatch.ElapsedMilliseconds;
+
+            Console.WriteLine($"Memory usage without Flyweight: {memoryWithoutFlyweight} bytes");
+            Console.WriteLine($"Time taken without Flyweight: {timeWithoutFlyweight} ms");
+
+            PrepareForMemoryMeasurement();
+
+            // Testing With Flyweight
+            stopwatch.Restart();
+            long memoryWithFlyweight = WithFlyweightTest();
+            stopwatch.Stop();
+            long timeWithFlyweight = stopwatch.ElapsedMilliseconds;
+
+            Console.WriteLine($"Memory usage with Flyweight: {memoryWithFlyweight} bytes");
+            Console.WriteLine($"Time taken with Flyweight: {timeWithFlyweight} ms");
+        }
+
+        private void PrepareForMemoryMeasurement()
+        {
+            // This ensures that it's a fair test
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+        }
+
+        private List<Button> CreateButtons(int v)
+        {
+            var buttons = new List<Button>();
+            for (int i = 0; i < v; i++)
+            {
+                var button = new Button();
+                buttons.Add(button);
+            }
+            return buttons;
+        }
+
+        private long WithoutFlyweightTest()
+        {
+            PrepareForMemoryMeasurement();
+            long memoryBefore = GC.GetTotalMemory(true);
+
+            List<Button> buttons = CreateButtons(1000000); // Create 1 million buttons
+
+            foreach (var button in buttons)
+            {
+                button.BackColor = Color.FromArgb(255, 0, 0); // Example color
+                                                              // ... other property settings
+            }
+
+            long memoryAfter = GC.GetTotalMemory(true);
+            return memoryAfter - memoryBefore;
+        }
+
+        private long WithFlyweightTest()
+        {
+            PrepareForMemoryMeasurement();
+            long memoryBefore = GC.GetTotalMemory(true);
+
+            List<Button> buttons = CreateButtons(1000000); // Create 1 million buttons
+            Color color = Color.FromArgb(255, 0, 0); // Example color
+
+            foreach (var button in buttons)
+            {
+                // Using Flyweight to set properties
+                SetButtonProperties(button, color);
+            }
+
+            long memoryAfter = GC.GetTotalMemory(true);
+            return memoryAfter - memoryBefore;
+        }
+
 
         // 1 // In the first step, create ships derived from the "Ship" model (class) and list these ships.
         private void CreateShipList()
@@ -262,13 +354,10 @@ namespace BattleshipMpClient
                                 ShipButtons sb = new ShipButtons() { buttonNames = new List<string>() };
                                 foreach (var item2 in selected)
                                 {
-                                    item2.BackColor = item.color;
-                                    //AllSelectedButtonList.Add(item2.Name);
+                                    SetButtonProperties(item2, item.color);
                                     sb.buttonNames.Add(item2.Name);
                                 }
                                 item.shipPerButton.Add(sb);
-
-                                //AllSelectedButtonList.Sort();
                                 RemainingShips();
                                 break;
                             }
