@@ -20,6 +20,7 @@ using BattleshipMpServer.Bridge.Concrete;
 using System.Threading.Tasks;
 using BattleshipMpServer.Command;
 using BattleshipMp.State;
+using BattleshipMpServer.Iterator;
 
 namespace BattleshipMp
 {
@@ -59,6 +60,7 @@ namespace BattleshipMp
         static private int remainingJams = 0;
         private Stack<ICommand> commandHistory = new Stack<ICommand>();
         public Button myBoardButtonToUndo;
+        private IIcebergIterator icebergIterator;
 
         //  While creating the "game screen" object, get the list of selected buttons from Form2 and change their color with the help of constructor.
         public Form4_GameScreen(List<(string, Color)> list)
@@ -83,7 +85,17 @@ namespace BattleshipMp
             IItemFactory itemFactory = new ItemFactory();
             playerItem = itemFactory.CreateFindShipItem();
             playerItem2 = itemFactory.CreateBattleshipHitItem();
-            playerItem3 = itemFactory.CreateJamItem();
+            playerItem3 = itemFactory.CreateJamItem(); 
+            icebergIterator = CreateIterator();
+        }
+        public IIcebergIterator CreateIterator()
+        {
+            return new IcebergIterator(icebergs);
+        }
+
+        public void AddIceberg(Iceberg iceberg)
+        {
+            icebergs.Add(iceberg);
         }
 
         //  Replace the mouse pointer with a red target image while making moves. return to normal pointer when the button is over.
@@ -230,7 +242,7 @@ namespace BattleshipMp
                             c.BackColor = extraIceberg.getColor();
                             icebergButtons.Add(c);
                             extraIceberg.AddTiles(c);
-                            icebergShipInteractionAdapter.ProcessIcebergShipCollision(extraIceberg, selectedShipList, this, out isIceberg);
+                            icebergShipInteractionAdapter.ProcessIcebergShipCollision(extraIceberg, selectedShipList, this, out isIceberg, icebergIterator);
                         }
                     }
 
@@ -244,7 +256,7 @@ namespace BattleshipMp
                             c.BackColor = extraIceberg.getColor();
                             icebergButtons.Add(c);
                             extraIceberg.AddTiles(c);
-                            icebergShipInteractionAdapter.ProcessIcebergShipCollision(extraIceberg, selectedShipList, this, out isIceberg);
+                            icebergShipInteractionAdapter.ProcessIcebergShipCollision(extraIceberg, selectedShipList, this, out isIceberg, icebergIterator);
                         }
                     }
                 }
@@ -256,7 +268,7 @@ namespace BattleshipMp
                         c.BackColor = icebergDecorator.getColor();
                         icebergButtons.Add(c);
                         icebergDecorator.AddTiles(c);
-                        icebergShipInteractionAdapter.ProcessIcebergShipCollision(icebergDecorator, selectedShipList, this, out isIceberg);
+                        icebergShipInteractionAdapter.ProcessIcebergShipCollision(icebergDecorator, selectedShipList, this, out isIceberg, icebergIterator);
                     }
                 }
             }
