@@ -92,6 +92,10 @@
     <Compile Include="Bridge\Concrete\MissSound.cs" />
     <Compile Include="Bridge\Concrete\BackgroundMusic.cs" />
     <Compile Include="Bridge\Concrete\ISoundImplementation.cs" />
+    <Compile Include="Flyweight\IShipButtonFlyweight.cs" />
+    <Compile Include="Flyweight\ShipButtonContext.cs" />
+    <Compile Include="Flyweight\ShipButtonFlyweight .cs" />
+    <Compile Include="Flyweight\ShipButtonFlyweightFactory.cs" />
     <Compile Include="Form12_ShipThemeSelection.cs">
       <SubType>Form</SubType>
     </Compile>
