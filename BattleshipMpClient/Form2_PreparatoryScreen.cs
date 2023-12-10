@@ -11,6 +11,7 @@ using BattleshipMpClient.State;
 using BattleshipMpClient.Flyweight;
 using System.Diagnostics;
 using System.Threading;
+using BattleshipMpClient.Template;
 
 namespace BattleshipMpClient
 {
@@ -20,13 +21,27 @@ namespace BattleshipMpClient
         private IShipBuilder _builder;
         private ShipsCreator _shipsCreator;
         private ShipButtonFlyweightFactory flyweightFactory = new ShipButtonFlyweightFactory();
+        private PreparationMode preparationMode;
 
         public Form2_PreparatoryScreen()
         {
             InitializeComponent();
             DoubleBuffered = true;
-            SetObsticlesUp();
+            //SetObsticlesUp();
         }
+
+        public void SetPreparationMode(bool isClassicMode, int timeLimitInSeconds = 0)
+        {
+            if (isClassicMode)
+            {
+                preparationMode = new ClassicPreparationMode(this);
+            }
+            else
+            {
+                preparationMode = new TimedPreparationMode(this, timeLimitInSeconds);
+            }
+        }
+
         private void SetButtonProperties(Button button, Color color)
         {
             var flyweight = flyweightFactory.GetFlyweight(color);
@@ -94,7 +109,7 @@ namespace BattleshipMpClient
             }
         }
 
-        private void SetObsticlesUp()
+        public void SetObsticlesUp()
         {
             foreach(Control c in Controls)
             {
@@ -152,8 +167,9 @@ namespace BattleshipMpClient
         private void Form2_Load(object sender, EventArgs e)
         {
             shipList = null;
-            CreateShipList();
-            RemainingShips();
+            //CreateShipList();
+            //RemainingShips();
+            preparationMode.PrepareBoard();
             timer1.Start();
             //TestFlyweight();
         }
@@ -241,7 +257,7 @@ namespace BattleshipMpClient
 
 
         // 1 // In the first step, create ships derived from the "Ship" model (class) and list these ships.
-        private void CreateShipList()
+        public void CreateShipList()
         {
             shipList = _shipsCreator.BuildNormalShips();
             specialShipList = _shipsCreator.BuildSpecialShips();
@@ -453,7 +469,7 @@ namespace BattleshipMpClient
                 "Notice: The game will start after both players 'Continue'.");
         }
 
-        void RemainingShips()
+        public void RemainingShips()
         {
             lblBattleship.Text = lblBattleship.Text.Substring(0, lblBattleship.Text.Length - 1);
             lblBattleship.Text += specialShipList.FirstOrDefault(x => x.shipName == "Battleship").remShips.ToString();
@@ -543,6 +559,210 @@ namespace BattleshipMpClient
                 }
             }
             return AllSelectedButtonList;
+        }
+
+        public void UpdateCountdownDisplay(int remainingSeconds)
+        {
+            countdownLabel.Text = $"Time left: {remainingSeconds} seconds";
+        }
+
+        public void EndPreparation()
+        {
+            AutomaticallyPlaceUnplacedShips();
+            buttonStart_Click(null, EventArgs.Empty);
+        }
+
+        private void AutomaticallyPlaceUnplacedShips()
+        {
+            var occupiedButtons = FillAllButtonList().Select(item => item.Item1).ToHashSet();
+
+            foreach (var ship in shipList)
+            {
+                while (ship.remShips > 0)
+                {
+                    var selectedButtonNames = FindValidPlacementForShip(ship, occupiedButtons);
+                    if (selectedButtonNames != null)
+                    {
+                        PlaceShip(ship, selectedButtonNames);
+                        ship.remShips--;
+                        foreach (var buttonName in selectedButtonNames)
+                        {
+                            occupiedButtons.Add(buttonName);
+                        }
+                    }
+                }
+            }
+
+            foreach (var specialShip in specialShipList)
+            {
+                while (specialShip.remShips > 0)
+                {
+                    var selectedButtonNames = FindValidPlacementForSpecialShip(specialShip, occupiedButtons);
+                    if (selectedButtonNames != null)
+                    {
+                        PlaceSpecialShip(specialShip, selectedButtonNames);
+                        specialShip.remShips--;
+                        foreach (var buttonName in selectedButtonNames)
+                        {
+                            occupiedButtons.Add(buttonName);
+                        }
+                    }
+                }
+            }
+        }
+        private List<(int, int)> GenerateShuffledGridPositions()
+        {
+            Random _random = new Random();
+
+            var positions = new List<(int, int)>();
+            for (int row = 0; row < 10; row++)
+            {
+                for (int col = 0; col < 10; col++)
+                {
+                    positions.Add((row, col));
+                }
+            }
+
+            int n = positions.Count;
+            while (n > 1)
+            {
+                n--;
+                int k = _random.Next(n + 1);
+                var value = positions[k];
+                positions[k] = positions[n];
+                positions[n] = value;
+            }
+
+            return positions;
+        }
+
+        private List<string> FindValidPlacementForShip(IShip ship, HashSet<string> occupiedButtons)
+        {
+            int shipSize = GetShipSize(ship);
+            var shuffledPositions = GenerateShuffledGridPositions();
+
+            foreach (var (row, col) in shuffledPositions)
+            {
+                var horizontalButtons = GetConsecutiveButtonNames(row, col, shipSize, true, occupiedButtons);
+                if (horizontalButtons != null)
+                    return horizontalButtons;
+
+                var verticalButtons = GetConsecutiveButtonNames(row, col, shipSize, false, occupiedButtons);
+                if (verticalButtons != null)
+                    return verticalButtons;
+            }
+
+            return null;
+        }
+
+        private List<string> FindValidPlacementForSpecialShip(ISpecialShip ship, HashSet<string> occupiedButtons)
+        {
+            int shipSize = GetSpecialShipSize(ship);
+            var shuffledPositions = GenerateShuffledGridPositions();
+
+            foreach (var (row, col) in shuffledPositions)
+            {
+                var horizontalButtons = GetConsecutiveButtonNames(row, col, shipSize, true, occupiedButtons);
+                if (horizontalButtons != null)
+                    return horizontalButtons;
+
+                var verticalButtons = GetConsecutiveButtonNames(row, col, shipSize, false, occupiedButtons);
+                if (verticalButtons != null)
+                    return verticalButtons;
+            }
+
+            return null;
+        }
+
+        private int GetShipSize(IShip ship)
+        {
+            Dictionary<string, int> squarePerShips = new Dictionary<string, int>()
+            {
+                {"Cruiser", 3}, {"Destroyer", 2}, {"Submarine", 1}
+            };
+
+            if (squarePerShips.ContainsKey(ship.shipName))
+                return squarePerShips[ship.shipName];
+            return 0;
+        }
+
+        private int GetSpecialShipSize(ISpecialShip ship)
+        {
+            Dictionary<string, int> squarePerSpecialShips = new Dictionary<string, int>()
+            {
+                {"Battleship", 4}, {"SpecialCruiser", 3}, {"SpecialDestroyer", 2}, {"SpecialSubmarine", 1}
+            };
+
+            if (squarePerSpecialShips.ContainsKey(ship.shipName))
+                return squarePerSpecialShips[ship.shipName];
+            return 0;
+        }
+
+        private List<string> GetConsecutiveButtonNames(int startRow, int startCol, int shipSize, bool horizontal, HashSet<string> occupiedButtons)
+        {
+            List<string> buttonNames = new List<string>();
+
+            for (int i = 0; i < shipSize; i++)
+            {
+                int row = horizontal ? startRow : startRow + i;
+                int col = horizontal ? startCol + i : startCol;
+
+                string buttonName = GetButtonNameAtPosition(row, col);
+
+                if (buttonName == null || occupiedButtons.Contains(buttonName))
+                    return null;
+
+                buttonNames.Add(buttonName);
+            }
+
+            return buttonNames;
+        }
+
+        private string GetButtonNameAtPosition(int row, int col)
+        {
+            if (row < 0 || row >= 10 || col < 0 || col >= 10)
+                return null;
+
+            char rowLetter = (char)('A' + row);
+            return $"{rowLetter}{col}";
+        }
+
+        private void PlaceShip(IShip ship, List<string> buttonNames)
+        {
+            if (ship.shipPerButton == null)
+                ship.shipPerButton = new List<ShipButtons>();
+
+            ShipButtons sb = new ShipButtons() { buttonNames = new List<string>() };
+            foreach (var buttonName in buttonNames)
+            {
+                var button = this.Controls.Find(buttonName, true).FirstOrDefault() as Button;
+                if (button != null)
+                {
+                    button.BackColor = ship.color;
+                    sb.buttonNames.Add(buttonName);
+                }
+            }
+            ship.shipPerButton.Add(sb);
+            RemainingShips();
+        }
+
+        private void PlaceSpecialShip(ISpecialShip ship, List<string> buttonNames)
+        {
+            if (ship.shipPerButton == null)
+                ship.shipPerButton = new List<ShipButtons>();
+
+            ShipButtons sb = new ShipButtons() { buttonNames = new List<string>() };
+            foreach (var buttonName in buttonNames)
+            {
+                var button = this.Controls.Find(buttonName, true).FirstOrDefault() as Button;
+                if (button != null)
+                {
+                    button.BackColor = ship.color;
+                    sb.buttonNames.Add(buttonName);
+                }
+            }
+            ship.shipPerButton.Add(sb);
+            RemainingShips();
         }
 
         private void timer1_Tick(object sender, EventArgs e)

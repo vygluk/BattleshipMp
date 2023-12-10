@@ -161,6 +161,7 @@
             this.J1 = new System.Windows.Forms.Button();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.timer1 = new System.Windows.Forms.Timer(this.components);
+            this.countdownLabel = new System.Windows.Forms.Label();
             this.groupBox1.SuspendLayout();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
@@ -1908,11 +1909,21 @@
             this.timer1.Interval = 1000;
             this.timer1.Tick += new System.EventHandler(this.timer1_Tick);
             // 
+            // countdownLabel
+            // 
+            this.countdownLabel.AutoSize = true;
+            this.countdownLabel.Location = new System.Drawing.Point(287, 643);
+            this.countdownLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
+            this.countdownLabel.Name = "countdownLabel";
+            this.countdownLabel.Size = new System.Drawing.Size(0, 16);
+            this.countdownLabel.TabIndex = 9;
+            // 
             // Form2_PreparatoryScreen
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(755, 668);
+            this.Controls.Add(this.countdownLabel);
             this.Controls.Add(this.buttonStart);
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.label20);
@@ -2184,5 +2195,6 @@
         private System.Windows.Forms.Label lblSpecialSubmarine;
         private System.Windows.Forms.Label lblSpecialCruiser;
         private System.Windows.Forms.Label lblSpecialDestroyer;
+        private System.Windows.Forms.Label countdownLabel;
     }
 }
