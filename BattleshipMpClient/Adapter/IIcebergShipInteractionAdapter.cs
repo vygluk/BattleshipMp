@@ -1,4 +1,5 @@
 ﻿using BattleshipMpClient.Entity;
+using BattleshipMpClient.Iterator;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -11,6 +12,6 @@ namespace BattleshipMpClient.Adapter
 {
     public interface IIcebergShipInteractionAdapter
     {
-        void ProcessIcebergShipCollision(Iceberg iceberg, List<(string, Color)> shipButtons, Form4_GameScreen screen, out bool isIceberg);
+        void ProcessIcebergShipCollision(Iceberg iceberg, List<(string, Color)> shipButtons, Form4_GameScreen screen, out bool isIceberg, IIcebergIterator icebergIterator);
     }
 }

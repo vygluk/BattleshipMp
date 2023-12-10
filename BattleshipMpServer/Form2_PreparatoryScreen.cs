@@ -8,6 +8,7 @@ using BattleshipMpServer.Entity;
 using BattleshipMp.Builder;
 using BattleshipMpServer.Factory.Ship;
 using BattleshipMp.State;
+using BattleshipMpServer.Iterator;
 
 namespace BattleshipMp
 {
@@ -390,20 +391,27 @@ namespace BattleshipMp
             lblSpecialDestroyer.Text += specialShipList.FirstOrDefault(x => x.shipName == "SpecialDestroyer").remShips.ToString();
 
             isPanelActive = true;
+            ShipCollection shipCollection = new ShipCollection(shipList);
+            var shipIterator = shipCollection.CreateIterator();
+            SpecialShipCollection specialShipCollection = new SpecialShipCollection(specialShipList);
+            var specialShipIterator = specialShipCollection.CreateIterator();
 
-            foreach (var item in shipList)
+            while (shipIterator.HasNext())
             {
-                if (item.remShips != 0)
+                IShip ship = shipIterator.Next();
+                if (ship.remShips != 0)
                 {
                     isPanelActive = false;
                     break;
                 }
             }
+
             if (isPanelActive)
             {
-                foreach (var item in specialShipList)
+                while (specialShipIterator.HasNext())
                 {
-                    if (item.remShips != 0)
+                    ISpecialShip specialShip = specialShipIterator.Next();
+                    if (specialShip.remShips != 0)
                     {
                         isPanelActive = false;
                     }

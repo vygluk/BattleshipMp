@@ -1,4 +1,5 @@
 ﻿using BattleshipMpClient.Entity;
+using BattleshipMpClient.Iterator;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -11,16 +12,28 @@ namespace BattleshipMpClient.Adapter
 {
     public class IcebergShipInteractionAdapter : IIcebergShipInteractionAdapter
     {
-        public void ProcessIcebergShipCollision(Iceberg iceberg, List<(string, Color)> shipButtons, Form4_GameScreen screen, out bool isIceberg)
+        public void ProcessIcebergShipCollision(Iceberg targetIceberg, List<(string, Color)> shipButtons, Form4_GameScreen screen, out bool isIceberg, IIcebergIterator icebergIterator)
         {
             isIceberg = false;
-            foreach (var icebergTile in iceberg.obsticlePerButton)
+            while (icebergIterator.HasNext())
             {
-                foreach (var shipButton in shipButtons)
+                Iceberg currentIceberg = icebergIterator.Next();
+                if (currentIceberg == targetIceberg)
                 {
-                    if (IsCollision(icebergTile, shipButton.Item1))
+                    foreach (var icebergTile in currentIceberg.obsticlePerButton)
                     {
-                        HandleCollision(icebergTile, shipButton.Item1, screen, out isIceberg);
+                        foreach (var shipButton in shipButtons)
+                        {
+                            if (IsCollision(icebergTile, shipButton.Item1))
+                            {
+                                HandleCollision(icebergTile, shipButton.Item1, screen, out isIceberg);
+                            }
+                        }
+
+                        if (isIceberg)
+                        {
+                            break;
+                        }
                     }
                 }
 
@@ -41,7 +54,6 @@ namespace BattleshipMpClient.Adapter
             isIceberg = true;
             var nameNumber = shipButton[1];
             var nameToSend = $"{shipButton}{nameNumber}";
-
             screen.AttackFromEnemy(nameToSend);
         }
     }

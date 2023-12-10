@@ -122,6 +122,17 @@
     <Compile Include="Form4_GameScreen.Designer.cs">
       <DependentUpon>Form4_GameScreen.cs</DependentUpon>
     </Compile>
+    <Compile Include="Iterator\IcebergIterator.cs" />
+    <Compile Include="Iterator\IIcebergAggregate.cs" />
+    <Compile Include="Iterator\IIcebergIterator.cs" />
+    <Compile Include="Iterator\IShipAggregate.cs" />
+    <Compile Include="Iterator\IShipIterator.cs" />
+    <Compile Include="Iterator\ISpecialShipAggregate.cs" />
+    <Compile Include="Iterator\ISpecialShipIterator.cs" />
+    <Compile Include="Iterator\ShipCollection.cs" />
+    <Compile Include="Iterator\ShipIterator.cs" />
+    <Compile Include="Iterator\SpecialShipCollection.cs" />
+    <Compile Include="Iterator\SpecialShipIterator.cs" />
     <Compile Include="Observer\ExtraRoundSubscriberMap.cs" />
     <Compile Include="Observer\ExtraRoundPublisher.cs" />
     <Compile Include="Observer\ExtraRoundSubscriber.cs" />
