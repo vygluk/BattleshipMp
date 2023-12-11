@@ -155,6 +155,8 @@
     <Compile Include="Template\TimedPreparationMode.cs" />
     <Compile Include="Template\ClassicPreparationMode.cs" />
     <Compile Include="Template\PreparationMode.cs" />
+    <Compile Include="Visitor\OperationalStatusVisitor.cs" />
+    <Compile Include="Visitor\IVisitor.cs" />
     <EmbeddedResource Include="Form12_ShipThemeSelection.resx">
       <DependentUpon>Form12_ShipThemeSelection.cs</DependentUpon>
     </EmbeddedResource>

@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BattleshipMpClient.Visitor;
 
 namespace BattleshipMpClient.Factory.Ship
 {
@@ -42,6 +43,14 @@ namespace BattleshipMpClient.Factory.Ship
             foreach (IShipComponent component in _children)
             {
                 component.AdjustShieldsShips();
+            }
+        }
+
+        public void Accept(IVisitor visitor)
+        {
+            foreach (var child in _children)
+            {
+                child.Accept(visitor);
             }
         }
     }

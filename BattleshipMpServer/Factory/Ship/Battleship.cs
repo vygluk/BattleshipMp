@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BattleshipMpServer.Visitor;
 
 namespace BattleshipMpServer.Factory.Ship
 {
@@ -49,6 +50,11 @@ namespace BattleshipMpServer.Factory.Ship
                     remShields++;
                 }
             }
+        }
+
+        public void Accept(IVisitor visitor)
+        {
+            visitor.VisitSpecialShip(this);
         }
     }
 }
