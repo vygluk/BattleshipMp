@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using BattleshipMpServer.Visitor;
 
 namespace BattleshipMpServer.Factory.Ship
 {
@@ -15,5 +16,6 @@ namespace BattleshipMpServer.Factory.Ship
         IShipComponent GetChild(int index);
         IEnumerable<IShipComponent> GetChildren();
         void AdjustShieldsShips();
+        void Accept(IVisitor visitor);
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using BattleshipMpClient.Visitor;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -36,6 +37,11 @@ namespace BattleshipMpClient.Factory.Ship
 
         public void AdjustShieldsShips()
         {
+        }
+
+        public void Accept(IVisitor visitor)
+        {
+            visitor.VisitShip(this);
         }
     }
 }

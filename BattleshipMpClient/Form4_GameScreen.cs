@@ -20,6 +20,7 @@ using BattleshipMpClient.Command;
 using System.Threading.Tasks;
 using BattleshipMpClient.State;
 using BattleshipMpClient.Iterator;
+using BattleshipMpClient.Visitor;
 
 namespace BattleshipMpClient
 {
@@ -455,6 +456,11 @@ namespace BattleshipMpClient
                 richTextBox1.AppendText($"{recieve}\n");
                 return;
             }
+            else if (recieve.Contains("[Scan]"))
+            {
+                richTextBox1.AppendText($"{recieve}\n");
+                return;
+            }
 
             else if (recieve.Contains("[EnemyJamItem]"))
             {
@@ -466,6 +472,24 @@ namespace BattleshipMpClient
                 return;
             }
 
+            else if (recieve.Contains("[EnemyScan]"))
+            {
+                OperationalStatusVisitor visitor = new OperationalStatusVisitor();
+                Form2_PreparatoryScreen.allShipsComposite.Accept(visitor);
+                string nonOperationalTypes = visitor.GetNonOperationalShipTypes();
+                richTextBox1.AppendText($"[Scan] The enemy scanned our ships!\n");
+
+                if (string.IsNullOrEmpty(nonOperationalTypes))
+                {
+                    AttackToEnemy("[Scan] We scanned the enemy's ships! No ship types were destroyed completely.");
+                }
+                else
+                {
+                    AttackToEnemy($"[Scan] We scanned the enemy's ships! We destroyed all of their {nonOperationalTypes} type ships.");
+                }
+
+                return;
+            }
             else if (recieve.Contains("[EnemyOverload]"))
             {
                 Form2_PreparatoryScreen.allShipsComposite.AdjustShieldsShips();
@@ -883,6 +907,13 @@ namespace BattleshipMpClient
             AttackToEnemy("[EnemyOverload]");
 
             isSpecialSquadronButtonDisabled = true;
+
+            return;
+        }
+
+        private void operationalButton_Click(object sender, EventArgs e)
+        {
+            AttackToEnemy("[EnemyScan]");
 
             return;
         }

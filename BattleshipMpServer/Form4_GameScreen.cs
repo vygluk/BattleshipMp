@@ -21,6 +21,7 @@ using System.Threading.Tasks;
 using BattleshipMpServer.Command;
 using BattleshipMp.State;
 using BattleshipMpServer.Iterator;
+using BattleshipMpServer.Visitor;
 
 namespace BattleshipMp
 {
@@ -439,6 +440,11 @@ namespace BattleshipMp
                 richTextBox1.AppendText($"{recieve}\n");
                 return;
             }
+            else if (recieve.Contains("[Scan]"))
+            {
+                richTextBox1.AppendText($"{recieve}\n");
+                return;
+            }
 
             else if (recieve.Contains("[EnemyJamItem]"))
             {
@@ -446,6 +452,24 @@ namespace BattleshipMp
 
                 richTextBox1.AppendText($"[JamItem] Your ability to use items was jammed!\n");
                 AttackToEnemy($"[JamItem] {message}");
+
+                return;
+            }
+            else if (recieve.Contains("[EnemyScan]"))
+            {
+                OperationalStatusVisitor visitor = new OperationalStatusVisitor();
+                Form2_PreparatoryScreen.allShipsComposite.Accept(visitor);
+                string nonOperationalTypes = visitor.GetNonOperationalShipTypes();
+                richTextBox1.AppendText($"[Scan] The enemy scanned our ships!\n");
+
+                if (string.IsNullOrEmpty(nonOperationalTypes))
+                {
+                    AttackToEnemy("[Scan] We scanned the enemy's ships! No ship types were destroyed completely.");
+                }
+                else
+                {
+                    AttackToEnemy($"[Scan] We scanned the enemy's ships! We destroyed all of their {nonOperationalTypes} type ships.");
+                }
 
                 return;
             }
@@ -877,6 +901,13 @@ namespace BattleshipMp
             AttackToEnemy("[EnemyOverload]");
 
             isSpecialSquadronButtonDisabled = true;
+
+            return;
+        }
+
+        private void operationalButton_Click(object sender, EventArgs e)
+        {
+            AttackToEnemy("[EnemyScan]");
 
             return;
         }
