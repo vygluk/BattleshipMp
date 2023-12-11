@@ -75,6 +75,8 @@
     <Compile Include="Factory\Ship\Cruiser.cs" />
     <Compile Include="Factory\Ship\DarkShipFactory .cs" />
     <Compile Include="Factory\Ship\Destroyer.cs" />
+    <Compile Include="Factory\Ship\ShipComposite.cs" />
+    <Compile Include="Factory\Ship\IShipComponent.cs" />
     <Compile Include="Factory\Ship\IShip.cs" />
     <Compile Include="Factory\Ship\IShipFactory.cs" />
     <Compile Include="Factory\Ship\ISpecialShip.cs" />

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BattleshipMpClient.Factory.Ship
 {
-    public interface IShip
+    public interface IShip : IShipComponent
     {
         string shipName { get; }
         int remShips { get; set; }

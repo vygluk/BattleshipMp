@@ -103,6 +103,7 @@ namespace BattleshipMp
 
         public static List<IShip> shipList = new List<IShip>();
         public static List<ISpecialShip> specialShipList = new List<ISpecialShip>();
+        public static ShipComposite allShipsComposite = new ShipComposite("Fleet");
         public List<ShipButtons> icebergTiles = new List<ShipButtons>();
         public List<Control> icebergButtons = new List<Control>();
         public Iceberg iceberg = new Iceberg();
@@ -188,6 +189,22 @@ namespace BattleshipMp
         {
             shipList = _shipsCreator.BuildNormalShips();
             specialShipList = _shipsCreator.BuildSpecialShips();
+
+            ShipComposite normalShipsSquadron = new ShipComposite("NormalSquadron");
+            ShipComposite specialShipsSquadron = new ShipComposite("SpecialSquadron");
+
+            foreach (var ship in shipList)
+            {
+                normalShipsSquadron.Add(ship);
+            }
+
+            foreach (var specialShip in specialShipList)
+            {
+                specialShipsSquadron.Add(specialShip);
+            }
+
+            allShipsComposite.Add(normalShipsSquadron);
+            allShipsComposite.Add(specialShipsSquadron);
         }
 
         private void GetSelectedButtons()

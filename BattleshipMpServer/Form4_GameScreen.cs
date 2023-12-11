@@ -61,6 +61,7 @@ namespace BattleshipMp
         private Stack<ICommand> commandHistory = new Stack<ICommand>();
         public Button myBoardButtonToUndo;
         private IIcebergIterator icebergIterator;
+        private bool isSpecialSquadronButtonDisabled = false;
 
         //  While creating the "game screen" object, get the list of selected buttons from Form2 and change their color with the help of constructor.
         public Form4_GameScreen(List<(string, Color)> list)
@@ -433,6 +434,11 @@ namespace BattleshipMp
                 richTextBox1.AppendText($"{recieve}\n");
                 return;
             }
+            else if (recieve.Contains("[Overload]"))
+            {
+                richTextBox1.AppendText($"{recieve}\n");
+                return;
+            }
 
             else if (recieve.Contains("[EnemyJamItem]"))
             {
@@ -440,6 +446,14 @@ namespace BattleshipMp
 
                 richTextBox1.AppendText($"[JamItem] Your ability to use items was jammed!\n");
                 AttackToEnemy($"[JamItem] {message}");
+
+                return;
+            }
+            else if (recieve.Contains("[EnemyOverload]"))
+            {
+                Form2_PreparatoryScreen.allShipsComposite.AdjustShieldsShips();
+                richTextBox1.AppendText($"[Overload] The enemy tried to overload our shields! We can't be sure if they succeeded...\n");
+                AttackToEnemy($"[Overload] We tried to overload the enemy's ships! But did it work...?");
 
                 return;
             }
@@ -736,6 +750,12 @@ namespace BattleshipMp
             {
                 foreach (var item in gameBoardButtons)
                 {
+                    if (item.Name == "specialSquadronButton" && isSpecialSquadronButtonDisabled)
+                    {
+                        item.Enabled = false;
+                        continue;
+                    }
+
                     if (!clickedButtons.Contains(item.Name))
                     {
                         if (item.Name == "itemButton" && (playerItem.remItems <= 0 || remainingJams > 0))
@@ -762,6 +782,7 @@ namespace BattleshipMp
                     itemButton.Enabled = false;
                     itemButton2.Enabled = false;
                     itemButton3.Enabled = false;
+                    specialSquadronButton.Enabled = false;
                 }
                 areEnabledButtons = true;
             }
@@ -849,6 +870,15 @@ namespace BattleshipMp
         {
             button3.Enabled = false;
             UndoLastMove(myBoardButtonToUndo);
+        }
+
+        private void specialSquadronButton_Click(object sender, EventArgs e)
+        {
+            AttackToEnemy("[EnemyOverload]");
+
+            isSpecialSquadronButtonDisabled = true;
+
+            return;
         }
     }
 }
