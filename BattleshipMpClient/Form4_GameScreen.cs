@@ -63,6 +63,7 @@ namespace BattleshipMpClient
         private delegate bool StateChecker();
         private IIcebergIterator icebergIterator;
         public Button myBoardButtonToUndo;
+        private bool isSpecialSquadronButtonDisabled = false;
 
         public Form4_GameScreen(List<(string, Color)> list)
         {
@@ -449,6 +450,11 @@ namespace BattleshipMpClient
                 richTextBox1.AppendText($"{recieve}\n");
                 return;
             }
+            else if (recieve.Contains("[Overload]"))
+            {
+                richTextBox1.AppendText($"{recieve}\n");
+                return;
+            }
 
             else if (recieve.Contains("[EnemyJamItem]"))
             {
@@ -456,6 +462,15 @@ namespace BattleshipMpClient
 
                 richTextBox1.AppendText($"[JamItem] Your ability to use items was jammed!\n");
                 AttackToEnemy($"[JamItem] {message}");
+
+                return;
+            }
+
+            else if (recieve.Contains("[EnemyOverload]"))
+            {
+                Form2_PreparatoryScreen.allShipsComposite.AdjustShieldsShips();
+                richTextBox1.AppendText($"[Overload] The enemy tried to overload our shields! We can't be sure if they succeeded...\n");
+                AttackToEnemy($"[Overload] We tried to overload the enemy's ships! But did it work...?");
 
                 return;
             }
@@ -749,6 +764,12 @@ namespace BattleshipMpClient
             {
                 foreach (var item in gameBoardButtons)
                 {
+                    if (item.Name == "specialSquadronButton" && isSpecialSquadronButtonDisabled)
+                    {
+                        item.Enabled = false;
+                        continue;
+                    }
+
                     if (!clickedButtons.Contains(item.Name))
                     {
                         if (item.Name == "itemButton" && (playerItem.remItems <= 0 || remainingJams > 0))
@@ -777,6 +798,7 @@ namespace BattleshipMpClient
                     itemButton.Enabled = false;
                     itemButton2.Enabled = false;
                     itemButton3.Enabled = false;
+                    specialSquadronButton.Enabled = false;
                 }
                 areEnabledButtons = true;
             }
@@ -854,6 +876,15 @@ namespace BattleshipMpClient
         public static void setRemainingJams(int jams)
         {
             remainingJams = jams;
+        }
+
+        private void specialSquadronButton_Click(object sender, EventArgs e)
+        {
+            AttackToEnemy("[EnemyOverload]");
+
+            isSpecialSquadronButtonDisabled = true;
+
+            return;
         }
     }
 }

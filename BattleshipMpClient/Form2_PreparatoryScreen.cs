@@ -159,6 +159,7 @@ namespace BattleshipMpClient
 
         public static List<IShip> shipList = new List<IShip>();
         public static List<ISpecialShip> specialShipList = new List<ISpecialShip>();
+        public static ShipComposite allShipsComposite = new ShipComposite("Fleet");
 
         List<(string, Color)> AllSelectedButtonList = new List<(string, Color)>();
 
@@ -261,6 +262,22 @@ namespace BattleshipMpClient
         {
             shipList = _shipsCreator.BuildNormalShips();
             specialShipList = _shipsCreator.BuildSpecialShips();
+
+            ShipComposite normalShipsSquadron = new ShipComposite("NormalSquadron");
+            ShipComposite specialShipsSquadron = new ShipComposite("SpecialSquadron");
+
+            foreach (var ship in shipList)
+            {
+                normalShipsSquadron.Add(ship);
+            }
+
+            foreach (var specialShip in specialShipList)
+            {
+                specialShipsSquadron.Add(specialShip);
+            }
+
+            allShipsComposite.Add(normalShipsSquadron);
+            allShipsComposite.Add(specialShipsSquadron);
         }
         private bool ValidateTile(Control button)
         {
@@ -640,9 +657,14 @@ namespace BattleshipMpClient
         {
             int shipSize = GetShipSize(ship);
             var shuffledPositions = GenerateShuffledGridPositions();
+            var ignoredPositions = new HashSet<string> { "F4", "E4" };
 
             foreach (var (row, col) in shuffledPositions)
             {
+                string position = $"{row}{col}";
+                if (ignoredPositions.Contains(position))
+                    continue;
+
                 var horizontalButtons = GetConsecutiveButtonNames(row, col, shipSize, true, occupiedButtons);
                 if (horizontalButtons != null)
                     return horizontalButtons;
@@ -659,9 +681,14 @@ namespace BattleshipMpClient
         {
             int shipSize = GetSpecialShipSize(ship);
             var shuffledPositions = GenerateShuffledGridPositions();
+            var ignoredPositions = new HashSet<string> { "F4", "E4" };
 
             foreach (var (row, col) in shuffledPositions)
             {
+                string position = $"{row}{col}";
+                if (ignoredPositions.Contains(position))
+                    continue;
+
                 var horizontalButtons = GetConsecutiveButtonNames(row, col, shipSize, true, occupiedButtons);
                 if (horizontalButtons != null)
                     return horizontalButtons;
@@ -701,6 +728,7 @@ namespace BattleshipMpClient
         private List<string> GetConsecutiveButtonNames(int startRow, int startCol, int shipSize, bool horizontal, HashSet<string> occupiedButtons)
         {
             List<string> buttonNames = new List<string>();
+            var excludedPositions = new HashSet<string> { "F4", "E4" };
 
             for (int i = 0; i < shipSize; i++)
             {
@@ -709,7 +737,7 @@ namespace BattleshipMpClient
 
                 string buttonName = GetButtonNameAtPosition(row, col);
 
-                if (buttonName == null || occupiedButtons.Contains(buttonName))
+                if (buttonName == null || occupiedButtons.Contains(buttonName) || excludedPositions.Contains(buttonName))
                     return null;
 
                 buttonNames.Add(buttonName);
