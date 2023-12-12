@@ -477,6 +477,14 @@ namespace BattleshipMpClient
                 }
                 return;
             }
+            else if (recieve.Contains("[ShieldDisable]"))
+            {
+                ShieldRemoveVisitor visitor = new ShieldRemoveVisitor();
+                Form2_PreparatoryScreen.allShipsComposite.Accept(visitor);
+
+                richTextBox1.AppendText($"{recieve}\n");
+                return;
+            }
 
             else if (recieve.Contains("[EnemyJamItem]"))
             {
@@ -488,6 +496,16 @@ namespace BattleshipMpClient
                 return;
             }
 
+            else if (recieve.Contains("[EnemyShieldDisable]"))
+            {
+                ShieldRemoveVisitor visitor = new ShieldRemoveVisitor();
+                Form2_PreparatoryScreen.allShipsComposite.Accept(visitor);
+                richTextBox1.AppendText($"[ShieldDisable] The enemy disabled all our shields, but their own too!\n");
+
+                AttackToEnemy($"[ShieldDisable] We disabled the enemy's shield! Our own too, though...");
+
+                return;
+            }
             else if (recieve.Contains("[EnemyScan]"))
             {
                 OperationalStatusVisitor visitor = new OperationalStatusVisitor();
@@ -812,7 +830,14 @@ namespace BattleshipMpClient
             {
                 foreach (var item in gameBoardButtons)
                 {
+
                     if (item.Name == "specialSquadronButton" && isSpecialSquadronButtonDisabled)
+                    {
+                        item.Enabled = false;
+                        continue;
+                    }
+
+                    if (item.Name == "removeShieldsButton")
                     {
                         item.Enabled = false;
                         continue;
@@ -833,6 +858,18 @@ namespace BattleshipMpClient
                             item.Enabled = false;
                             remainingJams--;
                         }
+                        else if (item.Name == "specialSquadronButton" && remainingJams > 0)
+                        {
+                            item.Enabled = false;
+                        }
+                        else if (item.Name == "operationalButton" && remainingJams > 0)
+                        {
+                            item.Enabled = false;
+                        }
+                        else if (item.Name == "shieldBoostButton" && remainingJams > 0)
+                        {
+                            item.Enabled = false;
+                        }
                         else
                         {
                             item.Enabled = true;
@@ -849,6 +886,7 @@ namespace BattleshipMpClient
                     specialSquadronButton.Enabled = false;
                     operationalButton.Enabled = false;
                     shieldBoostButton.Enabled = false;
+                    removeShieldsButton.Enabled = false;
                 }
                 areEnabledButtons = true;
             }
@@ -947,6 +985,13 @@ namespace BattleshipMpClient
         private void shieldBoostButton_Click(object sender, EventArgs e)
         {
             AttackToEnemy("[EnemyShieldBoost]");
+
+            return;
+        }
+
+        private void removeShieldsButton_Click(object sender, EventArgs e)
+        {
+            AttackToEnemy("[EnemyShieldDisable]");
 
             return;
         }

@@ -154,6 +154,7 @@
             this.itemButton3 = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.shieldBoostButton = new System.Windows.Forms.Button();
             this.operationalButton = new System.Windows.Forms.Button();
             this.specialSquadronButton = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
@@ -284,7 +285,7 @@
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.button2 = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
-            this.shieldBoostButton = new System.Windows.Forms.Button();
+            this.removeShieldsButton = new System.Windows.Forms.Button();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
             this.SuspendLayout();
@@ -2022,7 +2023,7 @@
             this.itemButton.Name = "itemButton";
             this.itemButton.Size = new System.Drawing.Size(107, 30);
             this.itemButton.TabIndex = 999;
-            this.itemButton.Text = "Find Ship";
+            this.itemButton.Text = "Find ship";
             this.itemButton.UseVisualStyleBackColor = false;
             this.itemButton.Click += new System.EventHandler(this.itemButton_Click);
             // 
@@ -2193,6 +2194,7 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.removeShieldsButton);
             this.groupBox2.Controls.Add(this.shieldBoostButton);
             this.groupBox2.Controls.Add(this.operationalButton);
             this.groupBox2.Controls.Add(this.specialSquadronButton);
@@ -2329,6 +2331,23 @@
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Enemy Ships";
             // 
+            // shieldBoostButton
+            // 
+            this.shieldBoostButton.BackColor = System.Drawing.Color.Transparent;
+            this.shieldBoostButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.shieldBoostButton.Enabled = false;
+            this.shieldBoostButton.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+            this.shieldBoostButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.shieldBoostButton.ForeColor = System.Drawing.Color.Black;
+            this.shieldBoostButton.Location = new System.Drawing.Point(597, 277);
+            this.shieldBoostButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.shieldBoostButton.Name = "shieldBoostButton";
+            this.shieldBoostButton.Size = new System.Drawing.Size(107, 37);
+            this.shieldBoostButton.TabIndex = 1005;
+            this.shieldBoostButton.Text = "Shield boost";
+            this.shieldBoostButton.UseVisualStyleBackColor = false;
+            this.shieldBoostButton.Click += new System.EventHandler(this.shieldBoostButton_Click);
+            // 
             // operationalButton
             // 
             this.operationalButton.BackColor = System.Drawing.Color.Transparent;
@@ -2337,12 +2356,12 @@
             this.operationalButton.FlatAppearance.BorderColor = System.Drawing.Color.Black;
             this.operationalButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.operationalButton.ForeColor = System.Drawing.Color.Black;
-            this.operationalButton.Location = new System.Drawing.Point(597, 373);
+            this.operationalButton.Location = new System.Drawing.Point(597, 325);
             this.operationalButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.operationalButton.Name = "operationalButton";
-            this.operationalButton.Size = new System.Drawing.Size(107, 63);
+            this.operationalButton.Size = new System.Drawing.Size(107, 38);
             this.operationalButton.TabIndex = 1004;
-            this.operationalButton.Text = "Scan enemy\'s ships";
+            this.operationalButton.Text = "Scan enemy";
             this.operationalButton.UseVisualStyleBackColor = false;
             this.operationalButton.Click += new System.EventHandler(this.operationalButton_Click);
             // 
@@ -2354,12 +2373,12 @@
             this.specialSquadronButton.FlatAppearance.BorderColor = System.Drawing.Color.Black;
             this.specialSquadronButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.specialSquadronButton.ForeColor = System.Drawing.Color.Black;
-            this.specialSquadronButton.Location = new System.Drawing.Point(597, 448);
+            this.specialSquadronButton.Location = new System.Drawing.Point(597, 373);
             this.specialSquadronButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.specialSquadronButton.Name = "specialSquadronButton";
-            this.specialSquadronButton.Size = new System.Drawing.Size(107, 73);
+            this.specialSquadronButton.Size = new System.Drawing.Size(107, 49);
             this.specialSquadronButton.TabIndex = 1003;
-            this.specialSquadronButton.Text = "Overload enemy\'s shields";
+            this.specialSquadronButton.Text = "Overload shields";
             this.specialSquadronButton.UseVisualStyleBackColor = false;
             this.specialSquadronButton.Click += new System.EventHandler(this.specialSquadronButton_Click);
             // 
@@ -4355,22 +4374,22 @@
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
-            // shieldBoostButton
+            // removeShieldsButton
             // 
-            this.shieldBoostButton.BackColor = System.Drawing.Color.Transparent;
-            this.shieldBoostButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.shieldBoostButton.Enabled = false;
-            this.shieldBoostButton.FlatAppearance.BorderColor = System.Drawing.Color.Black;
-            this.shieldBoostButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
-            this.shieldBoostButton.ForeColor = System.Drawing.Color.Black;
-            this.shieldBoostButton.Location = new System.Drawing.Point(597, 300);
-            this.shieldBoostButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.shieldBoostButton.Name = "shieldBoostButton";
-            this.shieldBoostButton.Size = new System.Drawing.Size(107, 63);
-            this.shieldBoostButton.TabIndex = 1005;
-            this.shieldBoostButton.Text = "Try shield boosting";
-            this.shieldBoostButton.UseVisualStyleBackColor = false;
-            this.shieldBoostButton.Click += new System.EventHandler(this.shieldBoostButton_Click);
+            this.removeShieldsButton.BackColor = System.Drawing.Color.Transparent;
+            this.removeShieldsButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.removeShieldsButton.Enabled = false;
+            this.removeShieldsButton.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+            this.removeShieldsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.removeShieldsButton.ForeColor = System.Drawing.Color.Black;
+            this.removeShieldsButton.Location = new System.Drawing.Point(597, 436);
+            this.removeShieldsButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.removeShieldsButton.Name = "removeShieldsButton";
+            this.removeShieldsButton.Size = new System.Drawing.Size(107, 49);
+            this.removeShieldsButton.TabIndex = 1006;
+            this.removeShieldsButton.Text = "Disable shields";
+            this.removeShieldsButton.UseVisualStyleBackColor = false;
+            this.removeShieldsButton.Click += new System.EventHandler(this.removeShieldsButton_Click);
             // 
             // Form4_GameScreen
             // 
@@ -4657,5 +4676,6 @@
         private System.Windows.Forms.Button specialSquadronButton;
         private System.Windows.Forms.Button operationalButton;
         private System.Windows.Forms.Button shieldBoostButton;
+        private System.Windows.Forms.Button removeShieldsButton;
     }
 }
