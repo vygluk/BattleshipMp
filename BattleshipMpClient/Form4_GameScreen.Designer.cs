@@ -284,6 +284,7 @@
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
+            this.shieldBoostButton = new System.Windows.Forms.Button();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -1151,6 +1152,7 @@
             // 
             // groupBox2
             // 
+            this.groupBox2.Controls.Add(this.shieldBoostButton);
             this.groupBox2.Controls.Add(this.operationalButton);
             this.groupBox2.Controls.Add(this.specialSquadronButton);
             this.groupBox2.Controls.Add(this.button3);
@@ -1294,7 +1296,7 @@
             this.operationalButton.FlatAppearance.BorderColor = System.Drawing.Color.Black;
             this.operationalButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.operationalButton.ForeColor = System.Drawing.Color.Black;
-            this.operationalButton.Location = new System.Drawing.Point(598, 314);
+            this.operationalButton.Location = new System.Drawing.Point(597, 373);
             this.operationalButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.operationalButton.Name = "operationalButton";
             this.operationalButton.Size = new System.Drawing.Size(107, 61);
@@ -1311,7 +1313,7 @@
             this.specialSquadronButton.FlatAppearance.BorderColor = System.Drawing.Color.Black;
             this.specialSquadronButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.specialSquadronButton.ForeColor = System.Drawing.Color.Black;
-            this.specialSquadronButton.Location = new System.Drawing.Point(597, 389);
+            this.specialSquadronButton.Location = new System.Drawing.Point(597, 447);
             this.specialSquadronButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.specialSquadronButton.Name = "specialSquadronButton";
             this.specialSquadronButton.Size = new System.Drawing.Size(107, 70);
@@ -1326,7 +1328,7 @@
             this.button3.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.button3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button3.ForeColor = System.Drawing.Color.Black;
-            this.button3.Location = new System.Drawing.Point(598, 479);
+            this.button3.Location = new System.Drawing.Point(598, 527);
             this.button3.Margin = new System.Windows.Forms.Padding(4);
             this.button3.Name = "button3";
             this.button3.Size = new System.Drawing.Size(100, 28);
@@ -4354,6 +4356,23 @@
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
+            // shieldBoostButton
+            // 
+            this.shieldBoostButton.BackColor = System.Drawing.Color.Transparent;
+            this.shieldBoostButton.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.shieldBoostButton.Enabled = false;
+            this.shieldBoostButton.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+            this.shieldBoostButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
+            this.shieldBoostButton.ForeColor = System.Drawing.Color.Black;
+            this.shieldBoostButton.Location = new System.Drawing.Point(597, 302);
+            this.shieldBoostButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.shieldBoostButton.Name = "shieldBoostButton";
+            this.shieldBoostButton.Size = new System.Drawing.Size(107, 61);
+            this.shieldBoostButton.TabIndex = 1004;
+            this.shieldBoostButton.Text = "Try shield boosting";
+            this.shieldBoostButton.UseVisualStyleBackColor = false;
+            this.shieldBoostButton.Click += new System.EventHandler(this.shieldBoostButton_Click);
+            // 
             // Form4_GameScreen
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
@@ -4638,5 +4657,6 @@
         private System.Windows.Forms.Button button3;
         private System.Windows.Forms.Button specialSquadronButton;
         private System.Windows.Forms.Button operationalButton;
+        private System.Windows.Forms.Button shieldBoostButton;
     }
 }

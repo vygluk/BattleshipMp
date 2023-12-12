@@ -461,6 +461,22 @@ namespace BattleshipMpClient
                 richTextBox1.AppendText($"{recieve}\n");
                 return;
             }
+            else if (recieve.Contains("[Boost]"))
+            {
+                ShieldBoostVisitor visitor = new ShieldBoostVisitor();
+                Form2_PreparatoryScreen.allShipsComposite.Accept(visitor);
+                string boostedShips = visitor.GetBoostedShipNames();
+
+                if (string.IsNullOrEmpty(boostedShips))
+                {
+                    richTextBox1.AppendText($"[Boost] We tried boosting our shields! It did not work...\n");
+                }
+                else
+                {
+                    richTextBox1.AppendText($"[Boost] We tried boosting our shields! We boosted {boostedShips} type ships' shields by 1!\n");
+                }
+                return;
+            }
 
             else if (recieve.Contains("[EnemyJamItem]"))
             {
@@ -487,6 +503,14 @@ namespace BattleshipMpClient
                 {
                     AttackToEnemy($"[Scan] We scanned the enemy's ships! We destroyed all of their {nonOperationalTypes} type ships.");
                 }
+
+                return;
+            }
+            else if (recieve.Contains("[EnemyShieldBoost]"))
+            {
+                richTextBox1.AppendText($"[Boost] The enemy tried boosting their shields! Did it work...?\n");
+
+                AttackToEnemy("[Boost]");
 
                 return;
             }
@@ -823,6 +847,8 @@ namespace BattleshipMpClient
                     itemButton2.Enabled = false;
                     itemButton3.Enabled = false;
                     specialSquadronButton.Enabled = false;
+                    operationalButton.Enabled = false;
+                    shieldBoostButton.Enabled = false;
                 }
                 areEnabledButtons = true;
             }
@@ -914,6 +940,13 @@ namespace BattleshipMpClient
         private void operationalButton_Click(object sender, EventArgs e)
         {
             AttackToEnemy("[EnemyScan]");
+
+            return;
+        }
+
+        private void shieldBoostButton_Click(object sender, EventArgs e)
+        {
+            AttackToEnemy("[EnemyShieldBoost]");
 
             return;
         }
