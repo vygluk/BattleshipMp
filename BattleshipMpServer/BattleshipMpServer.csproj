@@ -153,6 +153,7 @@
     <Compile Include="Strategy\VerticalHorizontalRadarStrategy.cs" />
     <Compile Include="Strategy\VerticalRadarStrategy.cs" />
     <Compile Include="Visitor\IVisitor.cs" />
+    <Compile Include="Visitor\ShieldRemoveVisitor.cs" />
     <Compile Include="Visitor\ShieldBoostVisitor.cs" />
     <Compile Include="Visitor\OperationalStatusVisitor.cs" />
     <EmbeddedResource Include="Form12_ShipThemeSelection.resx">
