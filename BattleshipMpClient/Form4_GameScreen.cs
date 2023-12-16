@@ -21,6 +21,7 @@ using System.Threading.Tasks;
 using BattleshipMpClient.State;
 using BattleshipMpClient.Iterator;
 using BattleshipMpClient.Visitor;
+using BattleshipMpClient.ChainOfResponsibility;
 
 namespace BattleshipMpClient
 {
@@ -65,6 +66,7 @@ namespace BattleshipMpClient
         private IIcebergIterator icebergIterator;
         public Button myBoardButtonToUndo;
         private bool isSpecialSquadronButtonDisabled = false;
+        public IWeatherState WeatherState = new Windless();
 
         public Form4_GameScreen(List<(string, Color)> list)
         {
@@ -557,10 +559,31 @@ namespace BattleshipMpClient
                 richTextBox1.AppendText($"{recieve}\n");
                 return;
             }
+
+            var windyHandler = new WindyWeatherHandler();
+            var foggyHandler = new FoggyWeatherHandler();
+            var rainyHandler = new RainyWeatherHandler();
+            var stormyHandler = new StormyWeatherHandler();
+
+            windyHandler.SetNext(foggyHandler);
+            foggyHandler.SetNext(rainyHandler);
+            rainyHandler.SetNext(stormyHandler);
+
+            windyHandler.HandleRequest(this);
+
             var extraSubscriberToGet = recieve.Substring(0, recieve.Length - 1);
             var rnd = new Random();
             var extraSubscriberOnClickedButton = _extraRoundSubscriberMap.GetExtraRoundSubscriber(extraSubscriberToGet);
-            enemyReceivedExtraRound = extraSubscriberOnClickedButton.GetExtraRoundChancePercentages() > rnd.Next(PERCENTAGE_MAX + 1) && !isIceberg && extraSubscriberOnClickedButton.Enabled;
+
+            if (WeatherState.GetModifierType() == BoostType.ExtraRound)
+            {
+                enemyReceivedExtraRound = extraSubscriberOnClickedButton.GetExtraRoundChancePercentages() > (rnd.Next(PERCENTAGE_MAX + 1) / WeatherState.GetModifier()) && !isIceberg && extraSubscriberOnClickedButton.Enabled;
+            }
+            else
+            {
+                enemyReceivedExtraRound = extraSubscriberOnClickedButton.GetExtraRoundChancePercentages() > rnd.Next(PERCENTAGE_MAX + 1) && !isIceberg && extraSubscriberOnClickedButton.Enabled;
+            }
+            
             if (enemyReceivedExtraRound)
             {
                 AttackToEnemy("Extra round");
@@ -621,8 +644,23 @@ namespace BattleshipMpClient
                             shottedShip = item1.shipName;
                             if (item1.remShields > 0)
                             {
-                                hasShield = true;
-                                item1.remShields--;
+                                if (WeatherState.GetModifierType() == BoostType.Damage)
+                                {
+                                    item1.remShields -= 1 * (int)WeatherState.GetModifier();
+                                    if (item1.remShields > 0)
+                                    {
+                                        hasShield = true;
+                                    } 
+                                    else
+                                    {
+                                        hasShield = false;
+                                    }
+                                }
+                                else
+                                {
+                                    item1.remShields--;
+                                    hasShield = true;
+                                }
                             }
                             else
                             {
