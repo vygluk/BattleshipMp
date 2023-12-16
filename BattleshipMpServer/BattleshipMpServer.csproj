@@ -49,6 +49,18 @@
   <ItemGroup>
     <Compile Include="Adapter\IcebergShipInteractionAdapter.cs" />
     <Compile Include="Adapter\IIcebergShipInteractionAdapter.cs" />
+    <Compile Include="ChainOfResponsibility\FoggyWeatherHandler.cs" />
+    <Compile Include="ChainOfResponsibility\RainyWeatherHandler.cs" />
+    <Compile Include="ChainOfResponsibility\State\BoostType.cs" />
+    <Compile Include="ChainOfResponsibility\State\Foggy.cs" />
+    <Compile Include="ChainOfResponsibility\State\IWeatherState.cs" />
+    <Compile Include="ChainOfResponsibility\State\Rainy.cs" />
+    <Compile Include="ChainOfResponsibility\State\Stormy.cs" />
+    <Compile Include="ChainOfResponsibility\State\Windless.cs" />
+    <Compile Include="ChainOfResponsibility\State\Windy.cs" />
+    <Compile Include="ChainOfResponsibility\StormyWeatherHandler.cs" />
+    <Compile Include="ChainOfResponsibility\WeatherHandler.cs" />
+    <Compile Include="ChainOfResponsibility\WindyWeatherHandler.cs" />
     <Compile Include="Command\DefaultCommand.cs" />
     <Compile Include="Command\HitCommand.cs" />
     <Compile Include="Command\ICommand.cs" />

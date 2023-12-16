@@ -22,6 +22,7 @@ using BattleshipMpServer.Command;
 using BattleshipMp.State;
 using BattleshipMpServer.Iterator;
 using BattleshipMpServer.Visitor;
+using BattleshipMpServer.ChainOfResponsibility;
 
 namespace BattleshipMp
 {
@@ -63,6 +64,7 @@ namespace BattleshipMp
         public Button myBoardButtonToUndo;
         private IIcebergIterator icebergIterator;
         private bool isSpecialSquadronButtonDisabled = false;
+        public IWeatherState WeatherState = new Windless();
 
         //  While creating the "game screen" object, get the list of selected buttons from Form2 and change their color with the help of constructor.
         public Form4_GameScreen(List<(string, Color)> list)
@@ -536,10 +538,30 @@ namespace BattleshipMp
                 enemyHasUsedRadarUse = true;
                 return;
             }
+
+            var windyHandler = new WindyWeatherHandler();
+            var foggyHandler = new FoggyWeatherHandler();
+            var rainyHandler = new RainyWeatherHandler();
+            var stormyHandler = new StormyWeatherHandler();
+
+            windyHandler.SetNext(foggyHandler);
+            foggyHandler.SetNext(rainyHandler);
+            rainyHandler.SetNext(stormyHandler);
+
+            windyHandler.HandleRequest(this);
+
             var extraSubscriberToGet = recieve.Substring(0, recieve.Length - 1);
             var rnd = new Random();
             var extraSubscriberOnClickedButton = _extraRoundSubscriberMap.GetExtraRoundSubscriber(extraSubscriberToGet);
-            enemyReceivedExtraRound = extraSubscriberOnClickedButton.GetExtraRoundChancePercentages() > rnd.Next(PERCENTAGE_MAX + 1)  && !isIceberg && extraSubscriberOnClickedButton.Enabled;
+
+            if (WeatherState.GetModifierType() == BoostType.ExtraRound)
+            {
+                enemyReceivedExtraRound = extraSubscriberOnClickedButton.GetExtraRoundChancePercentages() > (rnd.Next(PERCENTAGE_MAX + 1) / WeatherState.GetModifier()) && !isIceberg && extraSubscriberOnClickedButton.Enabled;
+            }
+            else
+            {
+                enemyReceivedExtraRound = extraSubscriberOnClickedButton.GetExtraRoundChancePercentages() > rnd.Next(PERCENTAGE_MAX + 1) && !isIceberg && extraSubscriberOnClickedButton.Enabled;
+            }
             if (enemyReceivedExtraRound)
             {
                 AttackToEnemy("Extra round");
@@ -603,8 +625,23 @@ namespace BattleshipMp
                             shottedShip = item1.shipName;
                             if (item1.remShields > 0)
                             {
-                                hasShield = true;
-                                item1.remShields--;
+                                if (WeatherState.GetModifierType() == BoostType.Damage)
+                                {
+                                    item1.remShields -= 1 * (int)WeatherState.GetModifier();
+                                    if (item1.remShields > 0)
+                                    {
+                                        hasShield = true;
+                                    }
+                                    else
+                                    {
+                                        hasShield = false;
+                                    }
+                                }
+                                else
+                                {
+                                    item1.remShields--;
+                                    hasShield = true;
+                                }
                             }
                             deletingButton = item2;
                             break;
