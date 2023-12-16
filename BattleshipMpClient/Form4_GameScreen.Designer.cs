@@ -286,6 +286,9 @@
             this.timer1 = new System.Windows.Forms.Timer(this.components);
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.label41 = new System.Windows.Forms.Label();
+            this.button4 = new System.Windows.Forms.Button();
             this.groupBox2.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.SuspendLayout();
@@ -346,7 +349,7 @@
             this.itemButton3.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.itemButton3.ForeColor = System.Drawing.Color.Black;
             this.itemButton3.Location = new System.Drawing.Point(448, 160);
-            this.itemButton3.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.itemButton3.Margin = new System.Windows.Forms.Padding(2);
             this.itemButton3.Name = "itemButton3";
             this.itemButton3.Size = new System.Drawing.Size(80, 37);
             this.itemButton3.TabIndex = 1001;
@@ -1242,7 +1245,7 @@
             this.removeShieldsButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.removeShieldsButton.ForeColor = System.Drawing.Color.Black;
             this.removeShieldsButton.Location = new System.Drawing.Point(448, 348);
-            this.removeShieldsButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.removeShieldsButton.Margin = new System.Windows.Forms.Padding(2);
             this.removeShieldsButton.Name = "removeShieldsButton";
             this.removeShieldsButton.Size = new System.Drawing.Size(80, 40);
             this.removeShieldsButton.TabIndex = 1005;
@@ -1259,7 +1262,7 @@
             this.shieldBoostButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.shieldBoostButton.ForeColor = System.Drawing.Color.Black;
             this.shieldBoostButton.Location = new System.Drawing.Point(448, 220);
-            this.shieldBoostButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.shieldBoostButton.Margin = new System.Windows.Forms.Padding(2);
             this.shieldBoostButton.Name = "shieldBoostButton";
             this.shieldBoostButton.Size = new System.Drawing.Size(80, 31);
             this.shieldBoostButton.TabIndex = 1004;
@@ -1276,7 +1279,7 @@
             this.operationalButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.operationalButton.ForeColor = System.Drawing.Color.Black;
             this.operationalButton.Location = new System.Drawing.Point(448, 259);
-            this.operationalButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.operationalButton.Margin = new System.Windows.Forms.Padding(2);
             this.operationalButton.Name = "operationalButton";
             this.operationalButton.Size = new System.Drawing.Size(80, 31);
             this.operationalButton.TabIndex = 1003;
@@ -1293,7 +1296,7 @@
             this.specialSquadronButton.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.specialSquadronButton.ForeColor = System.Drawing.Color.Black;
             this.specialSquadronButton.Location = new System.Drawing.Point(448, 298);
-            this.specialSquadronButton.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.specialSquadronButton.Margin = new System.Windows.Forms.Padding(2);
             this.specialSquadronButton.Name = "specialSquadronButton";
             this.specialSquadronButton.Size = new System.Drawing.Size(80, 41);
             this.specialSquadronButton.TabIndex = 1002;
@@ -4125,7 +4128,7 @@
             // button1
             // 
             this.button1.Location = new System.Drawing.Point(910, 486);
-            this.button1.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.button1.Margin = new System.Windows.Forms.Padding(2);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(66, 28);
             this.button1.TabIndex = 133;
@@ -4136,7 +4139,7 @@
             // button2
             // 
             this.button2.Location = new System.Drawing.Point(1011, 486);
-            this.button2.Margin = new System.Windows.Forms.Padding(2, 2, 2, 2);
+            this.button2.Margin = new System.Windows.Forms.Padding(2);
             this.button2.Name = "button2";
             this.button2.Size = new System.Drawing.Size(65, 28);
             this.button2.TabIndex = 134;
@@ -4144,12 +4147,44 @@
             this.button2.UseVisualStyleBackColor = true;
             this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(672, 486);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(138, 20);
+            this.textBox1.TabIndex = 135;
+            this.textBox1.TextChanged += new System.EventHandler(this.textBox1_TextChanged);
+            // 
+            // label41
+            // 
+            this.label41.AutoSize = true;
+            this.label41.Location = new System.Drawing.Point(669, 509);
+            this.label41.Name = "label41";
+            this.label41.Size = new System.Drawing.Size(139, 13);
+            this.label41.TabIndex = 136;
+            this.label41.Text = "Input Command To Execute";
+            this.label41.Click += new System.EventHandler(this.label41_Click);
+            // 
+            // button4
+            // 
+            this.button4.Location = new System.Drawing.Point(815, 486);
+            this.button4.Margin = new System.Windows.Forms.Padding(2);
+            this.button4.Name = "button4";
+            this.button4.Size = new System.Drawing.Size(66, 28);
+            this.button4.TabIndex = 137;
+            this.button4.Text = "Send";
+            this.button4.UseVisualStyleBackColor = true;
+            this.button4.Click += new System.EventHandler(this.button4_Click);
+            // 
             // Form4_GameScreen
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(1219, 548);
+            this.Controls.Add(this.button4);
+            this.Controls.Add(this.label41);
+            this.Controls.Add(this.textBox1);
             this.Controls.Add(this.button2);
             this.Controls.Add(this.button1);
             this.Controls.Add(this.groupBox2);
@@ -4429,5 +4464,8 @@
         private System.Windows.Forms.Button operationalButton;
         private System.Windows.Forms.Button shieldBoostButton;
         private System.Windows.Forms.Button removeShieldsButton;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Label label41;
+        private System.Windows.Forms.Button button4;
     }
 }

@@ -140,6 +140,11 @@
     <Compile Include="Form4_GameScreen.Designer.cs">
       <DependentUpon>Form4_GameScreen.cs</DependentUpon>
     </Compile>
+    <Compile Include="Interpreter\AttackCommandExpression.cs" />
+    <Compile Include="Interpreter\FindShipCommandExpression.cs" />
+    <Compile Include="Interpreter\IExpression.cs" />
+    <Compile Include="Interpreter\InterpreterCommandContext.cs" />
+    <Compile Include="Interpreter\TypeOfAction.cs" />
     <Compile Include="Iterator\IcebergIterator.cs" />
     <Compile Include="Iterator\IIcebergAggregate.cs" />
     <Compile Include="Iterator\IIcebergIterator.cs" />

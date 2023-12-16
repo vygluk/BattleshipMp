@@ -22,6 +22,8 @@ using BattleshipMpClient.State;
 using BattleshipMpClient.Iterator;
 using BattleshipMpClient.Visitor;
 using BattleshipMpClient.ChainOfResponsibility;
+using System.Text.RegularExpressions;
+using BattleshipMpClient.Interpreter;
 
 namespace BattleshipMpClient
 {
@@ -57,7 +59,7 @@ namespace BattleshipMpClient
         bool isIceberg = false;
         bool skipIcebergChange = false;
         int turns = 0;
-        IItem playerItem;
+        public IItem playerItem;
         IItem playerItem2;
         IItem playerItem3;
         static private int remainingJams = 0;
@@ -67,6 +69,7 @@ namespace BattleshipMpClient
         public Button myBoardButtonToUndo;
         private bool isSpecialSquadronButtonDisabled = false;
         public IWeatherState WeatherState = new Windless();
+        private InterpreterCommandContext _interpreterCommandContext = new InterpreterCommandContext();
 
         public Form4_GameScreen(List<(string, Color)> list)
         {
@@ -540,6 +543,10 @@ namespace BattleshipMpClient
                 richTextBox1.AppendText($"[Overload] The enemy tried to overload our shields! We can't be sure if they succeeded...\n");
                 AttackToEnemy($"[Overload] We tried to overload the enemy's ships! But did it work...?");
 
+                return;
+            }
+            else if (recieve.ToLower().Contains("from text box"))
+            {
                 return;
             }
             if (!enemyHasUsedRadarUse)
@@ -1032,6 +1039,34 @@ namespace BattleshipMpClient
             AttackToEnemy("[EnemyShieldDisable]");
 
             return;
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            if (labelAttackTurn.Text != "ATTACK")
+                return;
+
+            _interpreterCommandContext.Input = textBox1.Text;
+
+            var attackCommand = new AttackCommandExpression();
+            var findShipCommand = new FindShipCommandExpression();
+
+            attackCommand.Interpret(_interpreterCommandContext);
+            findShipCommand.Interpret(_interpreterCommandContext);
+
+            _interpreterCommandContext.ActOnInterpretedOutput(this);
+
+            return;
+        }
+
+        private void label41_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
