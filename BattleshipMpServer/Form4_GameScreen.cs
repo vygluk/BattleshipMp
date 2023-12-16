@@ -23,6 +23,8 @@ using BattleshipMp.State;
 using BattleshipMpServer.Iterator;
 using BattleshipMpServer.Visitor;
 using BattleshipMpServer.ChainOfResponsibility;
+using System.Text.RegularExpressions;
+using BattleshipMp.Interpreter;
 
 namespace BattleshipMp
 {
@@ -56,7 +58,7 @@ namespace BattleshipMp
         bool isIceberg = false;
         bool skipIcebergChange = false;
         int turns = 0;
-        IItem playerItem;
+        public IItem playerItem;
         IItem playerItem2;
         IItem playerItem3;
         static private int remainingJams = 0;
@@ -65,6 +67,7 @@ namespace BattleshipMp
         private IIcebergIterator icebergIterator;
         private bool isSpecialSquadronButtonDisabled = false;
         public IWeatherState WeatherState = new Windless();
+        private InterpreterCommandContext _interpreterCommandContext = new InterpreterCommandContext();
 
         //  While creating the "game screen" object, get the list of selected buttons from Form2 and change their color with the help of constructor.
         public Form4_GameScreen(List<(string, Color)> list)
@@ -159,11 +162,13 @@ namespace BattleshipMp
             if (rnd == 0)
             {
                 areEnabledButtons = true;
+
                 SwitchGameButtonsEnabled();
             }
             else
             {
                 areEnabledButtons = false;
+
                 SwitchGameButtonsEnabled();
             }
             AttackToEnemy(rnd.ToString());
@@ -524,6 +529,10 @@ namespace BattleshipMp
                 richTextBox1.AppendText($"[Overload] The enemy tried to overload our shields! We can't be sure if they succeeded...\n");
                 AttackToEnemy($"[Overload] We tried to overload the enemy's ships! But did it work...?");
 
+                return;
+            }
+            else if (recieve.ToLower().Contains("from text box"))
+            {
                 return;
             }
             if (!enemyHasUsedRadarUse)
@@ -952,7 +961,6 @@ namespace BattleshipMp
             backgroundSoundPlayer.Stop();
         }
 
-        // Find Ship button
         private void itemButton_Click(object sender, EventArgs e)
         {
             AttackToEnemy("[EnemyItem]");
@@ -1024,6 +1032,24 @@ namespace BattleshipMp
         private void removeShieldsButton_Click(object sender, EventArgs e)
         {
             AttackToEnemy("[EnemyShieldDisable]");
+
+            return;
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            if (labelAttackTurn.Text != "ATTACK")
+                return;
+
+            _interpreterCommandContext.Input = textBox1.Text;
+
+            var attackCommand = new AttackCommandExpression();
+            var findShipCommand = new FindShipCommandExpression();
+
+            attackCommand.Interpret(_interpreterCommandContext);
+            findShipCommand.Interpret(_interpreterCommandContext);
+
+            _interpreterCommandContext.ActOnInterpretedOutput(this);
 
             return;
         }
