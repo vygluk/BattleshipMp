@@ -145,6 +145,10 @@
     <Compile Include="Interpreter\IExpression.cs" />
     <Compile Include="Interpreter\InterpreterCommandContext.cs" />
     <Compile Include="Interpreter\TypeOfAction.cs" />
+    <Compile Include="IteratorExtra\ControlsIterator.cs" />
+    <Compile Include="IteratorExtra\ShipListIterator.cs" />
+    <Compile Include="IteratorExtra\ShipSize.cs" />
+    <Compile Include="IteratorExtra\ShipSizeIterator.cs" />
     <Compile Include="Iterator\IcebergIterator.cs" />
     <Compile Include="Iterator\IIcebergAggregate.cs" />
     <Compile Include="Iterator\IIcebergIterator.cs" />
