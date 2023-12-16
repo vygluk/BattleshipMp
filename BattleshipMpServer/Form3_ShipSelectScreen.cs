@@ -1,4 +1,5 @@
 ﻿using BattleshipMp.Builder;
+using BattleshipMp.IteratorExtra;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -19,9 +20,11 @@ namespace BattleshipMp
 
         public string returnValue { get; set; }
 
-        Dictionary<string, int> squarePerShips = new Dictionary<string, int>()
+        private HashSet<ShipSize> squarePerShips = new HashSet<ShipSize>
         {
-            {"Cruiser", 3}, {"Destroyer", 2}, {"Submarine", 1}
+            new ShipSize { Name = "Cruiser", Size = 3 },
+            new ShipSize { Name = "Destroyer", Size = 2 },
+            new ShipSize { Name = "Submarine", Size = 1 }
         };
 
         Dictionary<string, int> squarePerSpecialShips = new Dictionary<string, int>()
@@ -39,12 +42,22 @@ namespace BattleshipMp
         {
             int totalRemShips = 0;
 
-            foreach (var ship in Form2_PreparatoryScreen.shipList)
+            var shipListIterator = new ShipListIterator(Form2_PreparatoryScreen.shipList);
+            var squarePerShipsIterator = new ShipSizeIterator(squarePerShips);
+            while (shipListIterator.HasNext())
             {
-                if (squarePerShips.ContainsKey(ship.shipName) && squarePerShips[ship.shipName] == squareSize)
+                var ship = shipListIterator.Next();
+
+                while (squarePerShipsIterator.HasNext())
                 {
-                    totalRemShips += ship.remShips;
+                    var shipSize = squarePerShipsIterator.Next();
+                    if (shipSize.Name == ship.shipName && shipSize.Size == squareSize)
+                    {
+                        totalRemShips += ship.remShips;
+                    }
                 }
+
+                squarePerShipsIterator.ResetIteration();
             }
 
             foreach (var specialShip in Form2_PreparatoryScreen.specialShipList)
@@ -64,11 +77,11 @@ namespace BattleshipMp
             {
                 foreach (var item2 in squarePerShips)
                 {
-                    if (item1.shipName == item2.Key)
+                    if (item1.shipName == item2.Name)
                     {
-                        if (item1.remShips != 0 && item2.Value == buttonsNames.Count)
+                        if (item1.remShips != 0 && item2.Size == buttonsNames.Count)
                         {
-                            if (AreAllShipsOfSquareSizePlaced(item2.Value))
+                            if (AreAllShipsOfSquareSizePlaced(item2.Size))
                             {
                                 MessageBox.Show("There are no ships to place in the selected area.");
                                 this.Close();

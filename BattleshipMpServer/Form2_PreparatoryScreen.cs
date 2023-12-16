@@ -9,6 +9,7 @@ using BattleshipMp.Builder;
 using BattleshipMpServer.Factory.Ship;
 using BattleshipMp.State;
 using BattleshipMpServer.Flyweight;
+using BattleshipMp.IteratorExtra;
 
 namespace BattleshipMp
 {
@@ -17,6 +18,7 @@ namespace BattleshipMp
         private IShipFactory _shipFactory;
         private IShipBuilder _builder;
         private ShipsCreator _shipsCreator;
+        private Control[] controls;
 
         public Form2_PreparatoryScreen()
         {
@@ -30,6 +32,11 @@ namespace BattleshipMp
             _shipFactory = shipFactory;
             _builder = new ShipBuilder(_shipFactory);
             _shipsCreator = new ShipsCreator(_builder);
+            controls = new Control[Controls.Count];
+            for (int i = 0; i < Controls.Count; i++)
+            {
+                controls[i] = Controls[i];
+            }
         }
 
         //  Create a drawing to select ship positions starting with a mouse click. Get selected buttons when mouse is released.
@@ -164,8 +171,11 @@ namespace BattleshipMp
 
         private void ValidateSelection()
         {
-            foreach (Control c in Controls)
+            var controlsIterator = new ControlsIterator(controls);
+            while (controlsIterator.HasNext())
             {
+                var c = controlsIterator.Next();
+
                 if (c is Button && selection.IntersectsWith(c.Bounds) && ValidateTile(c))
                 {
                     MessageBox.Show("Can't create ship over obsticle.");

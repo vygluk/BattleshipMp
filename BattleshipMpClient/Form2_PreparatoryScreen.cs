@@ -12,6 +12,7 @@ using BattleshipMpClient.Flyweight;
 using System.Diagnostics;
 using System.Threading;
 using BattleshipMpClient.Template;
+using BattleshipMp.IteratorExtra;
 
 namespace BattleshipMpClient
 {
@@ -22,11 +23,17 @@ namespace BattleshipMpClient
         private ShipsCreator _shipsCreator;
         private ShipButtonFlyweightFactory flyweightFactory = new ShipButtonFlyweightFactory();
         private PreparationMode preparationMode;
+        private Control[] controls;
 
         public Form2_PreparatoryScreen()
         {
             InitializeComponent();
             DoubleBuffered = true;
+            controls = new Control[Controls.Count];
+            for (int i = 0; i < Controls.Count; i++)
+            {
+                controls[i] = Controls[i];
+            }
             //SetObsticlesUp();
         }
 
@@ -63,7 +70,7 @@ namespace BattleshipMpClient
         public List<ShipButtons> icebergTiles = new List<ShipButtons>();
         public List<Control> icebergButtons = new List<Control>();
         public Iceberg iceberg = new Iceberg();
-
+  
 
 
         protected override void OnMouseDown(MouseEventArgs e)
@@ -294,8 +301,11 @@ namespace BattleshipMpClient
 
         private void ValidateSelection()
         {
-            foreach (Control c in Controls)
+            var controlsIterator = new ControlsIterator(controls);
+            while(controlsIterator.HasNext())
             {
+                var c = controlsIterator.Next();
+
                 if (c is Button && selection.IntersectsWith(c.Bounds) && ValidateTile(c))
                 {
                     MessageBox.Show("Can't create ship over obsticle.");
