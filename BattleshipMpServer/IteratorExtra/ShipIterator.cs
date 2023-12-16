@@ -1,9 +1,10 @@
-﻿using BattleshipMpServer.Factory.Ship;
+﻿using BattleshipMpClient.IteratorExtra;
+using BattleshipMpServer.Factory.Ship;
 using System.Collections.Generic;
 
 namespace BattleshipMp.IteratorExtra
 {
-    public class ShipListIterator
+    public class ShipListIterator : IIterator<IShip>
     {
         private List<IShip> _list;
         private int _position = 0;

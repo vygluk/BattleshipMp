@@ -1,9 +1,10 @@
-﻿using System;
+﻿using BattleshipMpClient.IteratorExtra;
+using System;
 using System.Collections.Generic;
 
 namespace BattleshipMp.IteratorExtra
 {
-    public class ShipSizeIterator
+    public class ShipSizeIterator : IIterator<ShipSize>
     {
         private readonly HashSet<ShipSize> _hashSet;
         private int _currentIndex;

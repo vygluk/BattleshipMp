@@ -1,8 +1,9 @@
-﻿using System.Windows.Forms;
+﻿using BattleshipMpClient.IteratorExtra;
+using System.Windows.Forms;
 
 namespace BattleshipMp.IteratorExtra
 {
-    public class ControlsIterator
+    public class ControlsIterator : IIterator<Control>
     {
         private readonly Control[] _array;
         private int _position = 0;

@@ -39,7 +39,7 @@ namespace BattleshipMpClient
         private bool AreAllShipsOfSquareSizePlaced(int squareSize)
         {
             int totalRemShips = 0;
-            var shipListIterator = new ShipListIterator(Form2_PreparatoryScreen.shipList);
+            var shipListIterator = new ShipIterator(Form2_PreparatoryScreen.shipList);
             var squarePerShipsIterator = new ShipSizeIterator(squarePerShips);
             while (shipListIterator.HasNext())
             {
