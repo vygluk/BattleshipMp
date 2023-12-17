@@ -24,6 +24,7 @@ using BattleshipMpClient.Visitor;
 using BattleshipMpClient.ChainOfResponsibility;
 using System.Text.RegularExpressions;
 using BattleshipMpClient.Interpreter;
+using BattleshipMpClient.Memento;
 
 namespace BattleshipMpClient
 {
@@ -70,6 +71,8 @@ namespace BattleshipMpClient
         private bool isSpecialSquadronButtonDisabled = false;
         public IWeatherState WeatherState = new Windless();
         private InterpreterCommandContext _interpreterCommandContext = new InterpreterCommandContext();
+        private GameHistoryCaretaker caretaker = new GameHistoryCaretaker();
+        private List<string> moveHistory = new List<string>();
 
         public Form4_GameScreen(List<(string, Color)> list)
         {
@@ -359,7 +362,7 @@ namespace BattleshipMpClient
                 commandHistory.Push(command);
                 return;
             }
-            
+            moveHistory.Add("Clients turn:" + recieve);
             if (recieve == "0")
             {
                 areEnabledButtons = true;
@@ -384,6 +387,7 @@ namespace BattleshipMpClient
             }
             else if (recieve.Contains("youwin"))
             {
+                ExportSavedGameState();
                 //DialogResult res = MessageBox.Show("Victory.", "Client - Game Result", MessageBoxButtons.OK);
                 //{
                 //    if (res == DialogResult.Yes)
@@ -719,6 +723,7 @@ namespace BattleshipMpClient
                                     return;
                                 }
                                 AttackToEnemy("youwin");
+                                ExportSavedGameState();
                                 GameContext gameContext = GameContext.Instance;
                                 gameContext.SetVictoryMessage("You lost.");
                                 gameContext.TransitionTo(new GameOverState());
@@ -759,6 +764,7 @@ namespace BattleshipMpClient
                                 return;
                             }
                             AttackToEnemy("youwin");
+                            ExportSavedGameState();
                             GameContext gameContext = GameContext.Instance;
                             gameContext.SetVictoryMessage("You lost.");
                             gameContext.TransitionTo(new GameOverState());
@@ -794,10 +800,12 @@ namespace BattleshipMpClient
         {
             if (receive.Contains("miss:"))
             {
+                SaveCurrentGameState();
                 return new MissCommand(gameBoardButtons, richTextBox, missSoundPlayer, receive);
             }
             else if (receive.Contains("hit:"))
             {
+                SaveCurrentGameState();
                 return new HitCommand(gameBoardButtons, richTextBox, hitSoundPlayer, receive);
             }
 
@@ -935,6 +943,37 @@ namespace BattleshipMpClient
                 }
                 areEnabledButtons = true;
             }
+        }
+
+        public IGameStateMemento SaveGameState()
+        {
+            return new GameStateMemento(gameBoardButtons, myBoardButtons, moveHistory); // Assume moveHistory is a List<string> of moves
+        }
+
+        public void RestoreGameState(IGameStateMemento memento)
+        {
+            gameBoardButtons = memento.GetPlayerBoardState();
+            myBoardButtons = memento.GetOpponentBoardState();
+            moveHistory = memento.GetMoveHistory();
+            // Additional logic to update UI based on restored state
+        }
+
+        // Call this method to save the game state at any point
+        public void SaveCurrentGameState()
+        {
+            caretaker.SaveGameState(this);
+        }
+
+        // Call this method to restore the saved game state
+        public void RestoreSavedGameState()
+        {
+            caretaker.RestoreGameState(this);
+        }
+
+        // Call this method to export the game state to a file
+        public void ExportSavedGameState()
+        {
+            caretaker.ExportGameState("GameSummary.txt");
         }
 
         private void timer1_Tick(object sender, EventArgs e)

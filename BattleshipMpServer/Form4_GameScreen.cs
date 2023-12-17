@@ -25,6 +25,7 @@ using BattleshipMpServer.Visitor;
 using BattleshipMpServer.ChainOfResponsibility;
 using System.Text.RegularExpressions;
 using BattleshipMp.Interpreter;
+using BattleshipMp.Memento;
 
 namespace BattleshipMp
 {
@@ -68,6 +69,8 @@ namespace BattleshipMp
         private bool isSpecialSquadronButtonDisabled = false;
         public IWeatherState WeatherState = new Windless();
         private InterpreterCommandContext _interpreterCommandContext = new InterpreterCommandContext();
+        private GameHistoryCaretaker caretaker = new GameHistoryCaretaker();
+        private List<string> moveHistory = new List<string>();
 
         //  While creating the "game screen" object, get the list of selected buttons from Form2 and change their color with the help of constructor.
         public Form4_GameScreen(List<(string, Color)> list)
@@ -345,7 +348,7 @@ namespace BattleshipMp
                 commandHistory.Push(command);
                 return;
             }
-
+            moveHistory.Add("Servers turn:" + recieve);
             if (recieve == "0")
             {
                 areEnabledButtons = true;
@@ -374,6 +377,7 @@ namespace BattleshipMp
             // If the game is over, this data is read in the 3rd iteration.
             else if (recieve.Contains("youwin"))
             {
+                ExportSavedGameState();
                 GameContext gameContext = GameContext.Instance;
                 gameContext.SetVictoryMessage("Victory");
                 gameContext.TransitionTo(new GameOverState());
@@ -701,6 +705,7 @@ namespace BattleshipMp
                                     return;
                                 }
                                 AttackToEnemy("youwin");
+                                ExportSavedGameState();
                                 GameContext gameContext = GameContext.Instance;
                                 gameContext.SetVictoryMessage("You lost.");
                                 gameContext.TransitionTo(new GameOverState());
@@ -748,10 +753,12 @@ namespace BattleshipMp
         {
             if (receive.Contains("miss:"))
             {
+                SaveCurrentGameState();
                 return new MissCommand(gameBoardButtons, richTextBox, missSoundPlayer, receive);
             }
             else if (receive.Contains("hit:"))
             {
+                SaveCurrentGameState();
                 return new HitCommand(gameBoardButtons, richTextBox, hitSoundPlayer, receive);
             }
 
@@ -923,6 +930,36 @@ namespace BattleshipMp
             }
         }
 
+        public IGameStateMemento SaveGameState()
+        {
+            return new GameStateMemento(gameBoardButtons, myBoardButtons, moveHistory); // Assume moveHistory is a List<string> of moves
+        }
+
+        public void RestoreGameState(IGameStateMemento memento)
+        {
+            gameBoardButtons = memento.GetPlayerBoardState();
+            myBoardButtons = memento.GetOpponentBoardState();
+            moveHistory = memento.GetMoveHistory();
+            // Additional logic to update UI based on restored state
+        }
+
+        // Call this method to save the game state at any point
+        public void SaveCurrentGameState()
+        {
+            caretaker.SaveGameState(this);
+        }
+
+        // Call this method to restore the saved game state
+        public void RestoreSavedGameState()
+        {
+            caretaker.RestoreGameState(this);
+        }
+
+        // Call this method to export the game state to a file
+        public void ExportSavedGameState()
+        {
+            caretaker.ExportGameState("GameSummary.txt");
+        }
 
         private void timer1_Tick(object sender, EventArgs e)
         {

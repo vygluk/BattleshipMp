@@ -153,6 +153,10 @@
     <Compile Include="Iterator\IcebergIterator.cs" />
     <Compile Include="Iterator\IIcebergAggregate.cs" />
     <Compile Include="Iterator\IIcebergIterator.cs" />
+    <Compile Include="Memento\GameHistoryCaretaker.cs" />
+    <Compile Include="Memento\GameStateMemento.cs" />
+    <Compile Include="Memento\IGameOriginator.cs" />
+    <Compile Include="Memento\IGameStateMemento.cs" />
     <Compile Include="Observer\ExtraRoundSubscriberMap.cs" />
     <Compile Include="Observer\ExtraRoundPublisher.cs" />
     <Compile Include="Observer\ExtraRoundSubscriber.cs" />
@@ -227,5 +231,6 @@
       <Name>SharedFile</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
