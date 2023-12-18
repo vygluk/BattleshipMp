@@ -25,12 +25,12 @@ using BattleshipMpClient.ChainOfResponsibility;
 using System.Text.RegularExpressions;
 using BattleshipMpClient.Interpreter;
 using BattleshipMpClient.Memento;
+using BattleshipMpClient.Proxy;
 
 namespace BattleshipMpClient
 {
     public partial class Form4_GameScreen : Form, IIcebergAggregate
     {
-        private GameFacade gameFacade;
         private int currentPlayer;
         public List<(string, Color)> selectedShipList;
         //public StreamReader STR;
@@ -73,6 +73,7 @@ namespace BattleshipMpClient
         private InterpreterCommandContext _interpreterCommandContext = new InterpreterCommandContext();
         private GameHistoryCaretaker caretaker = new GameHistoryCaretaker();
         private List<string> moveHistory = new List<string>();
+        private GameFacadeProxy gameFacade;
 
         public Form4_GameScreen(List<(string, Color)> list)
         {
@@ -97,7 +98,7 @@ namespace BattleshipMpClient
             ITcpStreamProvider tcpStreamProvider;
             tcpStreamProvider = new TcpStreamProviderClient();
 
-            gameFacade = new GameFacade(tcpStreamProvider);
+            gameFacade = new GameFacadeProxy(tcpStreamProvider);
 
             IItemFactory itemFactory = new ItemFactory();
             playerItem = itemFactory.CreateFindShipItem();

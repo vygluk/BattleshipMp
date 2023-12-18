@@ -26,12 +26,12 @@ using BattleshipMpServer.ChainOfResponsibility;
 using System.Text.RegularExpressions;
 using BattleshipMp.Interpreter;
 using BattleshipMp.Memento;
+using BattleshipMp.Proxy;
 
 namespace BattleshipMp
 {
     public partial class Form4_GameScreen : Form
     {
-        private GameFacade gameFacade;
 
         //public StreamReader STR;
         //public StreamWriter STW;
@@ -71,6 +71,7 @@ namespace BattleshipMp
         private InterpreterCommandContext _interpreterCommandContext = new InterpreterCommandContext();
         private GameHistoryCaretaker caretaker = new GameHistoryCaretaker();
         private List<string> moveHistory = new List<string>();
+        private GameFacadeProxy gameFacade;
 
         //  While creating the "game screen" object, get the list of selected buttons from Form2 and change their color with the help of constructor.
         public Form4_GameScreen(List<(string, Color)> list)
@@ -90,7 +91,7 @@ namespace BattleshipMp
 
             ITcpStreamProvider tcpStreamProvider;
             tcpStreamProvider = new TcpStreamProviderServer();
-            gameFacade = new GameFacade(tcpStreamProvider);
+            gameFacade = new GameFacadeProxy(tcpStreamProvider);
 
             IItemFactory itemFactory = new ItemFactory();
             playerItem = itemFactory.CreateFindShipItem();

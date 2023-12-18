@@ -164,6 +164,7 @@
     <Compile Include="Observer\MediumExtraRoundMultiplier.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Proxy\GameFacadeProxy.cs" />
     <Compile Include="Server.cs" />
     <Compile Include="State\EnemyTurnState.cs" />
     <Compile Include="State\GameContext.cs" />
