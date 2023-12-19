@@ -301,8 +301,9 @@ namespace BattleshipMpClient
 
         private void ValidateSelection()
         {
-            var controlsIterator = new ControlIterator(controls);
-            while(controlsIterator.HasNext())
+            var controlsAggregate = new ControlAggregate(controls);
+            var controlsIterator = controlsAggregate.CreateIterator();
+            while (controlsIterator.HasNext())
             {
                 var c = controlsIterator.Next();
 
