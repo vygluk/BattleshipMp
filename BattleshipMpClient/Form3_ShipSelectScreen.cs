@@ -39,8 +39,11 @@ namespace BattleshipMpClient
         private bool AreAllShipsOfSquareSizePlaced(int squareSize)
         {
             int totalRemShips = 0;
-            var shipListIterator = new ShipIterator(Form2_PreparatoryScreen.shipList);
-            var squarePerShipsIterator = new ShipSizeIterator(squarePerShips);
+            var shipAggregate = new ShipAggregate(Form2_PreparatoryScreen.shipList);
+            var shipSizeAggregate = new ShipSizeAggregate(squarePerShips);
+
+            var shipListIterator = shipAggregate.CreateIterator();
+            var squarePerShipsIterator = shipSizeAggregate.CreateIterator();
             while (shipListIterator.HasNext())
             {
                 var ship = shipListIterator.Next();
@@ -53,8 +56,6 @@ namespace BattleshipMpClient
                         totalRemShips += ship.remShips;
                     }
                 }
-
-                squarePerShipsIterator.ResetIteration();
             }
 
             foreach (var specialShip in Form2_PreparatoryScreen.specialShipList)

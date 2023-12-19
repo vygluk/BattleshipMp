@@ -13,6 +13,7 @@ using System.Diagnostics;
 using System.Threading;
 using BattleshipMpClient.Template;
 using BattleshipMp.IteratorExtra;
+using BattleshipMpClient.Iterator;
 
 namespace BattleshipMpClient
 {
@@ -167,6 +168,7 @@ namespace BattleshipMpClient
         public static List<IShip> shipList = new List<IShip>();
         public static List<ISpecialShip> specialShipList = new List<ISpecialShip>();
         public static ShipComposite allShipsComposite = new ShipComposite("Fleet");
+        public FormButtonIterator buttonIterator;
 
         List<(string, Color)> AllSelectedButtonList = new List<(string, Color)>();
 
@@ -233,12 +235,12 @@ namespace BattleshipMpClient
             PrepareForMemoryMeasurement();
             long memoryBefore = GC.GetTotalMemory(true);
 
-            List<Button> buttons = CreateButtons(1000000); // Create 1 million buttons
-
-            foreach (var button in buttons)
+            List<Button> buttons = CreateButtons(2000000);
+            FormButtonIterator buttonsIterator = new FormButtonIterator(buttons);
+            while (buttonsIterator.HasNext())
             {
-                button.BackColor = Color.FromArgb(255, 0, 0); // Example color
-                                                              // ... other property settings
+                var nextButton = buttonsIterator.Next();
+                nextButton.BackColor = Color.FromArgb(255, 0, 0);
             }
 
             long memoryAfter = GC.GetTotalMemory(true);
@@ -250,13 +252,14 @@ namespace BattleshipMpClient
             PrepareForMemoryMeasurement();
             long memoryBefore = GC.GetTotalMemory(true);
 
-            List<Button> buttons = CreateButtons(1000000); // Create 1 million buttons
-            Color color = Color.FromArgb(255, 0, 0); // Example color
-
-            foreach (var button in buttons)
+            List<Button> buttons = CreateButtons(2000000);
+            Color color = Color.FromArgb(255, 0, 0);
+            FormButtonIterator buttonsIterator = new FormButtonIterator(buttons);
+            while (buttonsIterator.HasNext())
             {
-                // Using Flyweight to set properties
-                SetButtonProperties(button, color);
+                var nextButton = buttonsIterator.Next();
+                SetButtonProperties(nextButton, color);
+
             }
 
             long memoryAfter = GC.GetTotalMemory(true);
@@ -301,8 +304,9 @@ namespace BattleshipMpClient
 
         private void ValidateSelection()
         {
-            var controlsIterator = new ControlIterator(controls);
-            while(controlsIterator.HasNext())
+            var controlsAggregate = new ControlAggregate(controls);
+            var controlsIterator = controlsAggregate.CreateIterator();
+            while (controlsIterator.HasNext())
             {
                 var c = controlsIterator.Next();
 
@@ -620,9 +624,11 @@ namespace BattleshipMpClient
                 }
             }
 
-            foreach (var specialShip in specialShipList)
+            var specialShipIterator = new SpecialShipIterator(specialShipList);
+            while (specialShipIterator.HasNext())
             {
-                while (specialShip.remShips > 0)
+                var specialShip = specialShipIterator.Next();
+                while (specialShip != null && specialShip.remShips > 0)
                 {
                     var selectedButtonNames = FindValidPlacementForSpecialShip(specialShip, occupiedButtons);
                     if (selectedButtonNames != null)
@@ -636,6 +642,7 @@ namespace BattleshipMpClient
                     }
                 }
             }
+
         }
         private List<(int, int)> GenerateShuffledGridPositions()
         {

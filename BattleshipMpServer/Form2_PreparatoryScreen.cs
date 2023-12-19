@@ -171,7 +171,8 @@ namespace BattleshipMp
 
         private void ValidateSelection()
         {
-            var controlsIterator = new ControlsIterator(controls);
+            var controlsAggregate = new ControlAggregate(controls);
+            var controlsIterator = controlsAggregate.CreateIterator();
             while (controlsIterator.HasNext())
             {
                 var c = controlsIterator.Next();
