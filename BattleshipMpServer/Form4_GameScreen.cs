@@ -27,6 +27,7 @@ using System.Text.RegularExpressions;
 using BattleshipMp.Interpreter;
 using BattleshipMp.Memento;
 using BattleshipMp.Proxy;
+using System.Diagnostics;
 
 namespace BattleshipMp
 {
@@ -72,6 +73,7 @@ namespace BattleshipMp
         private GameHistoryCaretaker caretaker = new GameHistoryCaretaker();
         private List<string> moveHistory = new List<string>();
         private GameFacadeProxy gameFacade;
+        private GameFacade gameFacadas;
 
         //  While creating the "game screen" object, get the list of selected buttons from Form2 and change their color with the help of constructor.
         public Form4_GameScreen(List<(string, Color)> list)
@@ -987,6 +989,7 @@ namespace BattleshipMp
 
         private void button1_Click(object sender, EventArgs e)
         {
+            TestProxy();
             ISoundImplementation backgroudSoundImplementation = new BackgroundMusic();
             SoundPlayerBridge backgroundSoundPlayer = new BackgroundMusicPlayer(backgroudSoundImplementation);
             backgroundSoundPlayer.Play();
@@ -1091,5 +1094,64 @@ namespace BattleshipMp
 
             return;
         }
+
+        private void TestProxy()
+        {
+            PrepareForMemoryMeasurement();
+
+            Stopwatch stopwatch = new Stopwatch();
+
+            // Testing Without Flyweight
+            stopwatch.Start();
+            long memoryWithoutFlyweight = WithoutGameFacadeProxyTest();
+            stopwatch.Stop();
+            long timeWithoutFlyweight = stopwatch.ElapsedMilliseconds;
+
+            Console.WriteLine($"Memory usage without Proxy: {memoryWithoutFlyweight} bytes");
+            Console.WriteLine($"Time taken without Proxy: {timeWithoutFlyweight} ms");
+
+            PrepareForMemoryMeasurement();
+
+            // Testing With Flyweight
+            stopwatch.Restart();
+            long memoryWithFlyweight = WithGameFacadeProxyTest();
+            stopwatch.Stop();
+            long timeWithFlyweight = stopwatch.ElapsedMilliseconds;
+
+            Console.WriteLine($"Memory usage with Proxy: {memoryWithFlyweight} bytes");
+            Console.WriteLine($"Time taken with Proxy: {timeWithFlyweight} ms");
+        }
+
+        private void PrepareForMemoryMeasurement()
+        {
+            GC.Collect();
+            GC.WaitForPendingFinalizers();
+            GC.Collect();
+        }
+
+        private long WithoutGameFacadeProxyTest()
+        {
+            long memoryStart = GC.GetTotalMemory(true);
+
+            ITcpStreamProvider tcpStreamProvider;
+            tcpStreamProvider = new TcpStreamProviderServer();
+            gameFacadas = new GameFacade(tcpStreamProvider);
+
+            gameFacadas.GetGameCommunication();
+            long memoryEnd = GC.GetTotalMemory(true);
+
+            return memoryEnd - memoryStart;
+        }
+
+        private long WithGameFacadeProxyTest()
+        {
+            long memoryStart = GC.GetTotalMemory(true);
+
+            gameFacade.GetGameCommunication();
+            long memoryEnd = GC.GetTotalMemory(true);
+
+            return memoryEnd - memoryStart;
+        }
+
     }
 }
