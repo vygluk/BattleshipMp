@@ -150,9 +150,15 @@
     <Compile Include="IteratorExtra\ShipIterator.cs" />
     <Compile Include="IteratorExtra\ShipSize.cs" />
     <Compile Include="IteratorExtra\ShipSizeIterator.cs" />
+    <Compile Include="Iterator\FormButtonIterator .cs" />
+    <Compile Include="Iterator\IButtonIterator.cs" />
     <Compile Include="Iterator\IcebergIterator.cs" />
+    <Compile Include="Iterator\IFormButtonAggregate.cs" />
     <Compile Include="Iterator\IIcebergAggregate.cs" />
     <Compile Include="Iterator\IIcebergIterator.cs" />
+    <Compile Include="Iterator\ISpecialShipAggregate.cs" />
+    <Compile Include="Iterator\ISpecialShipIterator.cs" />
+    <Compile Include="Iterator\SpecialShipIterator.cs" />
     <Compile Include="Memento\GameHistoryCaretaker.cs" />
     <Compile Include="Memento\GameStateMemento.cs" />
     <Compile Include="Memento\IGameOriginator.cs" />
