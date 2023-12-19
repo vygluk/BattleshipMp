@@ -152,6 +152,11 @@
     <Compile Include="Iterator\IcebergIterator.cs" />
     <Compile Include="Iterator\IIcebergAggregate.cs" />
     <Compile Include="Iterator\IIcebergIterator.cs" />
+    <Compile Include="Mediator\FormCloseManager.cs" />
+    <Compile Include="Mediator\IServerScreenMediator.cs" />
+    <Compile Include="Mediator\ServerManager.cs" />
+    <Compile Include="Mediator\ServerScreenMediator .cs" />
+    <Compile Include="Mediator\UIManager.cs" />
     <Compile Include="Memento\GameHistoryCaretaker.cs" />
     <Compile Include="Memento\GameStateMemento.cs" />
     <Compile Include="Memento\IGameOriginator.cs" />

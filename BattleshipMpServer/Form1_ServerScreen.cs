@@ -13,11 +13,17 @@ using System.Threading;
 using System.IO;
 using BattleshipMpServer.Factory.Ship;
 using BattleshipMp.State;
+using BattleshipMp.Mediator;
 
 namespace BattleshipMp
 {
     public partial class Form1_ServerScreen : Form
     {
+        private IServerScreenMediator _mediator;
+
+        public Button ContinueButton => buttonGoToBoard;
+
+        public Label ServerStatusLabel => labelServerState;
 
         public Form1_ServerScreen()
         {
@@ -26,6 +32,23 @@ namespace BattleshipMp
             Control.CheckForIllegalCrossThreadCalls = false;
 
             textBoxIpAddress.Text = FillIpTextBox();
+
+            _mediator = new ServerScreenMediator(this);
+        }
+
+        public void SetMediator(IServerScreenMediator mediator)
+        {
+            _mediator = mediator;
+        }
+
+        public string GetIpAddress()
+        {
+            return textBoxIpAddress.Text;
+        }
+
+        public string GetPort()
+        {
+            return textBoxPort.Text;
         }
 
 
@@ -58,25 +81,13 @@ namespace BattleshipMp
         //  Call the "ServerStart" method in the Server class.
         private void buttonServerStart_Click(object sender, EventArgs e)
         {
-            Server.GetInstance.ServerStart(textBoxIpAddress.Text, textBoxPort.Text);
+            _mediator.Notify(this, "StartServer");
         }
 
         //  Check if the client connects every 1 second. Activate the "Continue" button according to the result.
         private void timer1_Tick(object sender, EventArgs e)
         {
-            if (Server.GetInstance.IsClientConnected)
-            {
-                labelServerState.Text = "Player successfully connected.";
-                buttonGoToBoard.Enabled = true;
-            }
-            else if (Server.GetInstance.IsListenerActive)
-            {
-                labelServerState.Text = "The server is started. The player is awaited..";
-            }
-            else
-            {
-                labelServerState.Text = "Waiting for the server to start...";
-            }
+            _mediator.Notify(this, "TimerTick");
         }
 
         //  Go to ship theme selection form, Form12
@@ -100,9 +111,7 @@ namespace BattleshipMp
 
         private void Form1_ServerScreen_FormClosed(object sender, FormClosedEventArgs e)
         {
-            Server.GetInstance.CloseAndDispose();
-
-            Environment.Exit(1);
+            _mediator.Notify(this, "CloseServer");
         }
     }
 }
